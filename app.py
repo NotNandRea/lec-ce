@@ -98,4 +98,40 @@ def register_post():
     users_dao.add_user(user_obj)
 
     return "ok", 200
- 
+
+@app.route("/login", methods=["POST"])
+def login():
+    
+    user=request.form.to_dict()
+
+    # email validation
+    email= user.get("email")
+    if email in [None, ""]:
+        return "Invalid email", 400
+    if check_email.check_email(email) == False:
+        return "Invalid email", 400
+    
+    user_obj=users_dao.get_user_by_email(email)
+
+    if user_obj is None:
+        return "Authentication Error", 400
+    
+    # password validation
+    password= user.get("password")
+    if password in [None, ""]:
+        return "Invalid password", 400
+    password=generate_password_hash(password)
+
+    if not user_obj.check_password(password):
+        return "Authentication Error", 400
+
+    login_user(user_obj)
+
+    return "ok", 200
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+
+    return "ok", 200

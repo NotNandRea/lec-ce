@@ -13,3 +13,8 @@ class User(UserMixin):
     def print_user(self):
         print(f"ID: {self.id}, Role: {self.role}, Email: {self.email}, First Name: {self.first_name}, Last Name: {self.last_name}, Profile Photo: {self.profile_photo}")
         return
+
+    def check_password(self,string):
+        if self.password==string:
+            return True
+        return False
