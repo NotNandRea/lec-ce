@@ -1,0 +1,50 @@
+body {
+    background-color: #F8F3E7;
+}
+
+.lecce-logo {
+    height: 2rem;
+}
+
+.lecce-text-primary {
+    font-family: "Bricolage Grotesque", sans-serif;
+}
+
+.lecce-text-secondary {
+    font-family: "DM Sans", sans-serif;
+}
+
+.lecce-primary-color {
+    color: #F2792B
+}
+
+.lecce-secondary-color {
+    color: #15324B;
+}
+
+.lecce-positive-background {
+    background-color: #34d65a;
+}
+
+.lecce-negative-background {
+    background-color: #e46773;
+}
+
+.lecce-header {
+    border-bottom: 0.01rem  solid #15324B;
+}
+
+.lecce-btn {
+    color: white;
+    border: none;
+    border-radius: 1000px;
+}
+
+.lecce-primary-background {
+    background-color: #F2792B;
+}
+
+.lecce-secondary-background {
+    background-color: #22354d;
+    color: white;
+}

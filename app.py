@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-from flask import Flask, render_template, request
+from flask import Flask, flash, render_template, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from database.models.user import User

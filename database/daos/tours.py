@@ -117,7 +117,7 @@ def get_tomorrow_tour(conn, cursor):
     days= ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
     tomorrow_week_day = days[tomorrow_week_day_index]
 
-    query="SELECT * FROM tours WHERE week_day= (?) LIMIT 1"
+    query="SELECT * FROM tours, tour_week_slots, week_slots WHERE week_day= (?) AND tours.id = tour_week_slots.tour_id AND tour_week_slots.week_slot_id = week_slots.id LIMIT 1"
     cursor.execute(query, (tomorrow_week_day,))
     tour=cursor.fetchone()
 
