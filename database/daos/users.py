@@ -1,6 +1,10 @@
 import sqlite3
+
 from database.models.user import User
+
 from utilities.db_connection import connect_db
+
+#CORE FUNCTIONS
 
 @connect_db
 def get_users(conn, cursor):
@@ -60,3 +64,25 @@ def add_user(conn, cursor, user):
         conn.rollback()
 
     return success
+
+# UTILITY FUNCTIONS
+
+@connect_db
+def count_guides(conn, cursor):
+    
+    query="SELECT COUNT(*) AS count FROM users WHERE role='guide'"
+    cursor.execute(query)
+    result = cursor.fetchone()
+    count = result["count"]
+
+    return count
+
+@connect_db
+def count_participants(conn, cursor):
+    
+    query="SELECT COUNT(*) AS count FROM users WHERE role='participant'"
+    cursor.execute(query)
+    result = cursor.fetchone()
+    count = result["count"]
+
+    return count

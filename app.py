@@ -1,13 +1,15 @@
 import os
 from dotenv import load_dotenv
 
-from flask import Flask, request
+from flask import Flask, render_template, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from database.models.user import User
 from database.daos import users as users_dao
+from database.daos import tours as tours_dao
+from database.daos import utilities as utilities_dao
 
-from utilities import check_email, check_password, images
+from utilities import check_email, check_password, images, role_routes
 
 import uuid
 from werkzeug.security import generate_password_hash
@@ -134,3 +136,21 @@ def logout():
     logout_user()
 
     return "ok", 200
+
+# NOT LOGIN PROTECTED ROUTES
+
+@app.route("/")
+def home():
+
+    tours=tours_dao.get_tours()
+    tomorrow_tour=tours_dao.get_tomorrow_tour()
+    
+    tour_numnber=tours_dao.count_tours()
+    guides_number=users_dao.count_guides()
+    participants_number=users_dao.count_participants()
+    languages_number=utilities_dao.count_languages()
+    themes_number=utilities_dao.count_themes()
+
+    return render_template("home.html", tours=tours, tour_number=tour_numnber, guides_number=guides_number, participants_number=participants_number, tomorrow_tour=tomorrow_tour, languages_number=languages_number, themes_number=themes_number)
+
+
