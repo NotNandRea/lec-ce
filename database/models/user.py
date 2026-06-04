@@ -1,4 +1,5 @@
 from flask_login import UserMixin
+from werkzeug.security import check_password_hash
 
 class User(UserMixin):
     def __init__(self, id, role, email, password, first_name, last_name, profile_photo):
@@ -15,6 +16,4 @@ class User(UserMixin):
         return
 
     def check_password(self,string):
-        if self.password==string:
-            return True
-        return False
+        return check_password_hash(self.password, string)

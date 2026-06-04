@@ -86,7 +86,7 @@ def register_post():
 
         #file naming
         extension=profile_photo.filename.split(".")[-1].lower()
-        profile_photo_filename=str(uuid.uuid4()) + extension
+        profile_photo_filename=str(uuid.uuid4()) + "." + extension
         profile_photo.save("profile_photos/" + profile_photo_filename)
     else:
         profile_photo_filename="profile_photos/default.png"
@@ -120,7 +120,6 @@ def login():
     password= user.get("password")
     if password in [None, ""]:
         return "Invalid password", 400
-    password=generate_password_hash(password)
 
     if not user_obj.check_password(password):
         return "Authentication Error", 400
