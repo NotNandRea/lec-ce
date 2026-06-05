@@ -61,26 +61,31 @@
                 src="{{ url_for('static', filename='images/utility_images/LecCE_logo_secondary.png') }}"
                 alt="LecCÈ Logo">
 
-            <p class="lecce-text-primary fw-semibold lh-lg mb-4">
+            <p class="lecce-text-impact fw-semibold lh-lg mb-4">
                 Lecce c'è, And you?
             </p>
         </div>
 
         <div class="d-flex flex-column flex-md-row justify-content-between gap-2 border-top border-white pt-3">
-            <span class="mb-0 lecce-text-secondary">
+            <span class="mb-0">
                 © 2026 LecC'È - Lecce, Puglia
             </span>
 
-            <span class="mb-0 lecce-text-secondary">
+            <span class="mb-0">
                 Made with <i class="bi bi-heart-fill lecce-primary-color"></i> by Andrea Risolo
             </span>
         </div>
 
     </footer>
 
+    <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
         crossorigin="anonymous"></script>
+    
+    <!-- My JavaScript -->
+    <script src="{{ url_for('static', filename='javascript/home_search.js') }}"></script>
+
 </body>
 
 </html>

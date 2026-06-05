@@ -1,17 +1,14 @@
 body {
     background-color: #F8F3E7;
+    font-family: "DM Sans", sans-serif;
 }
 
 .lecce-logo {
     height: 2rem;
 }
 
-.lecce-text-primary {
+.lecce-text-impact {
     font-family: "Bricolage Grotesque", sans-serif;
-}
-
-.lecce-text-secondary {
-    font-family: "DM Sans", sans-serif;
 }
 
 .lecce-primary-color {
@@ -47,4 +44,24 @@ body {
 .lecce-secondary-background {
     background-color: #22354d;
     color: white;
+}
+
+.home-main-photo-container {
+    aspect-ratio: 4/3;
+}
+
+.form-check-input:checked {
+    background-color: #F2792B;
+    border-color: #F2792B;
+}
+
+.tour-preview-photo {
+    aspect-ratio: 16/9;
+}
+
+.profile-initials {
+    background-color: #F2792B;
+    color: white;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
 }

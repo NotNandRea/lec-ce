@@ -4,8 +4,6 @@ from database.models.tour import Tour
 
 from utilities.db_connection import connect_db
 
-from datetime import date, timedelta
-
 #CORE FUNCTIONS
 
 @connect_db
@@ -108,17 +106,10 @@ def count_tours(conn, cursor):
     return count
 
 @connect_db
-def get_tomorrow_tour(conn, cursor):
+def get_random_tour(conn, cursor):
 
-    today = date.today()
-    tomorrow = today + timedelta(days=1)
-    tomorrow_week_day_index = tomorrow.weekday()
-
-    days= ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-    tomorrow_week_day = days[tomorrow_week_day_index]
-
-    query="SELECT * FROM tours, tour_week_slots, week_slots WHERE week_day= (?) AND tours.id = tour_week_slots.tour_id AND tour_week_slots.week_slot_id = week_slots.id LIMIT 1"
-    cursor.execute(query, (tomorrow_week_day,))
+    query="SELECT * FROM tours ORDER BY RANDOM() LIMIT 1"
+    cursor.execute(query)
     tour=cursor.fetchone()
 
     if tour is None:

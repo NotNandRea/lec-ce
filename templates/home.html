@@ -1,7 +1,158 @@
 {% extends "base.html" %}
-{% block title %}Where there is peace.{% endblock %}
+
+{% block title %}Home{% endblock %}
 
 {% block content %}
-    <h1>Welcome to LecCÈ</h1>
-    <p>This is the home page.</p>
+<main class="mx-4 my-5">
+
+    <section>
+        <div class="container">
+
+
+            <div class="row align-items-center g-5">
+                <div class="col-6">
+
+                    <p class="lecce-text-impact lecce-primary-color my-2 fs-6 fw-semibold">NOT A COMMON CITY</p>
+                    <h1 class="display-4 fw-bold lecce-text-impact">
+                        Lecce <span class="lecce-primary-color">c'è.</span><br>
+                        Discover it <span class="lecce-primary-color">step by step.</span>
+                    </h1>
+
+                    <!-- TODO: Implement routes-->
+                    <div class="d-flex gap-3 mt-4">
+                        <a href="#" class="btn lecce-btn lecce-primary-background px-4 lh-2">Book our Tours</a>
+                        <a href="#" class="btn lecce-btn lecce-secondary-background px-4 lh-2">Become a Guide</a>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <div class="rounded-5 shadow overflow-hidden home-main-photo-container">
+                        <img class="object-fit-cover h-100 w-100"
+                            src="{{ url_for('static', filename='images/utility_images/placeholder.jpg') }}"
+                            alt="Random tour photo">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="my-5">
+        <div class="container">
+
+            <div class="mb-2">
+                <p class="lecce-text-impact lecce-primary-color my-2 fs-6 fw-semibold">TOURS ARE OURS, DECISIONS ARE
+                    YOURS</p>
+                <h2 class="fw-bold mb-1">
+                    Search for a Tour
+                </h2>
+            </div>
+
+            <!-- TODO: add route-->
+            <form class="lecce-secondary-background rounded-4 shadow-lg p-4" action="#" method="POST">
+                <div class="row g-4">
+
+                    <div class="col-12 d-flex justify-content-start">
+                        <div class="form-check form-switch fs-5">
+                            <input class="form-check-input" type="checkbox" id="dateRangeCheck" name="date_range_check">
+                            <label class="form-check-label ms-2" id="dateRangeCheckLabel" for="dateRangeCheck">Single
+                                Date</label>
+                        </div>
+                    </div>
+
+                    <div class="col-4">
+                        <label for="startDate" class="form-label">Start date</label>
+                        <input type="date" class="form-control" id="startDate" name="start_date" min="{{ today }}"
+                            value="{{ today }}">
+                    </div>
+
+                    <div class="col-4">
+                        <label for="endDate" class="form-label">End date</label>
+                        <input type="date" class="form-control" id="endDate" name="end_date" min="{{ today }}"
+                            value="{{ today }}" disabled>
+                    </div>
+
+                    <div class="col-4">
+                        <label for="duration" class="form-label">Duration</label>
+                        <select class="form-select" id="duration" name="duration">
+                            <option value="">Any duration</option>
+                            <option value="first">0 - 1:30 h</option>
+                            <option value="second">1:30 - 3 h</option>
+                            <option value="third">3+ h</option>
+                        </select>
+                    </div>
+
+                    <div class="col-4">
+                        <label for="language" class="form-label">Language</label>
+                        <select class="form-select" id="language" name="language">
+                            <option value="">All languages</option>
+                            <!-- TODO: Add languages -->
+                        </select>
+                    </div>
+
+                    <div class="col-4">
+                        <label for="theme" class="form-label">Theme</label>
+                        <select class="form-select" id="theme" name="theme">
+                            <option value="">All themes</option>
+                            <!-- TODO: Add themes -->
+                        </select>
+                    </div>
+
+                    <div class="col-4 d-flex justify-content-end align-items-end">
+                        <button type="submit" class="btn lecce-btn lecce-primary-background w-100">
+                            Search <i class="bi-search"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </section>
+
+    <!-- Tours -->
+    <section class="py-5">
+        <div class="container">
+
+            <div class="d-flex flex-row justify-content-between align-items-end mb-4">
+                <div>
+                    <p class="lecce-text-impact lecce-primary-color my-2 fs-6 fw-semibold">OUR BEST SELECTION</p>
+
+                    <h2 class="fw-bold mb-1">
+                        Avaiable Tours
+                    </h2>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-3">
+                    {% include "tour_card.html" %}
+                </div>
+                <div class="col-3">
+                    {% include "tour_card.html" %}
+                </div>
+                <div class="col-3">
+                    {% include "tour_card.html" %}
+                </div>
+                <div class="col-3">
+                    {% include "tour_card.html" %}
+                </div>
+                <div class="col-3">
+                    {% include "tour_card.html" %}
+                </div>
+                <div class="col-3">
+                    {% include "tour_card.html" %}
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="#" class="btn btn-light border rounded-pill px-4">
+                    Explore all Tours</i>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+</main>
 {% endblock %}
