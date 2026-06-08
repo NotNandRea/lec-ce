@@ -21,7 +21,7 @@
                     <!-- TODO: Implement routes-->
                     <div class="d-flex gap-3 mt-4">
                         <a href="#" class="btn lecce-btn lecce-primary-background px-4 lh-2">Book our Tours</a>
-                        <a href="#" class="btn lecce-btn lecce-secondary-background px-4 lh-2">Become a Guide</a>
+                        <a href="{{ url_for('login') }}" class="btn lecce-btn lecce-secondary-background px-4 lh-2">Join us</a>
                     </div>
                 </div>
 
@@ -111,7 +111,7 @@
     </section>
 
     <!-- Tours -->
-    <section class="py-5">
+    <section class="pt-5">
         <div class="container">
 
             <div class="d-flex flex-row justify-content-between align-items-end mb-4">
@@ -146,9 +146,7 @@
             </div>
 
             <div class="text-center mt-5">
-                <a href="#" class="btn btn-light border rounded-pill px-4">
-                    Explore all Tours</i>
-                </a>
+                <a href="#" class="btn lecce-btn lecce-secondary-background border border-white px-4 py-3">Explore all Tours</a>
             </div>
 
         </div>

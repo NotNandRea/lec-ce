@@ -104,7 +104,7 @@ def register_post():
     return "ok", 200
 
 @app.route("/login", methods=["POST"])
-def login():
+def login_post():
     
     user=request.form.to_dict()
 
@@ -157,4 +157,10 @@ def home():
 
     return render_template("home.html", tours=tours, tour_number=tour_numnber, guides_number=guides_number, participants_number=participants_number, random_tour=random_tour, languages_number=languages_number, themes_number=themes_number, today=today)
 
+@app.route("/register")
+def register():
+    return render_template("register.html")
 
+@app.route("/login")
+def login():
+    return render_template("register.html")

@@ -19,8 +19,16 @@ body {
     color: #15324B;
 }
 
+.lecce-positive-color {
+    color: #68c87f;
+}
+
 .lecce-positive-background {
     background-color: #34d65a;
+}
+
+.lecce-negative-color {
+    color: #e46773;
 }
 
 .lecce-negative-background {
@@ -39,6 +47,12 @@ body {
 
 .lecce-primary-background {
     background-color: #F2792B;
+    color: white;
+}
+
+.lecce-primary-background-soft {
+    background-color: #f9c7a6;
+    color: white;
 }
 
 .lecce-secondary-background {
@@ -64,4 +78,38 @@ body {
     color: white;
     aspect-ratio: 1/1;
     border-radius: 50%;
+    height: 3rem;
+    width: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lecce-register-checkbox {
+    color: black;
+    border: 0.01rem solid #15324B;
+    border-radius: 1000px;
+    background-color: white;
+}
+
+.lecce-register-checkbox:has(input:checked) {
+    color: white;
+    border: 0.01rem solid white;
+    border-radius: 1000px;
+    background-color: #F2792B;
+}
+
+.lecce-language-checkbox {
+    color: #15324B;
+    border: 0.01rem solid #15324B;
+    border-radius: 1000px;
+    background-color: white;
+    width: 7rem;
+}
+
+.lecce-language-checkbox:has(input:checked) {
+    color: white;
+    border: 0.01rem solid white;
+    border-radius: 1000px;
+    background-color: #F2792B;
 }

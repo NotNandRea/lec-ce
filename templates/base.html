@@ -24,13 +24,14 @@
     <header class="lecce-header">
         <nav class="navbar mx-4">
             <div class="container-fluid d-flex align-items-center justify-content-between">
-                <a class="navbar-brand d-flex align-items-center" href="#">
+                <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home') }}">
                     <img class="lecce-logo p-0 m-0"
                         src="{{ url_for('static', filename='images/utility_images/LecCE_logo_primary.png') }}"
                         alt="LecCÈ Logo">
                 </a>
                 <div>
-                    <button class="btn lecce-btn lecce-primary-background">Log In</button>
+                    <button class="btn lecce-btn lecce-primary-background" href="{{ url_for('login') }}">Log In</button>
+                    <a class="btn lecce-btn lecce-secondary-background" href="{{ url_for('register') }}">Sign Up</a>
                 </div>
             </div>
         </nav>
@@ -54,7 +55,7 @@
     </div>
 
 
-    <footer class="lecce-secondary-background mt-5 p-4">
+    <footer class="lecce-secondary-background mt-1 p-4">
 
         <div class="d-flex flex-column align-items-center text-center">
             <img class="lecce-logo mb-2"
@@ -84,8 +85,9 @@
         crossorigin="anonymous"></script>
     
     <!-- My JavaScript -->
-    <script src="{{ url_for('static', filename='javascript/home_search.js') }}"></script>
-
+    <script src="{{ url_for('static', filename='javascript/search.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascript/check_password.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascript/show_languages.js') }}"></script>
 </body>
 
 </html>
