@@ -21,7 +21,9 @@
                     <!-- TODO: Implement routes-->
                     <div class="d-flex gap-3 mt-4">
                         <a href="#" class="btn lecce-btn lecce-primary-background px-4 lh-2">Book our Tours</a>
+                        {% if not current_user.is_authenticated %}
                         <a href="{{ url_for('login') }}" class="btn lecce-btn lecce-secondary-background px-4 lh-2">Join us</a>
+                        {% endif %}
                     </div>
                 </div>
 
