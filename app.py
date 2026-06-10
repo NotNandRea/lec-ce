@@ -236,5 +236,8 @@ def new_tour():
 # TODO: implement specific tour route
 @app.route("/tour")
 def tour():
-
     return render_template("tour.html")
+
+@app.route("/tours")
+def tours():
+    return render_template("tours.html")
