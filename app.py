@@ -232,3 +232,9 @@ def my_profile():
 @app.route("/new")
 def new_tour():
     return render_template("new_tour.html")
+
+# TODO: implement specific tour route
+@app.route("/tour")
+def tour():
+
+    return render_template("tour.html")

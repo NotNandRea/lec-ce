@@ -1,0 +1,543 @@
+{% extends "base.html" %}
+
+{% block title %}Dettaglio tour{% endblock %}
+
+{% block content %}
+
+
+<!-- TODO: implement theme classes-->
+<main class="py-5">
+    <div class="container">
+
+        <div class="row g-5">
+
+            <div class="col-8">
+
+                <section class="mb-5">
+
+                    <div id="tourPhotosCarousel"
+                        class="carousel slide rounded-5 overflow-hidden shadow lecce-baroque-border"
+                        data-bs-ride="carousel">
+
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#tourPhotosCarousel" data-bs-slide-to="0"
+                                class="active"></button>
+
+                            <button type="button" data-bs-target="#tourPhotosCarousel" data-bs-slide-to="1"></button>
+
+                            <button type="button" data-bs-target="#tourPhotosCarousel" data-bs-slide-to="2"></button>
+
+                            <button type="button" data-bs-target="#tourPhotosCarousel" data-bs-slide-to="3"></button>
+
+                            <button type="button" data-bs-target="#tourPhotosCarousel" data-bs-slide-to="4"></button>
+                        </div>
+
+                        <div class="carousel-inner">
+
+                            <div class="carousel-item active" data-bs-interval="5000">
+                                <div class="ratio ratio-4x3">
+                                    <img src="{{ url_for('static', filename='images/utility_images/placeholder.jpg') }}"
+                                        alt="First Photo" class="w-100 h-100 object-fit-cover">
+                                </div>
+                            </div>
+
+                            <div class="carousel-item" data-bs-interval="5000">
+                                <div class="ratio ratio-4x3">
+                                    <img src="{{ url_for('static', filename='images/utility_images/placeholder.jpg') }}"
+                                        alt="Second Photo" class="w-100 h-100 object-fit-cover">
+                                </div>
+                            </div>
+
+                            <div class="carousel-item" data-bs-interval="5000">
+                                <div class="ratio ratio-4x3">
+                                    <img src="{{ url_for('static', filename='images/utility_images/placeholder.jpg') }}"
+                                        alt="Third Photo" class="w-100 h-100 object-fit-cover">
+                                </div>
+                            </div>
+
+                            <div class="carousel-item" data-bs-interval="5000">
+                                <div class="ratio ratio-4x3">
+                                    <img src="{{ url_for('static', filename='images/utility_images/placeholder.jpg') }}"
+                                        alt="Fourth Photo" class="w-100 h-100 object-fit-cover">
+                                </div>
+                            </div>
+
+                            <div class="carousel-item" data-bs-interval="5000">
+                                <div class="ratio ratio-4x3">
+                                    <img src="{{ url_for('static', filename='images/utility_images/placeholder.jpg') }}"
+                                        alt="Fifth Photo" class="w-100 h-100 object-fit-cover">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <button class="carousel-control-prev" type="button" data-bs-target="#tourPhotosCarousel"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+
+                        <button class="carousel-control-next" type="button" data-bs-target="#tourPhotosCarousel"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+
+                    </div>
+
+                </section>
+
+                <section class="mb-4">
+                    <div class="lecce-baroque-background rounded-5 shadow-sm border p-3">
+
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="lecce-default-background lecce-theme-icon">
+                                <span class="fs-1 p-1">⛪</span>
+                            </div>
+
+                            <div>
+                                <div class="lecce-baroque-text fw-bold mb-1 fs-6">
+                                    THIS TOUR IS: BAROQUE
+                                </div>
+
+                                <p class="lecce-baroque-text fw-bold mb-0">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed
+                                    sit amet ipsum mauris.
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="bg-white rounded-5 shadow p-4 p-lg-5 mb-5">
+
+                    <h1 class="lecce-text-impact lecce-secondary-color fw-bold mb-3 fs-1">
+                        Barocco & Meraviglie
+                    </h1>
+
+                    <div class="d-flex flex-wrap gap-3 mb-4 fs-6">
+
+                        <span>
+                            <i class="bi bi-clock me-1 lecce-primary-color"></i>
+                            230m
+                        </span>
+
+                        <span>
+                            <i class="bi bi-translate me-1 lecce-primary-color"></i>
+                            Italian
+                        </span>
+
+                        <span>
+                            <i class="bi bi-people me-1 lecce-primary-color"></i>
+                            Max 20 participants
+                        </span>
+
+                    </div>
+
+                    <h2 class="lecce-text-impact lecce-secondary-color fw-bold mb-3 fs-3">
+                        About the tour
+                    </h2>
+
+                    <p class="mb-3">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum
+                        mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis
+                        dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue.
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum
+                        mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis
+                        dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue.
+                    </p>
+
+                </section>
+
+                <section class="mb-5">
+
+                    <h2 class="lecce-text-impact lecce-secondary-color fw-bold mb-3 fs-3">
+                        Itinerary
+                    </h2>
+
+                    <div class="bg-white rounded-5 shadow p-4">
+
+                        <div class="d-flex align-items-center gap-3 border-bottom pb-3 mb-3">
+                            <span
+                                class="d-flex justify-content-center badge lecce-baroque-background lecce-baroque-text lecce-btn align-self-start px-3 py-2 fs-6 w-6">
+                                1
+                            </span>
+
+                            <span class="lecce-secondary-color fw-bold fs-5 m-0">
+                                Porta Napoli
+                            </span>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 border-bottom pb-3 mb-3">
+                            <span
+                                class="d-flex justify-content-center badge lecce-baroque-background lecce-baroque-text lecce-btn align-self-start px-3 py-2 fs-6 w-6">
+                                2
+                            </span>
+
+                            <span class="lecce-secondary-color fw-bold fs-5 m-0">
+                                Basilica di Santa Croce
+                            </span>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 border-bottom pb-3 mb-3">
+                            <span
+                                class="d-flex justify-content-center badge lecce-baroque-background lecce-baroque-text lecce-btn align-self-start px-3 py-2 fs-6 w-6">
+                                3
+                            </span>
+
+                            <span class="lecce-secondary-color fw-bold fs-5 m-0">
+                                Piazza Duomo
+                            </span>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="mb-5">
+
+                    <h2 class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-3 mb-3">
+                        Schedule
+                    </h2>
+
+                    <div class="row g-3">
+
+                        <div class="col">
+                            <div
+                                class="lecce-baroque-background rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                <div class="lecce-baroque-text fw-bold mb-1 fs-6">
+                                    MON
+                                </div>
+
+                                <div class="lecce-baroque-text fw-bold">
+                                    17:30
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="bg-white rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                <div class="fw-bold mb-1 fs-6">
+                                    TUE
+                                </div>
+
+                                <div class="fw-bold">
+                                    —
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div
+                                class="lecce-baroque-background rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                <div class="lecce-baroque-text fw-bold mb-1 fs-6">
+                                    WED
+                                </div>
+
+                                <div class="lecce-baroque-text fw-bold">
+                                    10:00
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="bg-white rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                <div class="fw-bold mb-1 fs-6">
+                                    THU
+                                </div>
+
+                                <div class="fw-bold">
+                                    —
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div
+                                class="lecce-baroque-background rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                <div class="lecce-baroque-text fw-bold mb-1 fs-6">
+                                    FRI
+                                </div>
+
+                                <div class="lecce-baroque-text fw-bold">
+                                    17:30
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div
+                                class="lecce-baroque-background rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                <div class="lecce-baroque-text fw-bold mb-1 fs-6">
+                                    SAT
+                                </div>
+
+                                <div class="lecce-baroque-text fw-bold">
+                                    10:00
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div
+                                class="lecce-baroque-background rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                <div class="lecce-baroque-text fw-bold mb-1 fs-6">
+                                    SUN
+                                </div>
+
+                                <div class="lecce-baroque-text fw-bold">
+                                    10:00
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="mb-5">
+
+                    <h2 class="lecce-secondary-color fw-bold fs-3 mb-3">
+                        The guide
+                    </h2>
+
+                    <div class="bg-white rounded-5 shadow p-4">
+
+                        <div class="d-flex justify-content-between align-items-center gap-3">
+
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="profile-initials lecce-text-impact fw-bold">
+                                    MR
+                                </div>
+
+                                <span class="lecce-secondary-color fw-bold mb-0 fs-5">
+                                    Marco Rizzo
+                                </span>
+                            </div>
+
+                            <p class="mb-0 fs-6 lecce-secondary-color">
+                                <i class="bi bi-translate lecce-primary-color me-1"></i>
+                                Italian - English - Spanish
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <div class="col-4">
+
+                <aside class="position-sticky top-5">
+
+                    <div class="bg-white rounded-5 shadow-sm overflow-hidden">
+
+                        <div class="lecce-baroque-background p-4 d-flex justify-content-center">
+                            <h2 class="lecce-baroque-text fw-bold fs-3 m-0">
+                                Book this tour
+                            </h2>
+                        </div>
+
+                        <!--TODO: integrate dates-to-be-enabled-->
+                        <form method="POST" action="#" class="p-4">
+
+                            <div class="mb-3">
+                                <label for="tourDate" class="form-label fw-bold lecce-secondary-color">
+                                    Date
+                                </label>
+
+                                <input type="date" class="form-control rounded-4" id="tourDate" name="tour_date"
+                                    placeholder="Choose a date" dates-to-be-enabled="1,3,5,6,0" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="peopleCount" class="form-label fw-bold lecce-secondary-color">
+                                    Participants
+                                </label>
+
+                                <input type="number" class="form-control rounded-4" id="peopleCount" name="people_count"
+                                    min="1" max="4" value="1" required>
+                            </div>
+
+                            <section>
+                                <div class="lecce-baroque-background border rounded-5 p-4 mb-4 d-none"
+                                    id="extraParticipant1">
+
+                                    <div class="fw-bold lecce-baroque-text mb-3">
+                                        Extra participant 1
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="extraParticipant1Name"
+                                            class="form-label fw-bold lecce-baroque-text">
+                                            Name <span class="lecce-primary-color">*</span>
+                                        </label>
+
+                                        <input type="text" class="form-control rounded-4 p-3" id="extraParticipant1Name"
+                                            name="participant_first_name_1" placeholder="Name">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="extraParticipant1LastName"
+                                            class="form-label fw-bold lecce-baroque-text">
+                                            Last Name <span class="lecce-primary-color">*</span>
+                                        </label>
+
+                                        <input type="text" class="form-control rounded-4 p-3"
+                                            id="extraParticipant1LastName" name="participant_last_name_1"
+                                            placeholder="Last Name">
+                                    </div>
+
+                                    <div>
+                                        <label for="extraParticipant1Email"
+                                            class="form-label fw-bold lecce-baroque-text">
+                                            Email <span class="lecce-primary-color">*</span>
+                                        </label>
+
+                                        <input type="email" class="form-control rounded-4 p-3"
+                                            id="extraParticipant1Email" name="participant_email_1"
+                                            placeholder="email@email.com">
+                                    </div>
+
+                                </div>
+
+                                <div class="lecce-baroque-background border rounded-5 p-4 mb-4 d-none"
+                                    id="extraParticipant2">
+
+                                    <div class="fw-bold lecce-baroque-text mb-3">
+                                        Extra participant 2
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="extraParticipant2Name"
+                                            class="form-label fw-bold lecce-baroque-text">
+                                            Name <span class="lecce-primary-color">*</span>
+                                        </label>
+
+                                        <input type="text" class="form-control rounded-4 p-3" id="extraParticipant2Name"
+                                            name="participant_first_name_2" placeholder="Name">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="extraParticipant2LastName"
+                                            class="form-label fw-bold lecce-baroque-text">
+                                            Last Name <span class="lecce-primary-color">*</span>
+                                        </label>
+
+                                        <input type="text" class="form-control rounded-4 p-3"
+                                            id="extraParticipant2LastName" name="participant_last_name_2"
+                                            placeholder="Last Name">
+                                    </div>
+
+                                    <div>
+                                        <label for="extraParticipant2Email"
+                                            class="form-label fw-bold lecce-baroque-text">
+                                            Email <span class="lecce-primary-color">*</span>
+                                        </label>
+
+                                        <input type="email" class="form-control rounded-4 p-3"
+                                            id="extraParticipant2Email" name="participant_email_2"
+                                            placeholder="email@email.com">
+                                    </div>
+
+                                </div>
+
+                                <div class="lecce-baroque-background border rounded-5 p-4 mb-4 d-none"
+                                    id="extraParticipant3">
+
+                                    <div class="fw-bold lecce-baroque-text mb-3">
+                                        Extra participant 3
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="extraParticipant3Name"
+                                            class="form-label fw-bold lecce-baroque-text">
+                                            Name <span class="lecce-primary-color">*</span>
+                                        </label>
+
+                                        <input type="text" class="form-control rounded-4 p-3" id="extraParticipant3Name"
+                                            name="participant_first_name_3" placeholder="Name">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="extraParticipant3LastName"
+                                            class="form-label fw-bold lecce-baroque-text">
+                                            Last Name <span class="lecce-primary-color">*</span>
+                                        </label>
+
+                                        <input type="text" class="form-control rounded-4 p-3"
+                                            id="extraParticipant3LastName" name="participant_last_name_3"
+                                            placeholder="Last Name">
+                                    </div>
+
+                                    <div>
+                                        <label for="extraParticipant3Email"
+                                            class="form-label fw-bold lecce-baroque-text">
+                                            Email <span class="lecce-primary-color">*</span>
+                                        </label>
+
+                                        <input type="email" class="form-control rounded-4 p-3"
+                                            id="extraParticipant3Email" name="participant_email_3"
+                                            placeholder="email@email.com">
+                                    </div>
+
+                                </div>
+
+                                <div class="d-none lecce-negative-background rounded-4 p-3 d-flex justify-content-center fw-bold text-white"
+                                    id="TooManyParticipants">
+                                    Too many participants selected
+                                </div>
+
+                            </section>
+
+                            <div class="bg-light rounded-4 p-3 mb-4">
+
+                                <div class="d-flex justify-content-between small mb-2">
+                                    <span>
+                                        Available seats
+                                    </span>
+
+                                    <span class="fw-bold lecce-secondary-color">
+                                        14 / 20
+                                    </span>
+                                </div>
+
+                                <div class="progress">
+                                    <div class="progress-bar lecce-baroque-background" style="width: 10%"></div>
+                                </div>
+
+                            </div>
+
+                            <button type="submit"
+                                class="lecce-btn lecce-baroque-background lecce-baroque-text fw-bold w-100 py-3">
+                                <i class="bi bi-ticket-perforated me-1"></i>
+                                Book this tour
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </aside>
+
+            </div>
+
+        </div>
+
+    </div>
+</main>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="{{ url_for('static', filename='javascript/date_selector.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/add_participant.js') }}"></script>
+
+{% endblock %}

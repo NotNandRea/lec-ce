@@ -159,3 +159,39 @@ body {
 .w-3 {
     width: 3%;
 }
+
+.w-6 {
+    width: 6%;
+}
+
+.top-5 {
+    top: 5%;
+}
+
+.lecce-theme-icon {
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    height: 4rem;
+    width: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/*BAROQUE*/
+
+.lecce-baroque-color {
+    color: #5c3e23;
+}
+
+.lecce-baroque-background {
+    background-color: #5c3e23;
+}
+
+.lecce-baroque-border {
+    border: 0.3rem solid #5c3e23;
+}
+
+.lecce-baroque-text {
+    color: #EFD7A6;
+}
