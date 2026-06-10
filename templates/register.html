@@ -153,6 +153,7 @@
                                     Languages spoken <span class="lecce-primary-color">*</span>
                                 </label>
 
+                                <!-- TODO: Implement language form database-->
                                 <div class="d-flex flex-wrap gap-3">
 
                                     <div class="lecce-language-checkbox">
@@ -231,4 +232,9 @@
     </section>
 
 </main>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='javascript/check_password.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascript/show_languages.js') }}"></script>
 {% endblock %}

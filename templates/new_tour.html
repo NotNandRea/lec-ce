@@ -1,0 +1,363 @@
+{% extends "base.html" %}
+
+{% block title %}Crea tour{% endblock %}
+
+{% block content %}
+
+<main class="py-5">
+    <div class="container">
+
+        <!-- TODO: align with database FOR UPDATING-->
+        <form method="POST" enctype="multipart/form-data">
+
+            <div
+                class="d-flex align-items-center justify-content-between mb-5 position-sticky top-0 lecce-default-background pt-4 pb-3">
+                <div>
+                    <div class="lecce-primary-color fw-bold small mb-2">
+                        WHAT MAKES IT SPECIAL?
+                    </div>
+
+                    <h1 class="lecce-text-impact lecce-secondary-color fw-bold mb-0">
+                        Describe the tour
+                    </h1>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+
+                    <button type="reset" class="lecce-btn lecce-secondary-background shadow-sm fw-bold px-4 py-2">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="lecce-btn lecce-primary-background shadow-sm fw-bold px-4 py-2"
+                        id="submitButton">
+                        Publish
+                    </button>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center">
+
+                <div class="w-75">
+
+                    <section class="bg-white rounded-5 shadow-sm p-4 mb-4">
+                        <h2 class="lecce-secondary-color fw-bold mb-3 fs-4 border-bottom pb-2">
+                            Basic Informations
+                        </h2>
+
+                        <div class="mb-3">
+                            <label for="title" class="form-label fw-bold lecce-secondary-color fs-6">
+                                Title <span class="lecce-primary-color">*</span>
+                            </label>
+
+                            <input type="text" class="form-control rounded-4" id="title" name="title"
+                                value="Barocco & Meraviglie" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="description" class="form-label fw-bold lecce-secondary-color fs-6">
+                                Description <span class="lecce-primary-color">*</span>
+                            </label>
+
+                            <textarea class="form-control rounded-4" id="description" name="description" rows="4"
+                                required>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</textarea>
+                        </div>
+
+                        <div class="row g-3">
+
+                            <!-- TODO: implement language from database -->
+                            <div class="col-6">
+                                <label for="language" class="form-label fw-bold lecce-secondary-color fs-6">
+                                    Language <span class="lecce-primary-color">*</span>
+                                </label>
+
+                                <select class="form-select rounded-4" id="language" name="language" required>
+                                    <option value="italian">Italiano</option>
+                                    <option value="english">English</option>
+                                    <option value="spanish">Español</option>
+                                    <option value="french">Français</option>
+                                    <option value="german">Deutsch</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6">
+                                <label for="duration" class="form-label fw-bold lecce-secondary-color fs-6">
+                                    Duration (minutes) <span class="lecce-primary-color">*</span>
+                                </label>
+
+                                <input type="number" class="form-control rounded-4" id="duration" name="duration"
+                                    value="30" min="30" max="300" required>
+                            </div>
+
+                            <!-- TODO: implement theme from database -->
+                            <div class="col-6">
+                                <label for="theme" class="form-label fw-bold lecce-secondary-color fs-6">
+                                    Theme <span class="lecce-primary-color">*</span>
+                                </label>
+
+                                <select class="form-select rounded-4" id="theme" name="theme" required>
+                                    <option value="art">Art</option>
+                                    <option value="history">History</option>
+                                    <option value="food">Food</option>
+                                    <option value="nature">Nature</option>
+                                    <option value="mystery">Mystery</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6">
+                                <label for="max_participants" class="form-label fw-bold lecce-secondary-color fs-6">
+                                    Max participants <span class="lecce-primary-color">*</span>
+                                </label>
+
+                                <input type="number" class="form-control rounded-4" id="max_participants"
+                                    name="max_participants" value="20" min="1" max="50" required>
+                            </div>
+
+                        </div>
+                    </section>
+
+                    <section class="bg-white rounded-5 shadow-sm p-4 mb-4">
+                        <h2 class="lecce-secondary-color fw-bold mb-0 fs-4 border-bottom pb-2">
+                            Schedule
+                        </h2>
+
+                        <div class="d-flex justify-content-center gap-2 flex-wrap my-4">
+
+                            <div class="lecce-date-checkbox lecce-btn">
+                                <input class="d-none day-checkbox" type="checkbox" name="days" value="monday"
+                                    id="monday" checked>
+                                <label for="monday" class="rounded-4 fw-bold px-4 py-3 user-select-none">MON</label>
+                            </div>
+
+                            <div class="lecce-date-checkbox lecce-btn">
+                                <input class="d-none day-checkbox" type="checkbox" name="days" value="tuesday"
+                                    id="tuesday" checked>
+                                <label for="tuesday" class="rounded-4 fw-bold px-4 py-3 user-select-none">TUE</label>
+                            </div>
+
+                            <div class="lecce-date-checkbox lecce-btn">
+                                <input class="d-none day-checkbox" type="checkbox" name="days" value="wednesday"
+                                    id="wednesday" checked>
+                                <label for="wednesday" class="rounded-4 fw-bold px-4 py-3 user-select-none">WED</label>
+                            </div>
+
+                            <div class="lecce-date-checkbox lecce-btn">
+                                <input class="d-none day-checkbox" type="checkbox" name="days" value="thursday"
+                                    id="thursday" checked>
+                                <label for="thursday" class="rounded-4 fw-bold px-4 py-3 user-select-none">THU</label>
+                            </div>
+
+                            <div class="lecce-date-checkbox lecce-btn">
+                                <input class="d-none day-checkbox" type="checkbox" name="days" value="friday"
+                                    id="friday" checked>
+                                <label for="friday" class="rounded-4 fw-bold px-4 py-3 user-select-none">FRI</label>
+                            </div>
+
+                            <div class="lecce-date-checkbox lecce-btn">
+                                <input class="d-none day-checkbox" type="checkbox" name="days" value="saturday"
+                                    id="saturday" checked>
+                                <label for="saturday" class="rounded-4 fw-bold px-4 py-3 user-select-none">SAT</label>
+                            </div>
+
+                            <div class="lecce-date-checkbox lecce-btn">
+                                <input class="d-none day-checkbox" type="checkbox" name="days" value="sunday"
+                                    id="sunday" checked>
+                                <label for="sunday" class="rounded-4 fw-bold px-4 py-3 user-select-none">SUN</label>
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex flex-column gap-3">
+
+                            <div class="rounded-4 border p-3" id="monday_time">
+                                <div class="d-flex align-items-center justify-content-between gap-3">
+                                    <span class="lecce-secondary-color fw-bold">Monday</span>
+
+                                    <div class="d-flex align-items-center rounded-5 border overflow-hidden">
+                                        <input type="time" class="form-control border-0 fw-bold" name="monday_time"
+                                            value="17:30">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="rounded-4 border p-3" id="tuesday_time">
+                                <div class="d-flex align-items-center justify-content-between gap-3">
+                                    <span class="lecce-secondary-color fw-bold">Tuesday</span>
+
+                                    <div class="d-flex align-items-center rounded-5 border overflow-hidden">
+                                        <input type="time" class="form-control border-0 fw-bold" name="tuesday_time"
+                                            value="10:00">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="rounded-4 border p-3" id="wednesday_time">
+                                <div class="d-flex align-items-center justify-content-between gap-3">
+                                    <span class="lecce-secondary-color fw-bold">Wednesday</span>
+
+                                    <div class="d-flex align-items-center rounded-5 border overflow-hidden">
+                                        <input type="time" class="form-control border-0 fw-bold" name="wednesday_time"
+                                            value="14:30">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="rounded-4 border p-3" id="thursday_time">
+                                <div class="d-flex align-items-center justify-content-between gap-3">
+                                    <span class="lecce-secondary-color fw-bold">Thursday</span>
+
+                                    <div class="d-flex align-items-center rounded-5 border overflow-hidden">
+                                        <input type="time" class="form-control border-0 fw-bold" name="thursday_time"
+                                            value="09:30">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="rounded-4 border p-3" id="friday_time">
+                                <div class="d-flex align-items-center justify-content-between gap-3">
+                                    <span class="lecce-secondary-color fw-bold">Friday</span>
+
+                                    <div class="d-flex align-items-center rounded-5 border overflow-hidden">
+                                        <input type="time" class="form-control border-0 fw-bold" name="friday_time"
+                                            value="16:00">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="rounded-4 border p-3" id="saturday_time">
+                                <div class="d-flex align-items-center justify-content-between gap-3">
+                                    <span class="lecce-secondary-color fw-bold">Saturday</span>
+
+                                    <div class="d-flex align-items-center rounded-5 border overflow-hidden">
+                                        <input type="time" class="form-control border-0 fw-bold" name="saturday_time"
+                                            value="11:00">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="rounded-4 border p-3" id="sunday_time">
+                                <div class="d-flex align-items-center justify-content-between gap-3">
+                                    <span class="lecce-secondary-color fw-bold">Sunday</span>
+
+                                    <div class="d-flex align-items-center rounded-5 border overflow-hidden">
+                                        <input type="time" class="form-control border-0 fw-bold" name="sunday_time"
+                                            value="15:30">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-none lecce-negative-background rounded-4 p-3 d-flex justify-content-center fw-bold text-white"
+                                id="noDaysSelected">
+                                At least one day must be selected.
+                            </div>
+
+                        </div>
+                    </section>
+
+                    <section class="bg-white rounded-5 shadow-sm p-4 mb-4">
+                        <h2 class="lecce-secondary-color fw-bold mb-3 fs-4 pb-2 border-bottom">
+                            Stops of the tour
+                        </h2>
+
+                        <div id="stopsList" class="d-flex flex-column gap-2">
+
+                            <div class="d-flex align-items-center gap-2 border rounded-4 p-2 ps-3 stop-item">
+                                <input type="text" class="form-control border-0" name="stop_name" value="Porta Napoli"
+                                    required>
+
+                                <button type="button" class="btn remove-stop-button">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2 border rounded-4 p-2 ps-3 stop-item">
+                                <input type="text" class="form-control border-0" name="stop_name"
+                                    value="Basilica di Santa Croce" required>
+
+                                <button type="button" class="btn remove-stop-button">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+
+
+                        </div>
+
+                        <button type="button" id="addStop"
+                            class="btn lecce-btn lecce-primary-background shadow-sm fw-bold mt-3">
+                            <i class="bi bi-plus-lg me-1"></i>
+                            Add stop
+                        </button>
+
+                        <div class="d-none lecce-negative-background rounded-4 p-3 d-flex justify-content-center fw-bold text-white mt-3"
+                            id="noStopsSelected">
+                            At least four stops must be present.
+                        </div>
+                    </section>
+
+                    <section class="bg-white rounded-5 shadow-sm p-4 mb-4">
+                        <h2 class="lecce-secondary-color fw-bold mb-3 fs-4 pb-2 border-bottom">
+                            Photos
+                        </h2>
+
+                        <div class="row g-3">
+
+                            <div class="col-12">
+                                <label for="photo_1" class="form-label fw-bold lecce-secondary-color fs-6">
+                                    Photo 1 - Cover
+                                </label>
+                                <input class="form-control rounded-4" type="file" id="photo_1" name="photo_1"
+                                    accept="image/png, image/jpeg, image/jpg" required>
+                            </div>
+
+                            <div class="col-6">
+                                <label for="photo_2" class="form-label fw-bold lecce-secondary-color fs-6">
+                                    Photo 2
+                                </label>
+                                <input class="form-control rounded-4" type="file" id="photo_2" name="photo_2"
+                                    accept="image/png, image/jpeg, image/jpg" required>
+                            </div>
+
+                            <div class="col-6">
+                                <label for="photo_3" class="form-label fw-bold lecce-secondary-color fs-6">
+                                    Photo 3
+                                </label>
+                                <input class="form-control rounded-4" type="file" id="photo_3" name="photo_3"
+                                    accept="image/png, image/jpeg, image/jpg" required>
+                            </div>
+
+                            <div class="col-6">
+                                <label for="photo_4" class="form-label fw-bold lecce-secondary-color fs-6">
+                                    Photo 4
+                                </label>
+                                <input class="form-control rounded-4" type="file" id="photo_4" name="photo_4"
+                                    accept="image/png, image/jpeg, image/jpg" required>
+                            </div>
+
+                            <div class="col-6">
+                                <label for="photo_5" class="form-label fw-bold lecce-secondary-color fs-6">
+                                    Photo 5
+                                </label>
+                                <input class="form-control rounded-4" type="file" id="photo_5" name="photo_5"
+                                    accept="image/png, image/jpeg, image/jpg" required>
+                            </div>
+
+                            <div class="d-none lecce-negative-background rounded-4 p-3 d-flex justify-content-center fw-bold text-white"
+                                id="noPhotosSelected">
+                                Every photo must be uploaded.
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</main>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='javascript/tour_validator.js') }}"></script>
+{% endblock %}

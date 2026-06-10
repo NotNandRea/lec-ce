@@ -100,10 +100,8 @@
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
         crossorigin="anonymous"></script>
 
-    <!-- My JavaScript -->
-    <script src="{{ url_for('static', filename='javascript/search.js') }}"></script>
-    <script src="{{ url_for('static', filename='javascript/check_password.js') }}"></script>
-    <script src="{{ url_for('static', filename='javascript/show_languages.js') }}"></script>
+{% block scripts %}{% endblock %}
+
 </body>
 
 </html>

@@ -3,6 +3,10 @@ body {
     font-family: "DM Sans", sans-serif;
 }
 
+.lecce-default-background {
+    background-color: #F8F3E7;
+}
+
 .lecce-logo {
     height: 2rem;
 }
@@ -138,4 +142,20 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.lecce-date-checkbox {
+    color: #15324B;
+    border: 0.01rem solid #15324B;
+    background-color: white;
+}
+
+.lecce-date-checkbox:has(input:checked) {
+    color: white;
+    border: 0.01rem solid white;
+    background-color: #F2793B;
+}
+
+.w-3 {
+    width: 3%;
 }

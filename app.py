@@ -226,3 +226,9 @@ def home():
 @app.route("/me")
 def my_profile():
     return render_template("profile.html")
+
+# TODO: implement guide required
+@login_required
+@app.route("/new")
+def new_tour():
+    return render_template("new_tour.html")
