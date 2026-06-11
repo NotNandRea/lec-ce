@@ -10,6 +10,7 @@ class User(UserMixin):
         self.first_name = first_name
         self.last_name = last_name
         self.profile_photo = profile_photo
+        self.languages = None
 
     def print_user(self):
         print(f"ID: {self.id}, Role: {self.role}, Email: {self.email}, First Name: {self.first_name}, Last Name: {self.last_name}, Profile Photo: {self.profile_photo}")

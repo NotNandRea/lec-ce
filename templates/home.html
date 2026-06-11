@@ -18,9 +18,8 @@
                         Discover it <span class="lecce-primary-color">step by step.</span>
                     </h1>
 
-                    <!-- TODO: Implement routes-->
                     <div class="d-flex gap-3 mt-4">
-                        <a href="#" class="btn lecce-btn lecce-primary-background px-4 lh-2">Book our Tours</a>
+                        <a href="{{ url_for('tours') }}" class="btn lecce-btn lecce-primary-background px-4 lh-2">Book our Tours</a>
                         {% if not current_user.is_authenticated %}
                         <a href="{{ url_for('login') }}" class="btn lecce-btn lecce-secondary-background px-4 lh-2">Join us</a>
                         {% endif %}
@@ -50,64 +49,7 @@
                 </h2>
             </div>
 
-            <!-- TODO: add route-->
-            <form class="lecce-secondary-background rounded-4 shadow-lg p-4" action="#" method="POST">
-                <div class="row g-4">
-
-                    <div class="col-12 d-flex justify-content-start">
-                        <div class="form-check form-switch fs-5">
-                            <input class="form-check-input" type="checkbox" id="dateRangeCheck" name="date_range_check">
-                            <label class="form-check-label ms-2" id="dateRangeCheckLabel" for="dateRangeCheck">Single
-                                Date</label>
-                        </div>
-                    </div>
-
-                    <div class="col-4">
-                        <label for="startDate" class="form-label">Start date</label>
-                        <input type="date" class="form-control" id="startDate" name="start_date" min="{{ today }}"
-                            value="{{ today }}">
-                    </div>
-
-                    <div class="col-4">
-                        <label for="endDate" class="form-label">End date</label>
-                        <input type="date" class="form-control" id="endDate" name="end_date" min="{{ today }}"
-                            value="{{ today }}" disabled>
-                    </div>
-
-                    <div class="col-4">
-                        <label for="duration" class="form-label">Duration</label>
-                        <select class="form-select" id="duration" name="duration">
-                            <option value="">Any duration</option>
-                            <option value="first">0 - 1:30 h</option>
-                            <option value="second">1:30 - 3 h</option>
-                            <option value="third">3+ h</option>
-                        </select>
-                    </div>
-
-                    <div class="col-4">
-                        <label for="language" class="form-label">Language</label>
-                        <select class="form-select" id="language" name="language">
-                            <option value="">All languages</option>
-                            <!-- TODO: Add languages -->
-                        </select>
-                    </div>
-
-                    <div class="col-4">
-                        <label for="theme" class="form-label">Theme</label>
-                        <select class="form-select" id="theme" name="theme">
-                            <option value="">All themes</option>
-                            <!-- TODO: Add themes -->
-                        </select>
-                    </div>
-
-                    <div class="col-4 d-flex justify-content-end align-items-end">
-                        <button type="submit" class="btn lecce-btn lecce-primary-background w-100">
-                            Search <i class="bi-search"></i>
-                        </button>
-                    </div>
-
-                </div>
-            </form>
+            {% include "searchbar.html" %}
 
         </div>
     </section>
@@ -127,28 +69,15 @@
             </div>
 
             <div class="row g-4">
+                {% for tour in tours %}
                 <div class="col-3">
                     {% include "tour_card.html" %}
                 </div>
-                <div class="col-3">
-                    {% include "tour_card.html" %}
-                </div>
-                <div class="col-3">
-                    {% include "tour_card.html" %}
-                </div>
-                <div class="col-3">
-                    {% include "tour_card.html" %}
-                </div>
-                <div class="col-3">
-                    {% include "tour_card.html" %}
-                </div>
-                <div class="col-3">
-                    {% include "tour_card.html" %}
-                </div>
+                {% endfor %}
             </div>
 
             <div class="text-center mt-5">
-                <a href="#" class="btn lecce-btn lecce-secondary-background border border-white px-4 py-3">Explore all Tours</a>
+                <a href="{{ url_for('tours') }}" class="btn lecce-btn lecce-secondary-background border border-white px-4 py-3">Explore all Tours</a>
             </div>
 
         </div>

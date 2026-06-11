@@ -5,12 +5,17 @@ from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from database.models.user import User
+from database.models.tour import Tour
+from database.models.theme import Theme
+
 from database.daos import users as users_dao
 from database.daos import tours as tours_dao
-from database.daos import utilities as utilities_dao
+from database.daos import themes as themes_dao
 from database.daos import languages as languages_dao
 
 from utilities import check_email, check_password, images
+from utilities.role_decorators import guide_required
+from utilities.days_to_numbers import days_to_numbers
 
 import uuid
 from werkzeug.security import generate_password_hash
@@ -18,6 +23,19 @@ from werkzeug.utils import secure_filename
 
 from datetime import date
 
+# TODO: REMOVE THIS PLACEHOLDER FOR TESTING
+placeholder_guide=User("guide-id", "guide", "", "", "John", "Doe", profile_photo=None)
+placeholder_guide.languages = ["English", "Italian"]
+
+placeholder_theme = Theme("Baroque", "⛪")
+
+placeholder_tour=Tour(id, "Barocco", "Tour Description", 120, 11)
+placeholder_tour.photos = {"photo1": "placeholder2.jpg", "photo2": "placeholder.jpg", "photo3": "placeholder2.jpg", "photo4": "placeholder.jpg", "photo5": "placeholder2.jpg"}
+placeholder_tour.theme = placeholder_theme
+placeholder_tour.guide = placeholder_guide
+placeholder_tour.language = "English"
+placeholder_tour.weekly_schedule = {"monday": None, "tuesday": "10:00", "wednesday": "14:00", "thursday": "16:00", "friday": None, "saturday": "12:00", "sunday": None}
+placeholder_tour.stops = ["Stop 1", "Stop 2", "Stop 3", "Stop 4"]
 
 
 #load everythings from .env file
@@ -186,16 +204,16 @@ def logout():
 
     return redirect(url_for("home"))
 
-# NOT LOGIN PROTECTED ROUTES
 
 @app.route("/register")
 def register():
-
     if current_user.is_authenticated:
         flash("You are already logged in", "negative")
         return redirect(url_for("home"))
 
-    return render_template("register.html")
+    languages=languages_dao.get_languages()
+
+    return render_template("register.html", languages=languages)
 
 @app.route("/login")
 def login():
@@ -206,38 +224,59 @@ def login():
 
     return render_template("login.html")
 
-@app.route("/")
-def home():
 
-    tours=tours_dao.get_tours()
-    random_tour=tours_dao.get_random_tour()
-    
-    tour_numnber=tours_dao.count_tours()
-    guides_number=users_dao.count_guides()
-    participants_number=users_dao.count_participants()
-    languages_number=languages_dao.count_languages()
-    themes_number=utilities_dao.count_themes()
-
-    today=date.today()
-
-    return render_template("home.html", tours=tours, tour_number=tour_numnber, guides_number=guides_number, participants_number=participants_number, random_tour=random_tour, languages_number=languages_number, themes_number=themes_number, today=today)
+# NON-AUTH ROUTES
 
 @login_required
 @app.route("/me")
 def my_profile():
     return render_template("profile.html")
 
-# TODO: implement guide required
+@app.route("/")
+def home():
+
+    today=date.today()
+    languages=languages_dao.get_languages()
+    themes=themes_dao.get_themes()
+
+    return render_template("home.html", today=today, languages=languages, themes=themes, tours=[placeholder_tour])
+
+@app.route("/tours/new")
 @login_required
-@app.route("/new")
+@guide_required
 def new_tour():
-    return render_template("new_tour.html")
 
-# TODO: implement specific tour route
-@app.route("/tour")
-def tour():
-    return render_template("tour.html")
+    languages=languages_dao.get_languages()
+    themes=themes_dao.get_themes()
 
-@app.route("/tours")
+    return render_template("new_tour.html", languages=languages, themes=themes, origin="new")
+
+#TODO: remove placeholder
+@app.route("/tours/edit/<id>")
+@login_required
+@guide_required
+def edit_tour(id):
+
+    languages=languages_dao.get_languages()
+    themes=themes_dao.get_themes()
+
+    return render_template("new_tour.html", languages=languages, themes=themes, origin="edit", tour=placeholder_tour)
+
+#TODO: remove placeholder
+@app.route("/tours/list")
 def tours():
-    return render_template("tours.html")
+
+    languages=languages_dao.get_languages()
+    themes=themes_dao.get_themes()
+
+
+    return render_template("tours.html", languages=languages, themes=themes, tours=[placeholder_tour])
+
+#TODO: fix avaiable users issue, which date referring?
+@app.route("/tour/<id>")
+def tour(id):
+
+    theme=placeholder_tour.theme.name.lower()
+    avaiable_days=days_to_numbers(placeholder_tour)
+
+    return render_template("tour.html", tour=placeholder_tour, theme=theme, avaiable_days=avaiable_days)

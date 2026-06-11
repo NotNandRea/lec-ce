@@ -6,38 +6,43 @@
     </div>
 
     <div class="card-body p-4">
-        <h3 class="h4 fw-bold mb-3 lecce-text-impact">Barocco e Meraviglie</h3>
+        <h3 class="h4 fw-bold mb-3 lecce-text-impact">{{ tour.title }}</h3>
 
-        <span class="badge lecce-primary-background lecce-btn position-absolute top-0 start-0 m-3">
-            Baroque
+        <span
+            class="badge lecce-{{ tour.theme.name.lower() }}-background lecce-{{ tour.theme.name.lower() }}-text lecce-btn position-absolute top-0 start-0 m-3">
+            {{ tour.theme.name }}
         </span>
 
-        <p class="mb-4">Lore ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-            labore et dolore magna aliqua.</p>
+        <p class="mb-4">{{ tour.description }}</p>
 
         <div class="d-flex flex-wrap gap-3 mb-4 border-bottom pb-4">
-            <span><i class="bi bi-clock lecce-primary-color me-1"></i>120m</span>
+            <span><i class="bi bi-clock lecce-primary-color me-1"></i>{{ tour.duration }}m</span>
 
-            <span><i class="bi bi-translate lecce-primary-color me-1"></i>IT</span>
+            <span><i class="bi bi-translate lecce-primary-color me-1"></i>{{ tour.language[0:2].upper() }}</span>
 
-            <span><i class="bi bi-geo-alt lecce-primary-color me-1"></i>Porta Napoli</span>
+            <span><i class="bi bi-geo-alt lecce-primary-color me-1"></i>{{ tour.stops[0] }}</span>
         </div>
 
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-2">
-                <!-- TODO: Implement routes-->
-                <a href="#" class="text-decoration-none">
-                    <div class="profile-initials fw-bold p-2">MR</div>
+                {% if tour.guide.profile_photo is none %}
+                <a class="profile-initials lecce-text-impact fw-bold text-decoration-none" href="#">
+                    {{ tour.guide.first_name[0] }}{{ tour.guide.last_name[0] }}
                 </a>
+                {% else %}
+                <a class="profile-initials p-1" href="#">
+                    <img src="{{ url_for('static', filename='images/profile_photos/' ~ tour.guide.profile_photo) }}"
+                        alt="Guide Profile Photo" class="img-fluid rounded-circle object-fit-cover">
+                </a>
+                {% endif %}
 
                 <div class="d-flex flex-column align-items-start">
-                    <span class="fw-bold mb-0">Marco Rizzo</span>
-                    <span class="mb-0 small">Local Guide</span>
+                    <span class="fw-bold mb-0">{{ tour.guide.first_name }} {{ tour.guide.last_name }}</span>
+                    <span class="mb-0 fs-6">Local Guide</span>
                 </div>
             </div>
 
-            <!-- TODO: Implement routes-->
-            <a href="#" class="btn lecce-btn lecce-primary-background px-4">Book</a>
+            <a href="{{ url_for('tour', id=tour.id) }}" class="btn lecce-btn lecce-primary-background px-4">Book</a>
         </div>
     </div>
 

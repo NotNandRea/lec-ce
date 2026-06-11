@@ -153,51 +153,19 @@
                                     Languages spoken <span class="lecce-primary-color">*</span>
                                 </label>
 
-                                <!-- TODO: Implement language form database-->
                                 <div class="d-flex flex-wrap gap-3">
 
+                                    {% for language in languages %}
                                     <div class="lecce-language-checkbox">
-                                        <input class="d-none" type="checkbox" name="languages" value="Italian"
-                                            id="italian">
-                                        <label class="px-4 py-3 fw-bold w-100 d-flex justify-content-center user-select-none" for="italian">
-                                            Italian
+                                        <input class="d-none" type="checkbox" name="languages"
+                                            value="{{ language.name }}" id="{{ language.name.lower() }}">
+                                        <label
+                                            class="px-4 py-3 fw-bold w-100 d-flex justify-content-center user-select-none"
+                                            for="{{ language.name.lower() }}">
+                                            {{ language.name }}
                                         </label>
                                     </div>
-                                    <div class="lecce-language-checkbox">
-                                        <input class="d-none" type="checkbox" name="languages" value="German"
-                                            id="german">
-                                        <label class="px-4 py-3 fw-bold w-100 d-flex justify-content-center user-select-none" for="german">
-                                            German
-                                        </label>
-                                    </div>
-                                    <div class="lecce-language-checkbox">
-                                        <input class="d-none" type="checkbox" name="languages" value="English"
-                                            id="english">
-                                        <label class="px-4 py-3 fw-bold w-100 d-flex justify-content-center user-select-none" for="english">
-                                            English
-                                        </label>
-                                    </div>
-                                    <div class="lecce-language-checkbox">
-                                        <input class="d-none" type="checkbox" name="languages" value="Spanish"
-                                            id="spanish">
-                                        <label class="px-4 py-3 fw-bold w-100 d-flex justify-content-center user-select-none" for="spanish">
-                                            Spanish
-                                        </label>
-                                    </div>
-                                    <div class="lecce-language-checkbox">
-                                        <input class="d-none" type="checkbox" name="languages" value="French"
-                                            id="french">
-                                        <label class="px-4 py-3 fw-bold w-100 d-flex justify-content-center user-select-none" for="french">
-                                            French
-                                        </label>
-                                    </div>
-                                    <div class="lecce-language-checkbox">
-                                        <input class="d-none" type="checkbox" name="languages" value="Russian"
-                                            id="russian">
-                                        <label class="px-4 py-3 fw-bold w-100 d-flex justify-content-center user-select-none" for="russian">
-                                            Russian
-                                        </label>
-                                    </div>
+                                    {% endfor %}
 
                                 </div>
                             </div>
@@ -235,6 +203,6 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{ url_for('static', filename='javascript/check_password.js') }}"></script>
-    <script src="{{ url_for('static', filename='javascript/show_languages.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/check_password.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/show_languages.js') }}"></script>
 {% endblock %}

@@ -7,7 +7,6 @@
 <main class="py-5">
     <div class="container">
 
-        <!-- TODO: align with database FOR UPDATING-->
         <form method="POST" enctype="multipart/form-data">
 
             <div
@@ -49,8 +48,8 @@
                                 Title <span class="lecce-primary-color">*</span>
                             </label>
 
-                            <input type="text" class="form-control rounded-4" id="title" name="title"
-                                value="Barocco & Meraviglie" required>
+                            <input type="text" class="form-control rounded-4" id="title" name="title" {% if
+                                origin=="edit" %}value="{{ tour.title }}" {% endif %} required>
                         </div>
 
                         <div class="mb-4">
@@ -59,23 +58,21 @@
                             </label>
 
                             <textarea class="form-control rounded-4" id="description" name="description" rows="4"
-                                required>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</textarea>
+                                required>{% if origin == "edit" %}{{ tour.description }}{% endif %}</textarea>
                         </div>
 
                         <div class="row g-3">
 
-                            <!-- TODO: implement language from database -->
                             <div class="col-6">
                                 <label for="language" class="form-label fw-bold lecce-secondary-color fs-6">
                                     Language <span class="lecce-primary-color">*</span>
                                 </label>
 
                                 <select class="form-select rounded-4" id="language" name="language" required>
-                                    <option value="italian">Italiano</option>
-                                    <option value="english">English</option>
-                                    <option value="spanish">Español</option>
-                                    <option value="french">Français</option>
-                                    <option value="german">Deutsch</option>
+                                    {% for language in languages %}
+                                    <option value="{{ language.name }}" {% if origin=="edit" and
+                                        tour.language==language.name %}selected{% endif %}>{{ language.name }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
 
@@ -84,22 +81,21 @@
                                     Duration (minutes) <span class="lecce-primary-color">*</span>
                                 </label>
 
-                                <input type="number" class="form-control rounded-4" id="duration" name="duration"
-                                    value="30" min="30" max="300" required>
+                                <input type="number" class="form-control rounded-4" id="duration" name="duration" {% if
+                                    origin=="edit" %}value="{{ tour.duration }}" {% else %}value="30" {% endif %}
+                                    min="30" max="300" required>
                             </div>
 
-                            <!-- TODO: implement theme from database -->
                             <div class="col-6">
                                 <label for="theme" class="form-label fw-bold lecce-secondary-color fs-6">
                                     Theme <span class="lecce-primary-color">*</span>
                                 </label>
 
                                 <select class="form-select rounded-4" id="theme" name="theme" required>
-                                    <option value="art">Art</option>
-                                    <option value="history">History</option>
-                                    <option value="food">Food</option>
-                                    <option value="nature">Nature</option>
-                                    <option value="mystery">Mystery</option>
+                                    {% for theme in themes %}
+                                    <option value="{{ theme.name }}" {% if origin=="edit" and tour.theme==theme.name
+                                        %}selected{% endif %}>{{ theme.name }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
 
@@ -109,7 +105,8 @@
                                 </label>
 
                                 <input type="number" class="form-control rounded-4" id="max_participants"
-                                    name="max_participants" value="20" min="1" max="50" required>
+                                    name="max_participants" {% if origin=="edit" %}value="{{ tour.max_participants }}"
+                                    {% else %}value="20" {% endif %} min="1" required>
                             </div>
 
                         </div>
@@ -124,43 +121,50 @@
 
                             <div class="lecce-date-checkbox lecce-btn">
                                 <input class="d-none day-checkbox" type="checkbox" name="days" value="monday"
-                                    id="monday" checked>
+                                    id="monday" {% if origin=="edit" and tour.weekly_schedule.get("monday") is not none
+                                    %}checked{% elif origin=="new" %}checked{% endif %}>
                                 <label for="monday" class="rounded-4 fw-bold px-4 py-3 user-select-none">MON</label>
                             </div>
 
                             <div class="lecce-date-checkbox lecce-btn">
                                 <input class="d-none day-checkbox" type="checkbox" name="days" value="tuesday"
-                                    id="tuesday" checked>
+                                    id="tuesday" {% if origin=="edit" and tour.weekly_schedule.get("tuesday") is not
+                                    none %}checked{% elif origin=="new" %}checked{% endif %}>
                                 <label for="tuesday" class="rounded-4 fw-bold px-4 py-3 user-select-none">TUE</label>
                             </div>
 
                             <div class="lecce-date-checkbox lecce-btn">
                                 <input class="d-none day-checkbox" type="checkbox" name="days" value="wednesday"
-                                    id="wednesday" checked>
+                                    id="wednesday" {% if origin=="edit" and tour.weekly_schedule.get("wednesday") is not
+                                    none %}checked{% elif origin=="new" %}checked{% endif %}>
                                 <label for="wednesday" class="rounded-4 fw-bold px-4 py-3 user-select-none">WED</label>
                             </div>
 
                             <div class="lecce-date-checkbox lecce-btn">
                                 <input class="d-none day-checkbox" type="checkbox" name="days" value="thursday"
-                                    id="thursday" checked>
+                                    id="thursday" {% if origin=="edit" and tour.weekly_schedule.get("thursday") is not
+                                    none %}checked{% elif origin=="new" %}checked{% endif %}>
                                 <label for="thursday" class="rounded-4 fw-bold px-4 py-3 user-select-none">THU</label>
                             </div>
 
                             <div class="lecce-date-checkbox lecce-btn">
                                 <input class="d-none day-checkbox" type="checkbox" name="days" value="friday"
-                                    id="friday" checked>
+                                    id="friday" {% if origin=="edit" and tour.weekly_schedule.get("friday") is not none
+                                    %}checked{% elif origin=="new" %}checked{% endif %}>
                                 <label for="friday" class="rounded-4 fw-bold px-4 py-3 user-select-none">FRI</label>
                             </div>
 
                             <div class="lecce-date-checkbox lecce-btn">
                                 <input class="d-none day-checkbox" type="checkbox" name="days" value="saturday"
-                                    id="saturday" checked>
+                                    id="saturday" {% if origin=="edit" and tour.weekly_schedule.get("saturday") is not
+                                    none %}checked{% elif origin=="new" %}checked{% endif %}>
                                 <label for="saturday" class="rounded-4 fw-bold px-4 py-3 user-select-none">SAT</label>
                             </div>
 
                             <div class="lecce-date-checkbox lecce-btn">
                                 <input class="d-none day-checkbox" type="checkbox" name="days" value="sunday"
-                                    id="sunday" checked>
+                                    id="sunday" {% if origin=="edit" and tour.weekly_schedule.get("sunday") is not none
+                                    %}checked{% elif origin=="new" %}checked{% endif %}>
                                 <label for="sunday" class="rounded-4 fw-bold px-4 py-3 user-select-none">SUN</label>
                             </div>
 
@@ -173,8 +177,10 @@
                                     <span class="lecce-secondary-color fw-bold">Monday</span>
 
                                     <div class="d-flex align-items-center rounded-5 border overflow-hidden">
-                                        <input type="time" class="form-control border-0 fw-bold" name="monday_time"
-                                            value="17:30">
+                                        <input type="time" class="form-control border-0 fw-bold" name="monday_time" {%
+                                            if origin=="edit" and tour.weekly_schedule.get("monday") is not none
+                                            %}value="{{ tour.weekly_schedule.get("monday") }}"{% elif origin=="new"
+                                            %}value="10:00" {% endif %}>
                                     </div>
                                 </div>
                             </div>
@@ -184,8 +190,10 @@
                                     <span class="lecce-secondary-color fw-bold">Tuesday</span>
 
                                     <div class="d-flex align-items-center rounded-5 border overflow-hidden">
-                                        <input type="time" class="form-control border-0 fw-bold" name="tuesday_time"
-                                            value="10:00">
+                                        <input type="time" class="form-control border-0 fw-bold" name="tuesday_time" {%
+                                            if origin=="edit" and tour.weekly_schedule.get("tuesday") is not none
+                                            %}value="{{ tour.weekly_schedule.get("tuesday") }}"{% elif origin=="new"
+                                            %}value="10:00" {% endif %}>
                                     </div>
                                 </div>
                             </div>
@@ -196,7 +204,9 @@
 
                                     <div class="d-flex align-items-center rounded-5 border overflow-hidden">
                                         <input type="time" class="form-control border-0 fw-bold" name="wednesday_time"
-                                            value="14:30">
+                                            {% if origin=="edit" and tour.weekly_schedule.get("wednesday") is not none
+                                            %}value="{{ tour.weekly_schedule.get("wednesday") }}"{% elif origin=="new"
+                                            %}value="10:00" {% endif %}>
                                     </div>
                                 </div>
                             </div>
@@ -206,8 +216,10 @@
                                     <span class="lecce-secondary-color fw-bold">Thursday</span>
 
                                     <div class="d-flex align-items-center rounded-5 border overflow-hidden">
-                                        <input type="time" class="form-control border-0 fw-bold" name="thursday_time"
-                                            value="09:30">
+                                        <input type="time" class="form-control border-0 fw-bold" name="thursday_time" {%
+                                            if origin=="edit" and tour.weekly_schedule.get("thursday") is not none
+                                            %}value="{{ tour.weekly_schedule.get("thursday") }}"{% elif origin=="new"
+                                            %}value="10:00" {% endif %}>
                                     </div>
                                 </div>
                             </div>
@@ -217,8 +229,10 @@
                                     <span class="lecce-secondary-color fw-bold">Friday</span>
 
                                     <div class="d-flex align-items-center rounded-5 border overflow-hidden">
-                                        <input type="time" class="form-control border-0 fw-bold" name="friday_time"
-                                            value="16:00">
+                                        <input type="time" class="form-control border-0 fw-bold" name="friday_time" {%
+                                            if origin=="edit" and tour.weekly_schedule.get("friday") is not none
+                                            %}value="{{ tour.weekly_schedule.get("friday") }}"{% elif origin=="new"
+                                            %}value="10:00" {% endif %}>
                                     </div>
                                 </div>
                             </div>
@@ -228,8 +242,10 @@
                                     <span class="lecce-secondary-color fw-bold">Saturday</span>
 
                                     <div class="d-flex align-items-center rounded-5 border overflow-hidden">
-                                        <input type="time" class="form-control border-0 fw-bold" name="saturday_time"
-                                            value="11:00">
+                                        <input type="time" class="form-control border-0 fw-bold" name="saturday_time" {%
+                                            if origin=="edit" and tour.weekly_schedule.get("saturday") is not none
+                                            %}value="{{ tour.weekly_schedule.get("saturday") }}"{% elif origin=="new"
+                                            %}value="10:00" {% endif %}>
                                     </div>
                                 </div>
                             </div>
@@ -239,8 +255,10 @@
                                     <span class="lecce-secondary-color fw-bold">Sunday</span>
 
                                     <div class="d-flex align-items-center rounded-5 border overflow-hidden">
-                                        <input type="time" class="form-control border-0 fw-bold" name="sunday_time"
-                                            value="15:30">
+                                        <input type="time" class="form-control border-0 fw-bold" name="sunday_time" {%
+                                            if origin=="edit" and tour.weekly_schedule.get("sunday") is not none
+                                            %}value="{{ tour.weekly_schedule.get("sunday") }}"{% elif origin=="new"
+                                            %}value="10:00" {% endif %}>
                                     </div>
                                 </div>
                             </div>
@@ -254,29 +272,28 @@
                     </section>
 
                     <section class="bg-white rounded-5 shadow-sm p-4 mb-4">
-                        <h2 class="lecce-secondary-color fw-bold mb-3 fs-4 pb-2 border-bottom">
+                        <h2 class="lecce-secondary-color fw-bold mb-2 fs-4">
                             Stops of the tour
                         </h2>
 
+                        <p class="border-bottom mb-2 pb-2">The first stop is the meeting point.</p>
+
+                        <!-- TODO: fix javascript -->
                         <div id="stopsList" class="d-flex flex-column gap-2">
 
-                            <div class="d-flex align-items-center gap-2 border rounded-4 p-2 ps-3 stop-item">
-                                <input type="text" class="form-control border-0" name="stop_name" value="Porta Napoli"
-                                    required>
-
-                                <button type="button" class="btn remove-stop-button">
-                                    <i class="bi bi-x-lg"></i>
-                                </button>
-                            </div>
-
+                            {% if origin == "edit" %}
+                            {% for stop in tour.stops %}
                             <div class="d-flex align-items-center gap-2 border rounded-4 p-2 ps-3 stop-item">
                                 <input type="text" class="form-control border-0" name="stop_name"
-                                    value="Basilica di Santa Croce" required>
+                                    value="{{ stop }}" required>
 
                                 <button type="button" class="btn remove-stop-button">
                                     <i class="bi bi-x-lg"></i>
                                 </button>
                             </div>
+
+                            {% endfor %}
+                            {% endif %}
 
 
                         </div>

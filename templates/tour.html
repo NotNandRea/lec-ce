@@ -5,7 +5,6 @@
 {% block content %}
 
 
-<!-- TODO: implement theme classes-->
 <main class="py-5">
     <div class="container">
 
@@ -36,35 +35,35 @@
 
                             <div class="carousel-item active" data-bs-interval="5000">
                                 <div class="ratio ratio-4x3">
-                                    <img src="{{ url_for('static', filename='images/utility_images/placeholder.jpg') }}"
+                                    <img src="{{ url_for('static', filename='images/utility_images/' ~ tour.photos['photo1']) }}"
                                         alt="First Photo" class="w-100 h-100 object-fit-cover">
                                 </div>
                             </div>
 
                             <div class="carousel-item" data-bs-interval="5000">
                                 <div class="ratio ratio-4x3">
-                                    <img src="{{ url_for('static', filename='images/utility_images/placeholder.jpg') }}"
+                                    <img src="{{ url_for('static', filename='images/utility_images/' ~ tour.photos['photo2']) }}"
                                         alt="Second Photo" class="w-100 h-100 object-fit-cover">
                                 </div>
                             </div>
 
                             <div class="carousel-item" data-bs-interval="5000">
                                 <div class="ratio ratio-4x3">
-                                    <img src="{{ url_for('static', filename='images/utility_images/placeholder.jpg') }}"
+                                    <img src="{{ url_for('static', filename='images/utility_images/' ~ tour.photos['photo3']) }}"
                                         alt="Third Photo" class="w-100 h-100 object-fit-cover">
                                 </div>
                             </div>
 
                             <div class="carousel-item" data-bs-interval="5000">
                                 <div class="ratio ratio-4x3">
-                                    <img src="{{ url_for('static', filename='images/utility_images/placeholder.jpg') }}"
+                                    <img src="{{ url_for('static', filename='images/utility_images/' ~ tour.photos['photo4']) }}"
                                         alt="Fourth Photo" class="w-100 h-100 object-fit-cover">
                                 </div>
                             </div>
 
                             <div class="carousel-item" data-bs-interval="5000">
                                 <div class="ratio ratio-4x3">
-                                    <img src="{{ url_for('static', filename='images/utility_images/placeholder.jpg') }}"
+                                    <img src="{{ url_for('static', filename='images/utility_images/' ~ tour.photos['photo5']) }}"
                                         alt="Fifth Photo" class="w-100 h-100 object-fit-cover">
                                 </div>
                             </div>
@@ -88,20 +87,20 @@
                 </section>
 
                 <section class="mb-4">
-                    <div class="lecce-baroque-background rounded-5 shadow-sm border p-3">
+                    <div class="lecce-{{ theme }}-background rounded-5 shadow-sm border p-3">
 
                         <div class="d-flex align-items-center gap-3">
 
                             <div class="lecce-default-background lecce-theme-icon">
-                                <span class="fs-1 p-1">⛪</span>
+                                <span class="fs-1 p-1">{{ tour.theme.emoji }}</span>
                             </div>
 
                             <div>
-                                <div class="lecce-baroque-text fw-bold mb-1 fs-6">
-                                    THIS TOUR IS: BAROQUE
+                                <div class="lecce-{{ theme }}-text fw-bold mb-1 fs-6">
+                                    THIS TOUR IS: {{ theme.upper() }}
                                 </div>
 
-                                <p class="lecce-baroque-text fw-bold mb-0">
+                                <p class="lecce-{{ theme }}-text fw-bold mb-0">
                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed
                                     sit amet ipsum mauris.
                                 </p>
@@ -115,24 +114,24 @@
                 <section class="bg-white rounded-5 shadow p-4 p-lg-5 mb-5">
 
                     <h1 class="lecce-text-impact lecce-secondary-color fw-bold mb-3 fs-1">
-                        Barocco & Meraviglie
+                        {{ tour.title }}
                     </h1>
 
                     <div class="d-flex flex-wrap gap-3 mb-4 fs-6">
 
                         <span>
                             <i class="bi bi-clock me-1 lecce-primary-color"></i>
-                            230m
+                            {{ tour.duration }} m
                         </span>
 
                         <span>
                             <i class="bi bi-translate me-1 lecce-primary-color"></i>
-                            Italian
+                            {{ tour.language }}
                         </span>
 
                         <span>
                             <i class="bi bi-people me-1 lecce-primary-color"></i>
-                            Max 20 participants
+                            Max {{ tour.max_participants }} participants
                         </span>
 
                     </div>
@@ -142,12 +141,7 @@
                     </h2>
 
                     <p class="mb-3">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum
-                        mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis
-                        dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue.
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum
-                        mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis
-                        dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue.
+                        {{ tour.description }}
                     </p>
 
                 </section>
@@ -160,38 +154,18 @@
 
                     <div class="bg-white rounded-5 shadow p-4">
 
+                        {% for stop in tour.stops %}
                         <div class="d-flex align-items-center gap-3 border-bottom pb-3 mb-3">
                             <span
-                                class="d-flex justify-content-center badge lecce-baroque-background lecce-baroque-text lecce-btn align-self-start px-3 py-2 fs-6 w-6">
-                                1
+                                class="d-flex justify-content-center badge lecce-{{ theme }}-background lecce-{{ theme }}-text lecce-btn align-self-start px-3 py-2 fs-6 w-6">
+                                {{ loop.index }}
                             </span>
 
                             <span class="lecce-secondary-color fw-bold fs-5 m-0">
-                                Porta Napoli
+                                {{ stop }}
                             </span>
                         </div>
-
-                        <div class="d-flex align-items-center gap-3 border-bottom pb-3 mb-3">
-                            <span
-                                class="d-flex justify-content-center badge lecce-baroque-background lecce-baroque-text lecce-btn align-self-start px-3 py-2 fs-6 w-6">
-                                2
-                            </span>
-
-                            <span class="lecce-secondary-color fw-bold fs-5 m-0">
-                                Basilica di Santa Croce
-                            </span>
-                        </div>
-
-                        <div class="d-flex align-items-center gap-3 border-bottom pb-3 mb-3">
-                            <span
-                                class="d-flex justify-content-center badge lecce-baroque-background lecce-baroque-text lecce-btn align-self-start px-3 py-2 fs-6 w-6">
-                                3
-                            </span>
-
-                            <span class="lecce-secondary-color fw-bold fs-5 m-0">
-                                Piazza Duomo
-                            </span>
-                        </div>
+                        {% endfor %}
 
                     </div>
 
@@ -207,89 +181,117 @@
 
                         <div class="col">
                             <div
-                                class="lecce-baroque-background rounded-4 border p-3 d-flex flex-column align-items-center h-100">
-                                <div class="lecce-baroque-text fw-bold mb-1 fs-6">
+                                class="{% if tour.weekly_schedule.get('monday') is not none %} lecce-{{ theme }}-background {% else %} bg-white {% endif %} rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                <div class="{% if tour.weekly_schedule.get('monday') is not none %} lecce-{{ theme }}-text {% endif %} fw-bold mb-1 fs-6">
                                     MON
                                 </div>
 
-                                <div class="lecce-baroque-text fw-bold">
-                                    17:30
+                                <div class="{% if tour.weekly_schedule.get('monday') is not none %} lecce-{{ theme }}-text {% endif %} fw-bold">
+                                    {% if tour.weekly_schedule.get('monday') is not none %}
+                                        {{ tour.weekly_schedule.get('monday') }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
 
                         <div class="col">
-                            <div class="bg-white rounded-4 border p-3 d-flex flex-column align-items-center h-100">
-                                <div class="fw-bold mb-1 fs-6">
+                            <div class="{% if tour.weekly_schedule.get('tuesday') is not none %} lecce-{{ theme }}-background {% else %} bg-white {% endif %} rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                <div class="{% if tour.weekly_schedule.get('tuesday') is not none %} lecce-{{ theme }}-text {% endif %} fw-bold mb-1 fs-6">
                                     TUE
                                 </div>
 
-                                <div class="fw-bold">
-                                    —
+                                <div class="{% if tour.weekly_schedule.get('tuesday') is not none %} lecce-{{ theme }}-text {% endif %} fw-bold">
+                                    {% if tour.weekly_schedule.get('tuesday') is not none %}
+                                        {{ tour.weekly_schedule.get('tuesday') }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
 
                         <div class="col">
                             <div
-                                class="lecce-baroque-background rounded-4 border p-3 d-flex flex-column align-items-center h-100">
-                                <div class="lecce-baroque-text fw-bold mb-1 fs-6">
+                                class="{% if tour.weekly_schedule.get('wednesday') is not none %} lecce-{{ theme }}-background {% else %} bg-white {% endif %} rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                <div class="{% if tour.weekly_schedule.get('wednesday') is not none %} lecce-{{ theme }}-text {% endif %} fw-bold mb-1 fs-6">
                                     WED
                                 </div>
 
-                                <div class="lecce-baroque-text fw-bold">
-                                    10:00
+                                <div class="{% if tour.weekly_schedule.get('wednesday') is not none %} lecce-{{ theme }}-text {% endif %} fw-bold">
+                                    {% if tour.weekly_schedule.get('wednesday') is not none %}
+                                        {{ tour.weekly_schedule.get('wednesday') }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
 
                         <div class="col">
-                            <div class="bg-white rounded-4 border p-3 d-flex flex-column align-items-center h-100">
-                                <div class="fw-bold mb-1 fs-6">
+                            <div class="{% if tour.weekly_schedule.get('thursday') is not none %} lecce-{{ theme }}-background {% else %} bg-white {% endif %} rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                <div class="{% if tour.weekly_schedule.get('thursday') is not none %} lecce-{{ theme }}-text {% endif %} fw-bold mb-1 fs-6">
                                     THU
                                 </div>
 
-                                <div class="fw-bold">
-                                    —
+                                <div class="{% if tour.weekly_schedule.get('thursday') is not none %} lecce-{{ theme }}-text {% endif %} fw-bold">
+                                    {% if tour.weekly_schedule.get('thursday') is not none %}
+                                        {{ tour.weekly_schedule.get('thursday') }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
 
                         <div class="col">
                             <div
-                                class="lecce-baroque-background rounded-4 border p-3 d-flex flex-column align-items-center h-100">
-                                <div class="lecce-baroque-text fw-bold mb-1 fs-6">
+                                class="{% if tour.weekly_schedule.get('friday') is not none %} lecce-{{ theme }}-background {% else %} bg-white {% endif %} rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                <div class="{% if tour.weekly_schedule.get('friday') is not none %} lecce-{{ theme }}-text {% endif %} fw-bold mb-1 fs-6">
                                     FRI
                                 </div>
 
-                                <div class="lecce-baroque-text fw-bold">
-                                    17:30
+                                <div class="{% if tour.weekly_schedule.get('friday') is not none %} lecce-{{ theme }}-text {% endif %} fw-bold">
+                                    {% if tour.weekly_schedule.get('friday') is not none %}
+                                        {{ tour.weekly_schedule.get('friday') }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
 
                         <div class="col">
                             <div
-                                class="lecce-baroque-background rounded-4 border p-3 d-flex flex-column align-items-center h-100">
-                                <div class="lecce-baroque-text fw-bold mb-1 fs-6">
+                                class="{% if tour.weekly_schedule.get('saturday') is not none %} lecce-{{ theme }}-background {% else %} bg-white {% endif %} rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                <div class="{% if tour.weekly_schedule.get('saturday') is not none %} lecce-{{ theme }}-text {% endif %} fw-bold mb-1 fs-6">
                                     SAT
                                 </div>
 
-                                <div class="lecce-baroque-text fw-bold">
-                                    10:00
+                                <div class="{% if tour.weekly_schedule.get('saturday') is not none %} lecce-{{ theme }}-text {% endif %} fw-bold">
+                                    {% if tour.weekly_schedule.get('saturday') is not none %}
+                                        {{ tour.weekly_schedule.get('saturday') }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
 
                         <div class="col">
                             <div
-                                class="lecce-baroque-background rounded-4 border p-3 d-flex flex-column align-items-center h-100">
-                                <div class="lecce-baroque-text fw-bold mb-1 fs-6">
+                                class="{% if tour.weekly_schedule.get('sunday') is not none %} lecce-{{ theme }}-background {% else %} bg-white {% endif %} rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                <div class="{% if tour.weekly_schedule.get('sunday') is not none %} lecce-{{ theme }}-text {% endif %} fw-bold mb-1 fs-6">
                                     SUN
                                 </div>
 
-                                <div class="lecce-baroque-text fw-bold">
-                                    10:00
+                                <div class="{% if tour.weekly_schedule.get('sunday') is not none %} lecce-{{ theme }}-text {% endif %} fw-bold">
+                                    {% if tour.weekly_schedule.get('sunday') is not none %}
+                                        {{ tour.weekly_schedule.get('sunday') }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -308,19 +310,28 @@
 
                         <div class="d-flex justify-content-between align-items-center gap-3">
 
+                            <!--TODO: Implement guide profile link-->
                             <div class="d-flex align-items-center gap-3">
-                                <div class="profile-initials lecce-text-impact fw-bold">
-                                    MR
-                                </div>
+                                {% if tour.guide.profile_photo is none %}
+                                <a class="profile-initials lecce-text-impact fw-bold text-decoration-none" href="#">
+                                    {{ tour.guide.first_name[0] }}{{ tour.guide.last_name[0] }}
+                                </a>
+                                {% else %}
+                                <a class="profile-initials p-1" href="#">
+                                    <img src="{{ url_for('static', filename='images/profile_photos/' ~ tour.guide.profile_photo) }}" alt="Guide Profile Photo" class="img-fluid rounded-circle object-fit-cover">
+                                </a>
+                                {% endif %}
 
                                 <span class="lecce-secondary-color fw-bold mb-0 fs-5">
-                                    Marco Rizzo
+                                    {{ tour.guide.first_name }} {{ tour.guide.last_name }}
                                 </span>
                             </div>
 
                             <p class="mb-0 fs-6 lecce-secondary-color">
                                 <i class="bi bi-translate lecce-primary-color me-1"></i>
-                                Italian - English - Spanish
+                                {% for language in tour.guide.languages %}
+                                    {{ language }}{% if not loop.last %} - {% endif %}
+                                {% endfor %}
                             </p>
 
                         </div>
@@ -343,7 +354,7 @@
                             </h2>
                         </div>
 
-                        <!--TODO: integrate dates-to-be-enabled-->
+                        <!--TODO: implement route-->
                         <form method="POST" action="#" class="p-4">
 
                             <div class="mb-3">
@@ -352,7 +363,7 @@
                                 </label>
 
                                 <input type="date" class="form-control rounded-4" id="tourDate" name="tour_date"
-                                    placeholder="Choose a date" dates-to-be-enabled="1,3,5,6,0" required>
+                                    placeholder="Choose a date" dates-to-be-enabled="{{ avaiable_days }}" required>
                             </div>
 
                             <div class="mb-3">
@@ -503,7 +514,7 @@
                                     </span>
 
                                     <span class="fw-bold lecce-secondary-color">
-                                        14 / 20
+                                        14 / {{ tour.max_participants }}
                                     </span>
                                 </div>
 

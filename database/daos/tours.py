@@ -16,7 +16,7 @@ def get_tours(conn, cursor):
     tours_list=[]
 
     for tour in tours:
-        tour_obj=Tour(tour["id"], tour["guide_id"], tour["language_id"], tour["theme_id"], tour["title"], tour["description"], tour["meeting_point"], tour["duration"], tour["max_people"])
+        tour_obj=Tour(tour["id"], tour["title"], tour["description"], tour["duration"], tour["max_participants"])
         tours_list.append(tour_obj)
 
     return tours_list
@@ -30,7 +30,7 @@ def get_tour_by_id(conn, cursor, id):
 
     if tour is None:
         return None
-    tour_obj=Tour(tour["id"], tour["guide_id"], tour["language_id"], tour["theme_id"], tour["title"], tour["description"], tour["meeting_point"], tour["duration"], tour["max_people"])
+    tour_obj=Tour(tour["id"], tour["title"], tour["description"], tour["duration"], tour["max_participants"])
 
     return tour_obj
 
@@ -44,40 +44,10 @@ def get_tours_by_guide_id(conn, cursor, guide_id):
     tours_list=[]
 
     for tour in tours:
-        tour_obj=Tour(tour["id"], tour["guide_id"], tour["language_id"], tour["theme_id"], tour["title"], tour["description"], tour["meeting_point"], tour["duration"], tour["max_people"])
+        tour_obj=Tour(tour["id"], tour["title"], tour["description"], tour["duration"], tour["max_participants"])
         tours_list.append(tour_obj)
 
     return tours_list
-
-@connect_db
-def add_tour(conn, cursor, tour):
-
-    success = False
-    query = "INSERT INTO tours (id, guide_id, language_id, theme_id, title, description, meeting_point, duration, max_people) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-
-    try:
-        cursor.execute(query, (tour.id, tour.guide_id, tour.language_id, tour.theme_id, tour.title, tour.description, tour.meeting_point, tour.duration, tour.max_people))
-        conn.commit()
-        success = True
-    except Exception as e:
-        print("ERROR", str(e))
-        conn.rollback()
-    return success
-
-@connect_db
-def update_tour(conn, cursor, tour):
-    
-    success = False
-    query = "UPDATE tours SET guide_id=(?), language_id=(?), theme_id=(?), title=(?), description=(?), meeting_point=(?), duration=(?), max_people=(?) WHERE id=(?)"
-
-    try:
-        cursor.execute(query, (tour.guide_id, tour.language_id, tour.theme_id, tour.title, tour.description, tour.meeting_point, tour.duration, tour.max_people, tour.id))
-        conn.commit()
-        success = True
-    except Exception as e:
-        print("ERROR", str(e))
-        conn.rollback()
-    return success
 
 @connect_db
 def delete_tour(conn, cursor, tour):
@@ -104,16 +74,3 @@ def count_tours(conn, cursor):
     count=cursor.fetchone()["count"]
 
     return count
-
-@connect_db
-def get_random_tour(conn, cursor):
-
-    query="SELECT * FROM tours ORDER BY RANDOM() LIMIT 1"
-    cursor.execute(query)
-    tour=cursor.fetchone()
-
-    if tour is None:
-        return None
-    tour_obj=Tour(tour["id"], tour["guide_id"], tour["language_id"], tour["theme_id"], tour["title"], tour["description"], tour["meeting_point"], tour["duration"], tour["max_people"])
-
-    return tour_obj

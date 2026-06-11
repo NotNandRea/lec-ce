@@ -1,0 +1,62 @@
+<!--TODO: implement get endpoint-->
+<form class="lecce-secondary-background rounded-4 shadow-lg p-4 mt-3" action="#" method="POST" id="collapseFilters">
+    <div class="row g-4">
+
+        <div class="col-12 d-flex justify-content-start">
+            <div class="form-check form-switch fs-5">
+                <input class="form-check-input" type="checkbox" id="dateRangeCheck" name="date_range_check">
+                <label class="form-check-label ms-2" id="dateRangeCheckLabel" for="dateRangeCheck">Single
+                    Date</label>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <label for="startDate" class="form-label">Start date</label>
+            <input type="date" class="form-control" id="startDate" name="start_date" min="{{ today }}"
+                value="{{ today }}">
+        </div>
+
+        <div class="col-4">
+            <label for="endDate" class="form-label">End date</label>
+            <input type="date" class="form-control" id="endDate" name="end_date" min="{{ today }}" value="{{ today }}"
+                disabled>
+        </div>
+
+        <div class="col-4">
+            <label for="duration" class="form-label">Duration</label>
+            <select class="form-select" id="duration" name="duration">
+                <option value="All">Any duration</option>
+                <option value="first">0 - 1:30 h</option>
+                <option value="second">1:30 - 3 h</option>
+                <option value="third">3+ h</option>
+            </select>
+        </div>
+
+        <div class="col-4">
+            <label for="language" class="form-label">Language</label>
+            <select class="form-select" id="language" name="language">
+                <option value="All">All languages</option>
+                {% for language in languages %}
+                <option value="{{ language.name }}">{{ language.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-4">
+            <label for="theme" class="form-label">Theme</label>
+            <select class="form-select" id="theme" name="theme">
+                <option value="All">All themes</option>
+                {% for theme in themes %}
+                <option value="{{ theme.name }}">{{ theme.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-4 d-flex justify-content-end align-items-end">
+            <button type="submit" class="btn lecce-btn lecce-primary-background w-100">
+                Search <i class="bi-search"></i>
+            </button>
+        </div>
+
+    </div>
+</form>

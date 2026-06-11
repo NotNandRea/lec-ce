@@ -37,7 +37,7 @@
                     <a class="btn lecce-btn lecce-secondary-background" href="{{ url_for('logout') }}">Log Out</a>
                     <a href="{{ url_for('my_profile') }}" class="text-decoration-none">
                         {% if current_user.profile_photo is not none %}
-                        <div class="profile-initials p-1"><img src="{{ url_for('static', filename='images/profile_photos/' + current_user.profile_photo) }}" alt="Profile Photo" class="img-fluid rounded-circle object-fit-cover"></div>
+                        <div class="profile-initials p-1"><img src="{{ url_for('static', filename='images/profile_photos/' ~ current_user.profile_photo) }}" alt="Profile Photo" class="img-fluid rounded-circle object-fit-cover"></div>
                         {% else %}
                         <div class="profile-initials fw-bold p-2">{{ current_user.first_name[0].upper() }}{{
                             current_user.last_name[0].upper() }}</div>
