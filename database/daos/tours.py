@@ -20,7 +20,7 @@ def get_tours(conn, cursor, limit=None):
     tours_list=[]
 
     for tour in tours:
-        tour_obj=Tour(tour["id"], tour["title"], tour["description"], tour["duration"], tour["max_participants"], tour["theme_id"], tour["language_id"], tour["guide_id"])
+        tour_obj=Tour(tour["id"], tour["title"], tour["description"], tour["duration"], tour["max_participants"], tour["theme_id"], tour["language_id"], tour["guide_id"], tour["state"])
         tours_list.append(tour_obj)
 
     return tours_list
@@ -34,7 +34,7 @@ def get_tour_by_id(conn, cursor, id):
 
     if tour is None:
         return None
-    tour_obj=Tour(tour["id"], tour["title"], tour["description"], tour["duration"], tour["max_participants"], tour["theme_id"], tour["language_id"], tour["guide_id"])
+    tour_obj=Tour(tour["id"], tour["title"], tour["description"], tour["duration"], tour["max_participants"], tour["theme_id"], tour["language_id"], tour["guide_id"], tour["state"])
 
     return tour_obj
 
@@ -52,7 +52,7 @@ def get_tours_by_guide_id(conn, cursor, guide_id, limit=None):
     tours_list=[]
 
     for tour in tours:
-        tour_obj=Tour(tour["id"], tour["title"], tour["description"], tour["duration"], tour["max_participants"], tour["theme_id"], tour["language_id"], tour["guide_id"])
+        tour_obj=Tour(tour["id"], tour["title"], tour["description"], tour["duration"], tour["max_participants"], tour["theme_id"], tour["language_id"], tour["guide_id"], tour["state"])
         tours_list.append(tour_obj)
 
     return tours_list
