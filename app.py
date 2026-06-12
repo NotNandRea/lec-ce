@@ -282,6 +282,8 @@ def tours():
 @app.route("/tour/<id>")
 def tour(id):
 
+    today=date.today()
+
     tour=tours_dao.get_tour_by_id(id)
     if tour is None:
         flash("Tour not found", "negative")
@@ -298,7 +300,7 @@ def tour(id):
     theme=tour.theme.name.lower()   
     avaiable_days=days_to_numbers.days_to_numbers(tour)
 
-    return render_template("tour.html", tour=tour, theme=theme, avaiable_days=avaiable_days)
+    return render_template("tour.html", tour=tour, theme=theme, avaiable_days=avaiable_days, today=today)
 
 # TOUR MANAGEMENT
 

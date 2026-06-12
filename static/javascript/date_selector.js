@@ -3,6 +3,7 @@ const enabledDays = tourDate.getAttribute('dates-to-be-enabled').split(',').map(
 console.log('Enabled days:', enabledDays);
 
 flatpickr(tourDate, {
+    minDate: tourDate.getAttribute('min'),
     "enable": [
         function (date) {
             // return true to enable
