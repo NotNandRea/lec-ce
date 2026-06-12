@@ -20,31 +20,49 @@
 
                     <div
                         class="profile-initials-big lecce-primary-background d-flex align-items-center justify-content-center fw-bold fs-1">
-                        MR
+                        {% if current_user.profile_photo is not none %}
+                        <div class="p-1"><img
+                                src="{{ url_for('static', filename='images/profile_photos/' ~ current_user.profile_photo) }}"
+                                alt="Profile Photo" class="img-fluid rounded-circle object-fit-cover"></div>
+                        {% else %}
+                        <div class="fw-bold p-2">{{ current_user.first_name[0].upper() }}{{
+                            current_user.last_name[0].upper() }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="d-flex flex-column align-items-start gap-2">
                         <span class="lecce-text-impact lecce-secondary-color fw-bold fs-1">
-                            Hi, Marco!
+                            Hi, {{ current_user.first_name }}!
                         </span>
 
                         <span class="badge rounded-pill lecce-primary-background">
-                            Guide
+                            {% if current_user.role == 'guide' %}Guide{% else %}Traveler{% endif %}
                         </span>
 
+                        {% if current_user.role == 'guide' %}
                         <p class="mb-0 fs-6 lecce-secondary-color">
                             <i class="bi bi-translate lecce-primary-color me-1"></i>
-                            Italian - English - Spanish
+                            {% for language in current_user.languages %}
+                            {{ language['name'] }}{% if not loop.last %} - {% endif %}
+                            {% endfor %}
                         </p>
+                        {% endif %}
                     </div>
 
                 </div>
 
                 <div>
-                    <a href="#" class="btn lecce-btn lecce-primary-background px-4 py-3 shadow">
+                    {% if current_user.role == 'guide' %}
+                    <a href="{{ url_for('new_tour') }}" class="btn lecce-btn lecce-primary-background px-4 py-3 shadow">
                         <i class="bi bi-plus me-1"></i>
                         New tour
                     </a>
+                    {% else %}
+                    <a href="{{ url_for('tours') }}" class="btn lecce-btn lecce-primary-background px-4 py-3 shadow">
+                        <i class="bi bi-binoculars me-1"></i>
+                        Explore tours
+                    </a>
+                    {% endif %}
                 </div>
 
             </div>
@@ -52,6 +70,7 @@
         </section>
 
         <!-- Stats -->
+        <!--TODO: implement stats after implementing bookings-->
         <section class="mb-5">
 
             <h2 class="lecce-section-label lecce-text-impact lecce-primary-color fw-bold mb-3 fs-6">
@@ -157,134 +176,9 @@
 
             <div class="bg-white rounded-5 shadow overflow-hidden">
 
-                <div class="d-flex flex-row align-items-center justify-content-between gap-3 p-4 border-bottom">
-
-                    <div class="d-flex align-items-center gap-3">
-
-                        <div class="rounded-4 lecce-profile-date p-5">
-                            <span class="lecce-primary-color fw-bold mb-1">TODAY</span>
-                            <span class="lecce-text-impact lecce-secondary-color fw-bold fs-2 mb-0">24</span>
-                        </div>
-
-                        <div>
-                            <h3 class="h5 lecce-text-impact lecce-secondary-color fw-bold mb-2">
-                                Lecce al Tramonto
-                            </h3>
-
-                            <div class="d-flex flex-wrap gap-3 small lecce-secondary-color">
-                                <span>
-                                    <i class="bi bi-clock lecce-primary-color me-1"></i>
-                                    17:30 - 19:30
-                                </span>
-
-                                <span>
-                                    <i class="bi bi-translate lecce-primary-color me-1"></i>
-                                    Italian
-                                </span>
-
-                                <span>
-                                    <i class="bi bi-geo-alt lecce-primary-color me-1"></i>
-                                    Porta Napoli
-                                </span>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div>
-                        <a href="#" class="btn lecce-btn lecce-primary-background px-4">
-                            <i class="bi bi-eye me-1"></i>
-                            Details
-                        </a>
-                    </div>
-
-                </div>
-
-                <div class="d-flex flex-row align-items-center justify-content-between gap-3 p-4 border-bottom">
-
-                    <div class="d-flex align-items-center gap-3">
-
-                        <div class="rounded-4 lecce-profile-date p-5">
-                            <span class="lecce-primary-color fw-bold mb-1">TODAY</span>
-                            <span class="lecce-text-impact lecce-secondary-color fw-bold fs-2 mb-0">24</span>
-                        </div>
-
-                        <div>
-                            <h3 class="h5 lecce-text-impact lecce-secondary-color fw-bold mb-2">
-                                Lecce al Tramonto
-                            </h3>
-
-                            <div class="d-flex flex-wrap gap-3 small lecce-secondary-color">
-                                <span>
-                                    <i class="bi bi-clock lecce-primary-color me-1"></i>
-                                    17:30 - 19:30
-                                </span>
-
-                                <span>
-                                    <i class="bi bi-translate lecce-primary-color me-1"></i>
-                                    Italian
-                                </span>
-
-                                <span>
-                                    <i class="bi bi-geo-alt lecce-primary-color me-1"></i>
-                                    Porta Napoli
-                                </span>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div>
-                        <a href="#" class="btn lecce-btn lecce-primary-background px-4">
-                            <i class="bi bi-eye me-1"></i>
-                            Details
-                        </a>
-                    </div>
-
-                </div>
-
-                <div class="d-flex flex-row align-items-center justify-content-between gap-3 p-4 border-bottom">
-
-                    <div class="d-flex align-items-center gap-3">
-
-                        <div class="rounded-4 lecce-profile-date p-5">
-                            <span class="lecce-primary-color fw-bold mb-1">TODAY</span>
-                            <span class="lecce-text-impact lecce-secondary-color fw-bold fs-2 mb-0">24</span>
-                        </div>
-
-                        <div>
-                            <h3 class="h5 lecce-text-impact lecce-secondary-color fw-bold mb-2">
-                                Lecce al Tramonto
-                            </h3>
-
-                            <div class="d-flex flex-wrap gap-3 small lecce-secondary-color">
-                                <span>
-                                    <i class="bi bi-clock lecce-primary-color me-1"></i>
-                                    17:30 - 19:30
-                                </span>
-
-                                <span>
-                                    <i class="bi bi-translate lecce-primary-color me-1"></i>
-                                    Italian
-                                </span>
-
-                                <span>
-                                    <i class="bi bi-geo-alt lecce-primary-color me-1"></i>
-                                    Porta Napoli
-                                </span>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div>
-                        <a href="#" class="btn lecce-btn lecce-primary-background px-4">
-                            <i class="bi bi-eye me-1"></i>
-                            Details
-                        </a>
-                    </div>
-
-                </div>
+                {% for i in range(3) %}
+                {% include "booking_card.html" %}
+                {% endfor %}
 
 
             </div>
@@ -301,7 +195,11 @@
                     </h2>
 
                     <p class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-2">
-                        The tours I tell
+                        {% if current_user.role == 'guide' %}
+                            The tours I organize
+                        {% else %}
+                            The tours I have booked
+                        {% endif %}
                     </p>
                 </div>
 
@@ -312,19 +210,17 @@
             </div>
 
             <div class="row g-4">
-
+                {% if tours|length > 0 %}
+                {% for tour in tours %}
                 <div class="col-4">
                     {% include "tour_card.html" %}
                 </div>
-
-                <div class="col-4">
-                    {% include "tour_card.html" %}
+                {% endfor %}
+                {% else %}
+                <div class="d-flex justify-content-center">
+                    <p>No tours found</p>
                 </div>
-
-                <div class="col-4">
-                    {% include "tour_card.html" %}
-                </div>
-
+                {% endif %}
             </div>
 
         </section>

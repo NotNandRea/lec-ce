@@ -39,10 +39,14 @@ def get_tour_by_id(conn, cursor, id):
     return tour_obj
 
 @connect_db
-def get_tours_by_guide_id(conn, cursor, guide_id):
+def get_tours_by_guide_id(conn, cursor, guide_id, limit=None):
 
     query="SELECT * FROM tours WHERE guide_id=(?)"
-    cursor.execute(query, (guide_id,))
+    if limit is not None:
+        query += " LIMIT (?)"
+        cursor.execute(query, (guide_id, limit))
+    else:
+        cursor.execute(query, (guide_id,))
     tours=cursor.fetchall()
 
     tours_list=[]

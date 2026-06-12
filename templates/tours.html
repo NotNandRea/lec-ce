@@ -30,11 +30,17 @@
 
 
             <div class="row g-4">
+                {% if tours|length > 0 %}
                 {% for tour in tours %}
                 <div class="col-3">
                     {% include "tour_card.html" %}
                 </div>
                 {% endfor %}
+                {% else %}
+                <div class="d-flex justify-content-center">
+                    <p>No tours found</p>
+                </div>
+                {% endif %}
             </div>
 
         </div>

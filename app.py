@@ -222,13 +222,30 @@ def login():
 
 # NON-AUTH ROUTES
 
+#TODO: unify in one query with joins
 @login_required
 @app.route("/me")
 def my_profile():
-    return render_template("profile.html")
+
+    current_user.languages = languages_dao.get_languages_by_user_id(current_user.id)
+    
+    if current_user.role == "guide":
+        tours = tours_dao.get_tours_by_guide_id(current_user.id,6)
+        for tour in tours:
+            tour.photos=photos_dao.get_first_photo(tour)
+            tour.language=languages_dao.get_language_by_id(tour.language_id)["name"]
+            tour.theme=themes_dao.get_theme_by_id(tour.theme_id)
+            tour.stops=stops_dao.get_first_stop_by_tour(tour)
+            tour.guide = users_dao.get_user_by_id(tour.guide_id)
+    #TODO: implement bookings
+    else:
+        tours = None
+
+    return render_template("profile.html", tours=tours)
 
 # TOUR LISTING
 
+#TODO: unify in one query with joins
 @app.route("/")
 def home():
 
@@ -245,6 +262,7 @@ def home():
 
     return render_template("home.html", today=today, tours=tours)
 
+#TODO: unify in one query with joins
 @app.route("/tours/list")
 def tours():
 
@@ -284,6 +302,7 @@ def tour(id):
 
 # TOUR MANAGEMENT
 
+#TODO: guides cannot create tours that overlap  with their tours
 @app.route("/tours/new")
 @login_required
 @guide_required
