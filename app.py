@@ -233,9 +233,23 @@ def login():
 @app.route("/me")
 def my_profile():
 
-    current_user.languages = languages_dao.get_languages_by_user_id(current_user.id)
+    today = date.today()
     
+    #TODO: implement bookings
     if current_user.role == "guide":
+        current_user.languages = languages_dao.get_languages_by_user_id(current_user.id)
+
+        #get occurrences of the tours that the guide has created
+        occurrences = occurrencies_dao.get_not_empty_occurrences_by_guide_id(current_user.id, limit=3, after_date=today)
+        for occurrence in occurrences:
+            occurrence.tour = tours_dao.get_tour_by_id(occurrence.tour_id)
+            occurrence.tour.language = languages_dao.get_language_by_id(occurrence.tour.language_id)["name"]
+            occurrence.tour.theme = themes_dao.get_theme_by_id(occurrence.tour.theme_id)
+            occurrence.tour.stops = stops_dao.get_first_stop_by_tour(occurrence.tour)
+        
+        upcoming = occurrences
+        
+        # get the tours that the guide has created, indipendently from the occurrences
         tours = tours_dao.get_tours_by_guide_id(current_user.id,6)
         for tour in tours:
             tour.photos=photos_dao.get_first_photo(tour)
@@ -243,11 +257,48 @@ def my_profile():
             tour.theme=themes_dao.get_theme_by_id(tour.theme_id)
             tour.stops=stops_dao.get_first_stop_by_tour(tour)
             tour.guide = users_dao.get_user_by_id(tour.guide_id)
-    #TODO: implement bookings
-    else:
-        tours = []
 
-    return render_template("profile.html", tours=tours)
+            
+    else:
+        #get occurrences of the tours that the user has booked (the main focus is the occurrence, then we add the tour info)
+        reservations = reservations_dao.get_reservations_by_participant_id(current_user.id, limit=3, after_date=today)
+        occurrencies = []
+        for reservation in reservations:
+            occurrence = occurrencies_dao.get_occurrence_by_id(reservation.occurrence_id)
+            occurrence.tour = tours_dao.get_tour_by_id(occurrence.tour_id)
+            occurrence.tour.language = languages_dao.get_language_by_id(occurrence.tour.language_id)["name"]
+            occurrence.tour.theme = themes_dao.get_theme_by_id(occurrence.tour.theme_id)
+            occurrence.tour.stops = stops_dao.get_first_stop_by_tour(occurrence.tour)
+            occurrencies.append(occurrence)
+        
+        upcoming = occurrencies
+
+        #get tours that the user has booked (the main focus is the tour, we need to pass through the occurrences to get the actual tours that the user has booked)
+        temp_tours = []
+        for reservation in reservations:
+            occurrence = occurrencies_dao.get_occurrence_by_id(reservation.occurrence_id)
+            
+            tour = tours_dao.get_tour_by_id(occurrence.tour_id)
+            tour.photos=photos_dao.get_first_photo(tour)
+            tour.language=languages_dao.get_language_by_id(tour.language_id)["name"]
+            tour.theme=themes_dao.get_theme_by_id(tour.theme_id)
+            tour.stops=stops_dao.get_first_stop_by_tour(tour)
+            tour.guide = users_dao.get_user_by_id(tour.guide_id)
+            tour.occurrence_date = occurrence.date
+            temp_tours.append(tour)
+
+    
+        #remove tour duplicates
+        tours = []
+        for tour in temp_tours:
+            if len(tours) == 0:
+                tours.append(tour)
+            for temp in tours:
+                if tour.id != temp.id:
+                    tours.append(tour)
+                    break
+    
+    return render_template("profile.html", upcoming=upcoming, tours=tours)
 
 # TOUR LISTING
 

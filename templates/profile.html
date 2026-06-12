@@ -176,10 +176,15 @@
 
             <div class="bg-white rounded-5 shadow overflow-hidden">
 
-                {% for i in range(3) %}
+                {% if upcoming|length > 0 %}
+                {% for occurrence in upcoming %}
                 {% include "booking_card.html" %}
                 {% endfor %}
-
+                {% else %}
+                <div class="d-flex justify-content-center p-4 mt-3">
+                    <p>No upcoming occurrences found</p>
+                </div>
+                {% endif %}
 
             </div>
 
@@ -196,9 +201,9 @@
 
                     <p class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-2">
                         {% if current_user.role == 'guide' %}
-                            The tours I organize
+                        The tours I organize
                         {% else %}
-                            The tours I have booked
+                        The tours I have booked
                         {% endif %}
                     </p>
                 </div>
