@@ -2,10 +2,10 @@
 
     <div class="shadow overflow-hidden tour-preview-photo">
         <img class="object-fit-cover h-100 w-100"
-            src="{{ url_for('static', filename='images/utility_images/placeholder.jpg') }}" alt="Tour photo">
+            src="{{ url_for('static', filename='images/tour_photos/' ~ tour.photos) }}" alt="Tour photo">
     </div>
 
-    <div class="card-body p-4">
+    <div class="card-body p-4 d-flex flex-column">
         <h3 class="h4 fw-bold mb-3 lecce-text-impact">{{ tour.title }}</h3>
 
         <span
@@ -13,14 +13,16 @@
             {{ tour.theme.name }}
         </span>
 
-        <p class="mb-4">{{ tour.description }}</p>
+        <p class="mb-4 overflow-hidden lecce-tour-card border-bottom">
+            {{ tour.description }}
+        </p>
 
-        <div class="d-flex flex-wrap gap-3 mb-4 border-bottom pb-4">
+        <div class="d-flex flex-wrap gap-3 mb-4 border-bottom pb-4 mt-auto">
             <span><i class="bi bi-clock lecce-primary-color me-1"></i>{{ tour.duration }}m</span>
 
             <span><i class="bi bi-translate lecce-primary-color me-1"></i>{{ tour.language[0:2].upper() }}</span>
 
-            <span><i class="bi bi-geo-alt lecce-primary-color me-1"></i>{{ tour.stops[0] }}</span>
+            <span><i class="bi bi-geo-alt lecce-primary-color me-1"></i>{{ tour.stops }}</span>
         </div>
 
         <div class="d-flex justify-content-between align-items-center">

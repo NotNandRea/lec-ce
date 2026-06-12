@@ -178,22 +178,6 @@ body {
     justify-content: center;
 }
 
-/*BAROQUE*/
-
-.lecce-baroque-color {
-    color: #5c3e23;
+.lecce-tour-card {
+    height: 7.5rem;
 }
-
-.lecce-baroque-background {
-    background-color: #5c3e23;
-}
-
-.lecce-baroque-border {
-    border: 0.3rem solid #5c3e23;
-}
-
-.lecce-baroque-text {
-    color: #EFD7A6;
-}
-
-/*TODO: implement other themes*/

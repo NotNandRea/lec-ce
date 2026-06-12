@@ -12,10 +12,14 @@ from database.daos import users as users_dao
 from database.daos import tours as tours_dao
 from database.daos import themes as themes_dao
 from database.daos import languages as languages_dao
+from database.daos import photos as photos_dao
+from database.daos import stops as stops_dao
 
-from utilities import check_email, check_password, images
+from utilities import check_email, check_password, images, days_to_numbers, check_time
 from utilities.role_decorators import guide_required
-from utilities.days_to_numbers import days_to_numbers
+from utilities.role_decorators import participant_required
+
+from utilities.constants import PROFILE_IMG_HEIGHT, TOUR_PHOTO_IMG_HEIGHT, TOUR_PHOTO_IMG_WIDTH
 
 import uuid
 from werkzeug.security import generate_password_hash
@@ -23,19 +27,6 @@ from werkzeug.utils import secure_filename
 
 from datetime import date
 
-# TODO: REMOVE THIS PLACEHOLDER FOR TESTING
-placeholder_guide=User("guide-id", "guide", "", "", "John", "Doe", profile_photo=None)
-placeholder_guide.languages = ["English", "Italian"]
-
-placeholder_theme = Theme("Baroque", "⛪")
-
-placeholder_tour=Tour(id, "Barocco", "Tour Description", 120, 11)
-placeholder_tour.photos = {"photo1": "placeholder2.jpg", "photo2": "placeholder.jpg", "photo3": "placeholder2.jpg", "photo4": "placeholder.jpg", "photo5": "placeholder2.jpg"}
-placeholder_tour.theme = placeholder_theme
-placeholder_tour.guide = placeholder_guide
-placeholder_tour.language = "English"
-placeholder_tour.weekly_schedule = {"monday": None, "tuesday": "10:00", "wednesday": "14:00", "thursday": "16:00", "friday": None, "saturday": "12:00", "sunday": None}
-placeholder_tour.stops = ["Stop 1", "Stop 2", "Stop 3", "Stop 4"]
 
 
 #load everythings from .env file
@@ -89,12 +80,12 @@ def register_post():
         return "Invalid password", 400
     password=generate_password_hash(password)
 
-    #name validation
+    # First name validation
     first_name= user.get("first_name")
     if first_name in [None, ""]:
         return "Invalid first name", 400
     
-    # name validation
+    # Last name validation
     last_name= user.get("last_name")
     if last_name in [None, ""]:
         return "Invalid last name", 400
@@ -106,8 +97,9 @@ def register_post():
 
         #file type verification
         if not images.is_image(profile_photo):
-            return "Not an image or image too small", 400
-
+            return "Not an image", 400
+        if not images.is_squareable(profile_photo):
+            return f"Image is too small, not squareable, minimum size is {PROFILE_IMG_HEIGHT}x{PROFILE_IMG_HEIGHT}", 400
 
         extension=secure_filename(profile_photo.filename).split(".")[-1].lower()
         profile_photo_filename=str(uuid.uuid4()) + "." + extension
@@ -155,12 +147,15 @@ def register_post():
 
     user_obj=User(id, role, email, password, first_name, last_name, profile_photo_filename)
 
-    users_dao.add_user(user_obj)
+    if not users_dao.add_user(user_obj):
+        return "An error occurred, user not created", 500
 
     if guide_languages is not None:
-        languages_dao.add_language_to_user(user_obj, guide_languages)
+        if not languages_dao.add_language_to_user(user_obj, guide_languages):
+            return "An error occurred, languages not added", 500
 
     login_user(user_obj)
+    flash("Registration successful", "positive")
 
     return redirect(url_for("home"))
 
@@ -232,14 +227,62 @@ def login():
 def my_profile():
     return render_template("profile.html")
 
+# TOUR LISTING
+
 @app.route("/")
 def home():
 
     today=date.today()
-    languages=languages_dao.get_languages()
-    themes=themes_dao.get_themes()
+    
+    tours=tours_dao.get_tours(8)
 
-    return render_template("home.html", today=today, languages=languages, themes=themes, tours=[placeholder_tour])
+    for tour in tours:
+        tour.photos=photos_dao.get_first_photo(tour)
+        tour.language=languages_dao.get_language_by_id(tour.language_id)["name"]
+        tour.theme=themes_dao.get_theme_by_id(tour.theme_id)
+        tour.stops=stops_dao.get_first_stop_by_tour(tour)
+        tour.guide = users_dao.get_user_by_id(tour.guide_id)
+
+    return render_template("home.html", today=today, tours=tours)
+
+@app.route("/tours/list")
+def tours():
+
+    today=date.today()
+    
+    tours=tours_dao.get_tours(8)
+
+    for tour in tours:
+        tour.photos=photos_dao.get_first_photo(tour)
+        tour.language=languages_dao.get_language_by_id(tour.language_id)["name"]
+        tour.theme=themes_dao.get_theme_by_id(tour.theme_id)
+        tour.stops=stops_dao.get_first_stop_by_tour(tour)
+        tour.guide = users_dao.get_user_by_id(tour.guide_id)
+
+    return render_template("tours.html", today=today, tours=tours)
+
+@app.route("/tour/<id>")
+def tour(id):
+
+    tour=tours_dao.get_tour_by_id(id)
+    if tour is None:
+        flash("Tour not found", "negative")
+        return redirect(url_for("home"))
+
+    tour.theme = themes_dao.get_theme_by_id(tour.theme_id)
+    tour.language = languages_dao.get_language_by_id(tour.language_id)
+    tour.weekly_schedule=tours_dao.get_schedule_by_tour(tour)
+    tour.photos=photos_dao.get_tour_photos(tour)
+    tour.stops=stops_dao.get_stops_by_tour(tour)
+
+    tour.guide = users_dao.get_user_by_id(tour.guide_id)
+    tour.guide.languages = languages_dao.get_languages_by_user_id(tour.guide.id)
+    theme=tour.theme.name.lower()   
+    avaiable_days=days_to_numbers.days_to_numbers(tour)
+
+    return render_template("tour.html", tour=tour, theme=theme, avaiable_days=avaiable_days)
+
+# TOUR MANAGEMENT
 
 @app.route("/tours/new")
 @login_required
@@ -251,32 +294,179 @@ def new_tour():
 
     return render_template("new_tour.html", languages=languages, themes=themes, origin="new")
 
+@app.route("/tours/new", methods=["POST"])
+@login_required
+@guide_required
+def new_tour_post():
+
+    languages=languages_dao.get_languages()
+    languages_names = []
+    for language in languages:
+        languages_names.append(language["name"])
+    
+    tour=request.form.to_dict()
+
+    # title validation
+    title=tour.get("title")
+    if title in [None, ""]:
+        flash("Invalid title", "negative")
+        return redirect(url_for("new_tour"))
+    elif len(title) < 2 or len(title) > 100:
+        flash("Title must be between 2 and 100 characters", "negative")
+        return redirect(url_for("new_tour"))
+
+    # description validation
+    description=tour.get("description")
+    if description in [None, ""]:
+        flash("Invalid description", "negative")
+        return redirect(url_for("new_tour"))
+    elif len(description) < 10 or len(description) > 1000:
+        flash("Description must be between 10 and 1000 characters", "negative")
+        return redirect(url_for("new_tour"))
+
+    # duration validation
+    duration=tour.get("duration")
+    if duration in [None, ""]:
+        flash("Invalid duration", "negative")
+        return redirect(url_for("new_tour"))
+    elif not duration.isdigit() or (int(duration) < 30 or int(duration) > 300):
+        flash("Duration must be between 30 and 300", "negative")
+        return redirect(url_for("new_tour"))
+    duration=int(duration)
+
+    # max participants validation
+    max_participants=tour.get("max_participants")
+    if max_participants in [None, ""]:
+        flash("Invalid max participants", "negative")
+        return redirect(url_for("new_tour"))
+    elif not max_participants.isdigit() or int(max_participants) < 1:
+        flash("Max participants must be a positive integer", "negative")
+        return redirect(url_for("new_tour"))
+    max_participants=int(max_participants)
+
+    # language validation
+    language=tour.get("language")
+    if language in [None, ""]:
+        flash("Invalid language", "negative")
+        return redirect(url_for("new_tour"))
+    if language not in languages_names:
+        flash("Invalid language", "negative")
+        return redirect(url_for("new_tour"))
+    
+    # theme validation
+    theme=tour.get("theme")
+    theme_obj=themes_dao.get_theme_by_name(theme)
+    if theme in [None, ""]:
+        flash("Invalid theme", "negative")
+        return redirect(url_for("new_tour"))
+    if theme_obj is None:
+        flash("Invalid theme", "negative")
+        return redirect(url_for("new_tour"))
+    
+    # schedule validation
+    selected_days_dict = {"monday": None, "tuesday": None, "wednesday": None, "thursday": None, "friday": None, "saturday": None, "sunday": None}
+    selected_days = request.form.getlist("days")
+    if len(selected_days) == 0:
+        flash("At least one day must be selected", "negative")
+        return redirect(url_for("new_tour"))
+    if len(selected_days) > 7:
+        flash("Invalid number of days selected", "negative")
+        return redirect(url_for("new_tour"))
+    if not set(selected_days).issubset(set(["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"])):
+        flash("Invalid days selected", "negative")
+        return redirect(url_for("new_tour"))
+    
+    for day in selected_days:
+        time = tour.get(day + "_time")
+        if time in [None, ""]:
+            flash("Invalid time for " + day, "negative")
+            return redirect(url_for("new_tour"))
+        if check_time.check_time(time) == False:
+            flash("Invalid time for " + day, "negative")
+            return redirect(url_for("new_tour"))
+        selected_days_dict[day] = time
+    
+    # stops validation
+    stops = request.form.getlist("stops")
+    print(stops)
+    if len(stops) < 4:
+        flash("At least 4 stops must be added", "negative")
+        return redirect(url_for("new_tour"))
+    for stop in stops:
+        if stop in [None, ""]:
+            flash("Invalid stop", "negative")
+            return redirect(url_for("new_tour"))
+        if len(stop) < 2 or len(stop) > 20:
+            flash("Stop must be between 2 and 20 characters", "negative")
+            return redirect(url_for("new_tour"))
+    
+    photo1=request.files.get("photo1", None)
+    photo2=request.files.get("photo2", None)
+    photo3=request.files.get("photo3", None)
+    photo4=request.files.get("photo4", None)
+    photo5=request.files.get("photo5", None)
+    photos = [photo1, photo2, photo3, photo4, photo5]
+
+    for photo in photos:
+        if (photo is None):
+            flash("All 5 photos must be uploaded", "negative")
+            return redirect(url_for("new_tour"))
+        if (images.is_image(photo) == False):
+            flash("One of the uploaded files is not an image", "negative")
+            return redirect(url_for("new_tour"))
+        if (images.is_16_9able(photo) == False):
+            flash(f"One of the uploaded photos is too small and cannot be resized to 16:9, minimum size is {TOUR_PHOTO_IMG_WIDTH}x{TOUR_PHOTO_IMG_HEIGHT}", "negative")
+            return redirect(url_for("new_tour"))
+
+        extension=secure_filename(photo.filename).split(".")[-1].lower()
+        photo_filename=str(uuid.uuid4()) + "." + extension
+        photo.filename = photo_filename
+        photo= images.to_16_9(photo)
+        photo.save("static/images/tour_photos/" + photo_filename)
+    photos = {"1": photo1.filename, "2": photo2.filename, "3": photo3.filename, "4": photo4.filename, "5": photo5.filename}
+
+    # tour creation
+    tour_obj=Tour(str(uuid.uuid4()), title, description, duration, max_participants)
+    tour_obj.language = languages_dao.get_language_by_name(language)
+    tour_obj.guide = current_user
+    tour_obj.theme = theme_obj
+
+    if not tours_dao.add_tour(tour_obj):
+        flash("An error occurred, tour not created", "negative")
+        return redirect(url_for("new_tour"))
+    
+    #add photos to database
+    if not photos_dao.add_photos_to_tour(tour_obj, photos):
+        flash("An error occurred, photos not added to tour", "negative")
+        return redirect(url_for("new_tour"))
+
+    #add stops to database
+    if not stops_dao.add_stops_to_tour(tour_obj, stops):
+        flash("An error occurred, stops not added to tour", "negative")
+        return redirect(url_for("new_tour"))
+
+    #add schedule to database
+    if not tours_dao.add_schedule_to_tour(tour_obj, selected_days_dict):
+        flash("An error occurred, schedule not added to tour", "negative")
+        return redirect(url_for("new_tour"))
+    
+    flash("Tour created successfully", "positive")
+    return redirect(url_for("tour", id=tour_obj.id))
+
+
+
 #TODO: remove placeholder
 @app.route("/tours/edit/<id>")
 @login_required
 @guide_required
 def edit_tour(id):
-
-    languages=languages_dao.get_languages()
-    themes=themes_dao.get_themes()
-
-    return render_template("new_tour.html", languages=languages, themes=themes, origin="edit", tour=placeholder_tour)
-
-#TODO: remove placeholder
-@app.route("/tours/list")
-def tours():
-
-    languages=languages_dao.get_languages()
-    themes=themes_dao.get_themes()
+    pass
 
 
-    return render_template("tours.html", languages=languages, themes=themes, tours=[placeholder_tour])
 
-#TODO: fix avaiable users issue, which date referring?
-@app.route("/tour/<id>")
-def tour(id):
 
-    theme=placeholder_tour.theme.name.lower()
-    avaiable_days=days_to_numbers(placeholder_tour)
-
-    return render_template("tour.html", tour=placeholder_tour, theme=theme, avaiable_days=avaiable_days)
+@app.route("/tours/<id>/book")
+@login_required
+@participant_required
+def book_tour(id):
+    pass

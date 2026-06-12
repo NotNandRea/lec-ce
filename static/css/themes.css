@@ -1,0 +1,67 @@
+/*BAROQUE*/
+.lecce-baroque-color {
+    color: #5c3e23;
+}
+
+.lecce-baroque-background {
+    background-color: #5c3e23;
+}
+
+.lecce-baroque-border {
+    border: 0.3rem solid #5c3e23;
+}
+
+.lecce-baroque-text {
+    color: #EFD7A6;
+}
+
+/*SEA*/
+.lecce-sea-color {
+    color: #15596B;
+}
+
+.lecce-sea-background {
+    background-color: #15596B;
+}
+
+.lecce-sea-border {
+    border: 0.3rem solid #15596B;
+}
+
+.lecce-sea-text {
+    color: #E7F1EC;
+}
+
+/*NIGHT*/
+.lecce-night-color {
+    color: #142539;
+}
+
+.lecce-night-background {
+    background-color: #142539;
+}
+
+.lecce-night-border {
+    border: 0.3rem solid #142539;
+}
+
+.lecce-night-text {
+    color: #EBD9A8;
+}
+
+/*FOOD*/
+.lecce-food-color {
+    color: #F6C99B;
+}
+
+.lecce-food-background {
+    background-color: #F6C99B;
+}
+
+.lecce-food-border {
+    border: 0.3rem solid #F6C99B;
+}
+
+.lecce-food-text {
+    color: #5A2A3A;
+}

@@ -28,7 +28,7 @@ addStopButton.addEventListener("click", function () {
 
     newStop.className = "d-flex align-items-center gap-2 border rounded-4 p-2 ps-3 stop-item";
 
-    newStop.innerHTML = '<input type="text" class="form-control border-0" name="stop_name" placeholder="New stop" required> <button type="button" class="btn remove-stop-button"> <i class="bi bi-x-lg"></i> </button>';
+    newStop.innerHTML = '<input type="text" class="form-control border-0" name="stops" placeholder="New stop" required> <button type="button" class="btn remove-stop-button"> <i class="bi bi-x-lg"></i> </button>';
 
     stopsList.appendChild(newStop);
     stopCounter++;
@@ -54,92 +54,92 @@ const friday_time = document.getElementById("friday_time");
 const saturday_time = document.getElementById("saturday_time");
 const sunday_time = document.getElementById("sunday_time");
 
+if (!monday_checkbox.checked) monday_time.classList.add("d-none");
+if (!tuesday_checkbox.checked) tuesday_time.classList.add("d-none");
+if (!wednesday_checkbox.checked) wednesday_time.classList.add("d-none");
+if (!thursday_checkbox.checked) thursday_time.classList.add("d-none");
+if (!friday_checkbox.checked) friday_time.classList.add("d-none");
+if (!saturday_checkbox.checked) saturday_time.classList.add("d-none");
+if (!sunday_checkbox.checked) sunday_time.classList.add("d-none");
+
 const noDaysSelected = document.getElementById("noDaysSelected");
 
 let i=document.querySelectorAll(".day-checkbox:checked").length;
 
-console.log(i);
-
 monday_checkbox.addEventListener("change", function () {
     if (monday_checkbox.checked) {
         monday_time.classList.remove("d-none");
-        i++;
     } else {
         monday_time.classList.add("d-none");
-        i--;
     }
+    i = document.querySelectorAll(".day-checkbox:checked").length;
 });
 
 tuesday_checkbox.addEventListener("change", function () {
     if (tuesday_checkbox.checked) {
         tuesday_time.classList.remove("d-none");
-        i++;
     } else {
         tuesday_time.classList.add("d-none");
-        i--;
     }
+    i = document.querySelectorAll(".day-checkbox:checked").length;
 });
 
 wednesday_checkbox.addEventListener("change", function () {
     if (wednesday_checkbox.checked) {
         wednesday_time.classList.remove("d-none");
-        i++;
     } else {
         wednesday_time.classList.add("d-none");
-        i--;
     }
+    i = document.querySelectorAll(".day-checkbox:checked").length;
 });
 
 thursday_checkbox.addEventListener("change", function () {
     if (thursday_checkbox.checked) {
         thursday_time.classList.remove("d-none");
-        i++;
     } else {
         thursday_time.classList.add("d-none");
-        i--;
     }
+    i = document.querySelectorAll(".day-checkbox:checked").length;
 });
 
 friday_checkbox.addEventListener("change", function () {
     if (friday_checkbox.checked) {
         friday_time.classList.remove("d-none");
-        i++;
     } else {
         friday_time.classList.add("d-none");
-        i--;
     }
+    i = document.querySelectorAll(".day-checkbox:checked").length;
 });
 
 saturday_checkbox.addEventListener("change", function () {
     if (saturday_checkbox.checked) {
         saturday_time.classList.remove("d-none");
-        i++;
     } else {
         saturday_time.classList.add("d-none");
-        i--;
     }
+    i = document.querySelectorAll(".day-checkbox:checked").length;
 });
 
 sunday_checkbox.addEventListener("change", function () {
     if (sunday_checkbox.checked) {
         sunday_time.classList.remove("d-none");
-        i++;
     } else {
         sunday_time.classList.add("d-none");
-        i--;
     }
+    i = document.querySelectorAll(".day-checkbox:checked").length;
 });
 
 
 
 // photos part
-const photo1 = document.getElementById("photo_1");
-const photo2 = document.getElementById("photo_2");
-const photo3 = document.getElementById("photo_3");
-const photo4 = document.getElementById("photo_4");
-const photo5 = document.getElementById("photo_5");
+const photo1 = document.getElementById("photo1");
+const photo2 = document.getElementById("photo2");
+const photo3 = document.getElementById("photo3");
+const photo4 = document.getElementById("photo4");
+const photo5 = document.getElementById("photo5");
 
 const noPhotosSelected = document.getElementById("noPhotosSelected");
+const origin = document.getElementById("origin").textContent;
 
 // common part
 
@@ -169,7 +169,7 @@ setInterval(function() {
 
     // photos part
 
-    if (photo1.files.length === 0 || photo2.files.length === 0 || photo3.files.length === 0 || photo4.files.length === 0 || photo5.files.length === 0) {
+    if ( (photo1.files.length === 0 && origin === "new") || (photo2.files.length === 0 && origin === "new") || (photo3.files.length === 0 && origin === "new") || (photo4.files.length === 0 && origin === "new") || (photo5.files.length === 0 && origin === "new") ) {
         noPhotosSelected.classList.remove("d-none");
         submittable[3] = false;
     } else {

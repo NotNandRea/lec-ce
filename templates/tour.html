@@ -15,7 +15,7 @@
                 <section class="mb-5">
 
                     <div id="tourPhotosCarousel"
-                        class="carousel slide rounded-5 overflow-hidden shadow lecce-baroque-border"
+                        class="carousel slide rounded-5 overflow-hidden shadow lecce-{{ tour.theme.name.lower() }}-border"
                         data-bs-ride="carousel">
 
                         <div class="carousel-indicators">
@@ -34,36 +34,36 @@
                         <div class="carousel-inner">
 
                             <div class="carousel-item active" data-bs-interval="5000">
-                                <div class="ratio ratio-4x3">
-                                    <img src="{{ url_for('static', filename='images/utility_images/' ~ tour.photos['photo1']) }}"
+                                <div class="ratio ratio-16x9">
+                                    <img src="{{ url_for('static', filename='images/tour_photos/' ~ tour.photos['photo1']) }}"
                                         alt="First Photo" class="w-100 h-100 object-fit-cover">
                                 </div>
                             </div>
 
                             <div class="carousel-item" data-bs-interval="5000">
-                                <div class="ratio ratio-4x3">
-                                    <img src="{{ url_for('static', filename='images/utility_images/' ~ tour.photos['photo2']) }}"
+                                <div class="ratio ratio-16x9">
+                                    <img src="{{ url_for('static', filename='images/tour_photos/' ~ tour.photos['photo2']) }}"
                                         alt="Second Photo" class="w-100 h-100 object-fit-cover">
                                 </div>
                             </div>
 
                             <div class="carousel-item" data-bs-interval="5000">
-                                <div class="ratio ratio-4x3">
-                                    <img src="{{ url_for('static', filename='images/utility_images/' ~ tour.photos['photo3']) }}"
+                                <div class="ratio ratio-16x9">
+                                    <img src="{{ url_for('static', filename='images/tour_photos/' ~ tour.photos['photo3']) }}"
                                         alt="Third Photo" class="w-100 h-100 object-fit-cover">
                                 </div>
                             </div>
 
                             <div class="carousel-item" data-bs-interval="5000">
-                                <div class="ratio ratio-4x3">
-                                    <img src="{{ url_for('static', filename='images/utility_images/' ~ tour.photos['photo4']) }}"
+                                <div class="ratio ratio-16x9">
+                                    <img src="{{ url_for('static', filename='images/tour_photos/' ~ tour.photos['photo4']) }}"
                                         alt="Fourth Photo" class="w-100 h-100 object-fit-cover">
                                 </div>
                             </div>
 
                             <div class="carousel-item" data-bs-interval="5000">
-                                <div class="ratio ratio-4x3">
-                                    <img src="{{ url_for('static', filename='images/utility_images/' ~ tour.photos['photo5']) }}"
+                                <div class="ratio ratio-16x9">
+                                    <img src="{{ url_for('static', filename='images/tour_photos/' ~ tour.photos['photo5']) }}"
                                         alt="Fifth Photo" class="w-100 h-100 object-fit-cover">
                                 </div>
                             </div>
@@ -97,12 +97,11 @@
 
                             <div>
                                 <div class="lecce-{{ theme }}-text fw-bold mb-1 fs-6">
-                                    THIS TOUR IS: {{ theme.upper() }}
+                                    THE THEME OF THIS TOUR IS: {{ theme.upper() }}
                                 </div>
 
                                 <p class="lecce-{{ theme }}-text fw-bold mb-0">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed
-                                    sit amet ipsum mauris.
+                                    {{tour.theme.description}}
                                 </p>
                             </div>
 
@@ -126,7 +125,7 @@
 
                         <span>
                             <i class="bi bi-translate me-1 lecce-primary-color"></i>
-                            {{ tour.language }}
+                            {{ tour.language['name'] }}
                         </span>
 
                         <span>
@@ -154,11 +153,12 @@
 
                     <div class="bg-white rounded-5 shadow p-4">
 
-                        {% for stop in tour.stops %}
+                        <!--TODO: fix order numbers-->
+                        {% for order_number, stop in tour.stops.items() %}
                         <div class="d-flex align-items-center gap-3 border-bottom pb-3 mb-3">
                             <span
                                 class="d-flex justify-content-center badge lecce-{{ theme }}-background lecce-{{ theme }}-text lecce-btn align-self-start px-3 py-2 fs-6 w-6">
-                                {{ loop.index }}
+                                {{ order_number }}
                             </span>
 
                             <span class="lecce-secondary-color fw-bold fs-5 m-0">
@@ -330,7 +330,7 @@
                             <p class="mb-0 fs-6 lecce-secondary-color">
                                 <i class="bi bi-translate lecce-primary-color me-1"></i>
                                 {% for language in tour.guide.languages %}
-                                    {{ language }}{% if not loop.last %} - {% endif %}
+                                    {{ language['name'] }}{% if not loop.last %} - {% endif %}
                                 {% endfor %}
                             </p>
 
@@ -348,8 +348,8 @@
 
                     <div class="bg-white rounded-5 shadow-sm overflow-hidden">
 
-                        <div class="lecce-baroque-background p-4 d-flex justify-content-center">
-                            <h2 class="lecce-baroque-text fw-bold fs-3 m-0">
+                        <div class="lecce-{{ tour.theme.name.lower() }}-background p-4 d-flex justify-content-center">
+                            <h2 class="lecce-{{ tour.theme.name.lower() }}-text fw-bold fs-3 m-0">
                                 Book this tour
                             </h2>
                         </div>
@@ -376,16 +376,16 @@
                             </div>
 
                             <section>
-                                <div class="lecce-baroque-background border rounded-5 p-4 mb-4 d-none"
+                                <div class="lecce-{{ tour.theme.name.lower() }}-background border rounded-5 p-4 mb-4 d-none"
                                     id="extraParticipant1">
 
-                                    <div class="fw-bold lecce-baroque-text mb-3">
+                                    <div class="fw-bold lecce-{{ tour.theme.name.lower() }}-text mb-3">
                                         Extra participant 1
                                     </div>
 
                                     <div class="mb-3">
                                         <label for="extraParticipant1Name"
-                                            class="form-label fw-bold lecce-baroque-text">
+                                            class="form-label fw-bold lecce-{{ tour.theme.name.lower() }}-text">
                                             Name <span class="lecce-primary-color">*</span>
                                         </label>
 
@@ -395,7 +395,7 @@
 
                                     <div class="mb-3">
                                         <label for="extraParticipant1LastName"
-                                            class="form-label fw-bold lecce-baroque-text">
+                                            class="form-label fw-bold lecce-{{ tour.theme.name.lower() }}-text">
                                             Last Name <span class="lecce-primary-color">*</span>
                                         </label>
 
@@ -406,7 +406,7 @@
 
                                     <div>
                                         <label for="extraParticipant1Email"
-                                            class="form-label fw-bold lecce-baroque-text">
+                                            class="form-label fw-bold lecce-{{ tour.theme.name.lower() }}-text">
                                             Email <span class="lecce-primary-color">*</span>
                                         </label>
 
@@ -417,16 +417,16 @@
 
                                 </div>
 
-                                <div class="lecce-baroque-background border rounded-5 p-4 mb-4 d-none"
+                                <div class="lecce-{{ tour.theme.name.lower() }}-background border rounded-5 p-4 mb-4 d-none"
                                     id="extraParticipant2">
 
-                                    <div class="fw-bold lecce-baroque-text mb-3">
+                                    <div class="fw-bold lecce-{{ tour.theme.name.lower() }}-text mb-3">
                                         Extra participant 2
                                     </div>
 
                                     <div class="mb-3">
                                         <label for="extraParticipant2Name"
-                                            class="form-label fw-bold lecce-baroque-text">
+                                            class="form-label fw-bold lecce-{{ tour.theme.name.lower() }}-text">
                                             Name <span class="lecce-primary-color">*</span>
                                         </label>
 
@@ -436,7 +436,7 @@
 
                                     <div class="mb-3">
                                         <label for="extraParticipant2LastName"
-                                            class="form-label fw-bold lecce-baroque-text">
+                                            class="form-label fw-bold lecce-{{ tour.theme.name.lower() }}-text">
                                             Last Name <span class="lecce-primary-color">*</span>
                                         </label>
 
@@ -447,7 +447,7 @@
 
                                     <div>
                                         <label for="extraParticipant2Email"
-                                            class="form-label fw-bold lecce-baroque-text">
+                                            class="form-label fw-bold lecce-{{ tour.theme.name.lower() }}-text">
                                             Email <span class="lecce-primary-color">*</span>
                                         </label>
 
@@ -458,16 +458,16 @@
 
                                 </div>
 
-                                <div class="lecce-baroque-background border rounded-5 p-4 mb-4 d-none"
+                                <div class="lecce-{{ tour.theme.name.lower() }}-background border rounded-5 p-4 mb-4 d-none"
                                     id="extraParticipant3">
 
-                                    <div class="fw-bold lecce-baroque-text mb-3">
+                                    <div class="fw-bold lecce-{{ tour.theme.name.lower() }}-text mb-3">
                                         Extra participant 3
                                     </div>
 
                                     <div class="mb-3">
                                         <label for="extraParticipant3Name"
-                                            class="form-label fw-bold lecce-baroque-text">
+                                            class="form-label fw-bold lecce-{{ tour.theme.name.lower() }}-text">
                                             Name <span class="lecce-primary-color">*</span>
                                         </label>
 
@@ -477,7 +477,7 @@
 
                                     <div class="mb-3">
                                         <label for="extraParticipant3LastName"
-                                            class="form-label fw-bold lecce-baroque-text">
+                                            class="form-label fw-bold lecce-{{ tour.theme.name.lower() }}-text">
                                             Last Name <span class="lecce-primary-color">*</span>
                                         </label>
 
@@ -488,7 +488,7 @@
 
                                     <div>
                                         <label for="extraParticipant3Email"
-                                            class="form-label fw-bold lecce-baroque-text">
+                                            class="form-label fw-bold lecce-{{ tour.theme.name.lower() }}-text">
                                             Email <span class="lecce-primary-color">*</span>
                                         </label>
 
@@ -506,26 +506,8 @@
 
                             </section>
 
-                            <div class="bg-light rounded-4 p-3 mb-4">
-
-                                <div class="d-flex justify-content-between small mb-2">
-                                    <span>
-                                        Available seats
-                                    </span>
-
-                                    <span class="fw-bold lecce-secondary-color">
-                                        14 / {{ tour.max_participants }}
-                                    </span>
-                                </div>
-
-                                <div class="progress">
-                                    <div class="progress-bar lecce-baroque-background" style="width: 10%"></div>
-                                </div>
-
-                            </div>
-
                             <button type="submit"
-                                class="lecce-btn lecce-baroque-background lecce-baroque-text fw-bold w-100 py-3">
+                                class="lecce-btn lecce-{{ tour.theme.name.lower() }}-background lecce-{{ tour.theme.name.lower() }}-text fw-bold w-100 py-3">
                                 <i class="bi bi-ticket-perforated me-1"></i>
                                 Book this tour
                             </button>

@@ -7,6 +7,8 @@
 <main class="py-5">
     <div class="container">
 
+        <span id="origin" class="d-none">{{ origin }}</span>
+
         <form method="POST" enctype="multipart/form-data">
 
             <div
@@ -48,7 +50,7 @@
                                 Title <span class="lecce-primary-color">*</span>
                             </label>
 
-                            <input type="text" class="form-control rounded-4" id="title" name="title" {% if
+                            <input type="text" class="form-control rounded-4" id="title" name="title" minlength="2" maxlength="100" {% if
                                 origin=="edit" %}value="{{ tour.title }}" {% endif %} required>
                         </div>
 
@@ -57,7 +59,7 @@
                                 Description <span class="lecce-primary-color">*</span>
                             </label>
 
-                            <textarea class="form-control rounded-4" id="description" name="description" rows="4"
+                            <textarea class="form-control rounded-4" id="description" name="description" rows="4" minlength="10" maxlength="1000"
                                 required>{% if origin == "edit" %}{{ tour.description }}{% endif %}</textarea>
                         </div>
 
@@ -82,7 +84,7 @@
                                 </label>
 
                                 <input type="number" class="form-control rounded-4" id="duration" name="duration" {% if
-                                    origin=="edit" %}value="{{ tour.duration }}" {% else %}value="30" {% endif %}
+                                    origin=="edit" %}value="{{ tour.duration }}" {% else %}value="60" {% endif %}
                                     min="30" max="300" required>
                             </div>
 
@@ -278,13 +280,12 @@
 
                         <p class="border-bottom mb-2 pb-2">The first stop is the meeting point.</p>
 
-                        <!-- TODO: fix javascript -->
                         <div id="stopsList" class="d-flex flex-column gap-2">
 
                             {% if origin == "edit" %}
                             {% for stop in tour.stops %}
                             <div class="d-flex align-items-center gap-2 border rounded-4 p-2 ps-3 stop-item">
-                                <input type="text" class="form-control border-0" name="stop_name"
+                                <input type="text" class="form-control border-0" name="stops" minlength="2" maxlength="20"
                                     value="{{ stop }}" required>
 
                                 <button type="button" class="btn remove-stop-button">
@@ -311,50 +312,54 @@
                     </section>
 
                     <section class="bg-white rounded-5 shadow-sm p-4 mb-4">
-                        <h2 class="lecce-secondary-color fw-bold mb-3 fs-4 pb-2 border-bottom">
+                        <h2 class="lecce-secondary-color fw-bold mb-2 fs-4 {% if origin == "new" %}border-bottom pb-2{% endif %}">
                             Photos
                         </h2>
+
+                        {% if origin == "edit" %}
+                        <p class="border-bottom mb-2 pb-2">Only the new uploaded photos will be replacing the corresponding ones.</p>
+                        {% endif %}
 
                         <div class="row g-3">
 
                             <div class="col-12">
-                                <label for="photo_1" class="form-label fw-bold lecce-secondary-color fs-6">
+                                <label for="photo1" class="form-label fw-bold lecce-secondary-color fs-6">
                                     Photo 1 - Cover
                                 </label>
-                                <input class="form-control rounded-4" type="file" id="photo_1" name="photo_1"
-                                    accept="image/png, image/jpeg, image/jpg" required>
+                                <input class="form-control rounded-4" type="file" id="photo1" name="photo1"
+                                    accept="image/png, image/jpeg, image/jpg" {% if origin == "new" %}required{% endif %}>
                             </div>
 
                             <div class="col-6">
-                                <label for="photo_2" class="form-label fw-bold lecce-secondary-color fs-6">
+                                <label for="photo2" class="form-label fw-bold lecce-secondary-color fs-6">
                                     Photo 2
                                 </label>
-                                <input class="form-control rounded-4" type="file" id="photo_2" name="photo_2"
-                                    accept="image/png, image/jpeg, image/jpg" required>
+                                <input class="form-control rounded-4" type="file" id="photo2" name="photo2"
+                                    accept="image/png, image/jpeg, image/jpg" {% if origin == "new" %}required{% endif %}>
                             </div>
 
                             <div class="col-6">
-                                <label for="photo_3" class="form-label fw-bold lecce-secondary-color fs-6">
+                                <label for="photo3" class="form-label fw-bold lecce-secondary-color fs-6">
                                     Photo 3
                                 </label>
-                                <input class="form-control rounded-4" type="file" id="photo_3" name="photo_3"
-                                    accept="image/png, image/jpeg, image/jpg" required>
+                                <input class="form-control rounded-4" type="file" id="photo3" name="photo3"
+                                    accept="image/png, image/jpeg, image/jpg" {% if origin == "new" %}required{% endif %}>
                             </div>
 
                             <div class="col-6">
-                                <label for="photo_4" class="form-label fw-bold lecce-secondary-color fs-6">
+                                <label for="photo4" class="form-label fw-bold lecce-secondary-color fs-6">
                                     Photo 4
                                 </label>
-                                <input class="form-control rounded-4" type="file" id="photo_4" name="photo_4"
-                                    accept="image/png, image/jpeg, image/jpg" required>
+                                <input class="form-control rounded-4" type="file" id="photo4" name="photo4"
+                                    accept="image/png, image/jpeg, image/jpg" {% if origin == "new" %}required{% endif %}>
                             </div>
 
                             <div class="col-6">
-                                <label for="photo_5" class="form-label fw-bold lecce-secondary-color fs-6">
+                                <label for="photo5" class="form-label fw-bold lecce-secondary-color fs-6">
                                     Photo 5
                                 </label>
-                                <input class="form-control rounded-4" type="file" id="photo_5" name="photo_5"
-                                    accept="image/png, image/jpeg, image/jpg" required>
+                                <input class="form-control rounded-4" type="file" id="photo5" name="photo5"
+                                    accept="image/png, image/jpeg, image/jpg" {% if origin == "new" %}required{% endif %}>
                             </div>
 
                             <div class="d-none lecce-negative-background rounded-4 p-3 d-flex justify-content-center fw-bold text-white"
