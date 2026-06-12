@@ -1,3 +1,4 @@
+import datetime
 import os
 from dotenv import load_dotenv
 
@@ -7,6 +8,9 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from database.models.user import User
 from database.models.tour import Tour
 from database.models.theme import Theme
+from database.models.occurrence import Occurrence
+from database.models.reservation import Reservation
+from database.models.extra_participant import Extra_Participant
 
 from database.daos import users as users_dao
 from database.daos import tours as tours_dao
@@ -14,8 +18,11 @@ from database.daos import themes as themes_dao
 from database.daos import languages as languages_dao
 from database.daos import photos as photos_dao
 from database.daos import stops as stops_dao
+from database.daos import occurrencies as occurrencies_dao
+from database.daos import reservations as reservations_dao
+from database.daos import extra_participants as extra_participants_dao
 
-from utilities import check_email, check_password, images, days_to_numbers, check_time
+from utilities import check_date, check_email, check_password, images, days_to_numbers, check_time, date_to_day
 from utilities.role_decorators import guide_required
 from utilities.role_decorators import participant_required
 
@@ -24,8 +31,7 @@ from utilities.constants import PROFILE_IMG_HEIGHT, TOUR_PHOTO_IMG_HEIGHT, TOUR_
 import uuid
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
-
-from datetime import date
+from datetime import date, datetime
 
 
 
@@ -239,7 +245,7 @@ def my_profile():
             tour.guide = users_dao.get_user_by_id(tour.guide_id)
     #TODO: implement bookings
     else:
-        tours = None
+        tours = []
 
     return render_template("profile.html", tours=tours)
 
@@ -486,8 +492,119 @@ def edit_tour(id):
 
 
 
-@app.route("/tours/<id>/book")
+#TODO: implement overlap check
+#TODO: implement if an extra participant email is already registered for the same occurrence
+@app.route("/tours/<id>/book", methods=["POST"])
 @login_required
 @participant_required
 def book_tour(id):
-    pass
+    
+    tour=tours_dao.get_tour_by_id(id)
+    if tour is None:
+        flash("Tour not found", "negative")
+        return redirect(url_for("home"))
+    
+    reservation=request.form.to_dict()
+
+    # date validation
+    date= reservation.get("tour_date")
+    if date in [None, ""]:
+        flash("Invalid date", "negative")
+        return redirect(url_for("tour", id=id))
+    date_obj=check_date.check_date(date)
+    if date_obj is None:
+        flash("Invalid date", "negative")
+        return redirect(url_for("tour", id=id))
+    
+    # check if the tour is available on the selected date
+    weekly_schedule=tours_dao.get_weekly_schedule_by_tour(tour)
+    if weekly_schedule[date_to_day.date_to_day(date_obj)] is None:
+        flash("The tour is not available on the selected date", "negative")
+        return redirect(url_for("tour", id=id))
+
+    #time recoveryng
+    time = weekly_schedule[date_to_day.date_to_day(date_obj)]
+
+    # verify if an occurrence already exists for the selected date and tour
+    occurrence_obj=occurrencies_dao.get_occurrence_by_tour_and_date(tour.id, date_obj)
+    if occurrence_obj is None:
+        #occurrence creation
+        occurrence_obj=Occurrence(str(uuid.uuid4()), tour.id, date_obj, time)
+        if not occurrencies_dao.add_occurrence(occurrence_obj):
+            flash("An error occurred, occurrence not created", "negative")
+            return redirect(url_for("tour", id=id))
+    occurrence_obj.tour = tour
+    
+    # check if the user has already booked the tour on the selected date
+    reservation_obj=reservations_dao.get_reservation_by_participant_and_occurrence(current_user, occurrence_obj)
+    if reservation_obj is not None:
+        flash("You have already booked this tour on the selected date", "negative")
+        return redirect(url_for("tour", id=id))
+
+
+    # participants validation
+    participant_first_name_1 = reservation.get("participant_first_name_1")
+    participant_last_name_1 = reservation.get("participant_last_name_1")
+    participant_email_1 = reservation.get("participant_email_1")
+    first_participant = Extra_Participant(str(uuid.uuid4()), participant_first_name_1, participant_last_name_1, participant_email_1)
+
+    participant_first_name_2 = reservation.get("participant_first_name_2")
+    participant_last_name_2 = reservation.get("participant_last_name_2")
+    participant_email_2 = reservation.get("participant_email_2")
+    second_participant = Extra_Participant(str(uuid.uuid4()), participant_first_name_2, participant_last_name_2, participant_email_2)
+
+    participant_first_name_3 = reservation.get("participant_first_name_3")
+    participant_last_name_3 = reservation.get("participant_last_name_3")
+    participant_email_3 = reservation.get("participant_email_3")
+    third_participant = Extra_Participant(str(uuid.uuid4()), participant_first_name_3, participant_last_name_3, participant_email_3)
+
+    # participant number validation
+    participant_number = request.form.get("people_count")
+    if participant_number in [None, ""]:
+        flash("Invalid number of participants", "negative")
+        return redirect(url_for("tour", id=id))
+    if not participant_number.isdigit() or int(participant_number) < 1 or int(participant_number) > 4:
+        flash("Invalid number of participants", "negative")
+        return redirect(url_for("tour", id=id))
+    participant_number = int(participant_number)
+
+    if participant_number > tour.max_participants:
+        flash("The number of participants exceeds the maximum allowed for this tour", "negative")
+        return redirect(url_for("tour", id=id))
+    if participant_number + occurrencies_dao.get_participants_number(occurrence_obj) > tour.max_participants:
+        flash("The number of participants exceeds the maximum allowed for this tour", "negative")
+        return redirect(url_for("tour", id=id))
+
+    participants= [first_participant, second_participant, third_participant]
+
+    for i in range(participant_number-1):
+        participant = participants[i]
+        if participant.first_name in [None, ""]:
+            flash("Invalid first name for participant " + str(i+1), "negative")
+            return redirect(url_for("tour", id=id))
+        if participant.last_name in [None, ""]:
+            flash("Invalid last name for participant " + str(i+1), "negative")
+            return redirect(url_for("tour", id=id))
+        if participant.email in [None, ""]:
+            flash("Invalid email for participant " + str(i+1), "negative")
+            return redirect(url_for("tour", id=id))
+        if check_email.check_email(participant.email) == False:
+            flash("Invalid email for participant " + str(i+1), "negative")
+            return redirect(url_for("tour", id=id))
+
+    #reservation insertion
+    reservation_obj=Reservation(str(uuid.uuid4()), current_user.id, occurrence_obj.id, datetime.now())
+
+    if not reservations_dao.add_reservation(reservation_obj):
+        flash("An error occurred, reservation not created", "negative")
+        return redirect(url_for("tour", id=id))
+    
+    #participants insertion
+    for i in range(participant_number-1):
+        participants[i].reservation_id = reservation_obj.id
+        if not extra_participants_dao.add_extra_participant(participants[i]):
+            flash("An error occurred, participant " + str(i+1) + " not added", "negative")
+            return redirect(url_for("tour", id=id))
+        
+    flash("Tour booked successfully", "positive")
+    return redirect(url_for("my_profile"))

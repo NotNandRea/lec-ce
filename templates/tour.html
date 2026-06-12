@@ -374,7 +374,7 @@
                         <!--TODO: implement route-->
                         {% if current_user.is_authenticated %}
                         {% if current_user.role == 'participant' %}
-                        <form method="POST" action="#" class="p-4">
+                        <form method="POST" action="{{ url_for('book_tour', id=tour.id) }}" class="p-4">
 
                             <div class="mb-3">
                                 <label for="tourDate" class="form-label fw-bold lecce-secondary-color">

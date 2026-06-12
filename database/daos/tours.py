@@ -127,3 +127,16 @@ def count_tours(conn, cursor):
     count=cursor.fetchone()["count"]
 
     return count
+
+@connect_db
+def get_weekly_schedule_by_tour(conn, cursor, tour):
+
+    query = "SELECT day, time FROM tour_week_slots WHERE tour_id=(?)"
+    cursor.execute(query, (tour.id,))
+    schedule = cursor.fetchall()
+
+    schedule_dict = {"monday": None, "tuesday": None, "wednesday": None, "thursday": None, "friday": None, "saturday": None, "sunday": None}
+    for slot in schedule:
+        schedule_dict[slot["day"]] = slot["time"]
+
+    return schedule_dict
