@@ -183,7 +183,7 @@ def login_post():
     user_obj=users_dao.get_user_by_email(email)
 
     if user_obj is None:
-        return "Authentication Error", 400
+        return "Invalid email or password", 400
     
     # password validation
     password= user.get("password")
@@ -191,7 +191,7 @@ def login_post():
         return "Invalid password", 400
 
     if not user_obj.check_password(password):
-        return "Authentication Error", 400
+        return "Invalid password", 400
 
     login_user(user_obj)
 
@@ -303,7 +303,7 @@ def profile(id):
                     tours.append(tour)
                     break
     
-    return render_template("profile.html", upcoming=upcoming, tours=tours)
+    return render_template("profile.html", upcoming=upcoming, tours=tours, user=user)
 
 # TOUR LISTING
 
@@ -325,6 +325,7 @@ def home():
     return render_template("home.html", today=today, tours=tours)
 
 #TODO: unify in one query with joins
+#TODO: implement filtering
 @app.route("/tours/list")
 def tours():
 
@@ -367,6 +368,7 @@ def tour(id):
 # TOUR MANAGEMENT
 
 #TODO: guides cannot create tours that overlap  with their tours
+#TODO: languages are chosen from the guide languages
 @app.route("/tours/new")
 @login_required
 @guide_required
@@ -377,6 +379,7 @@ def new_tour():
 
     return render_template("new_tour.html", languages=languages, themes=themes, origin="new")
 
+#TODO: languages are chosen from the guide languages
 @app.route("/tours/new", methods=["POST"])
 @login_required
 @guide_required
@@ -567,9 +570,11 @@ def book_tour(id):
     if date in [None, ""]:
         flash("Invalid date", "negative")
         return redirect(url_for("tour", id=id))
-    date_obj=check_date.check_date(date)
+    
+    # DATE VALIDATION ONLY DATE PART
+    date_obj, error_string = check_date.check_date(date)
     if date_obj is None:
-        flash("Invalid date", "negative")
+        flash("Invalid date, " + error_string, "negative")
         return redirect(url_for("tour", id=id))
     
     # check if the tour is available on the selected date
@@ -580,6 +585,11 @@ def book_tour(id):
 
     #time recoveryng
     time = weekly_schedule[date_to_day.date_to_day(date_obj)]
+    time_obj = datetime.strptime(time, "%H:%M").time()
+
+    if time_obj < datetime.now().time() and date_obj == datetime.now().date():
+        flash("Today the tour is departed yet", "negative")
+        return redirect(url_for("tour", id=id))
 
     # verify if an occurrence already exists for the selected date and tour
     occurrence_obj=occurrencies_dao.get_occurrence_by_tour_and_date(tour.id, date_obj)
@@ -708,3 +718,45 @@ def reservation(id):
     seconds_remaining = int((cancelation_limit - datetime.now()).total_seconds())
 
     return render_template("reservation.html", reservation=reservation, cancelation_limit=cancelation_limit, seconds_remaining=seconds_remaining, number_of_participants=number_of_participants)
+
+@app.route("/reservations/<id>/delete", methods=["POST"])
+@login_required
+@participant_required
+def delete_reservation(id):
+    
+    #check ownership of the reservation
+    reservation=reservations_dao.get_reservation_by_id(id)
+    if reservation is None:
+        flash("Reservation not found", "negative")
+        return redirect(url_for("my_profile"))
+    
+    if reservation.participant_id != current_user.id:
+        flash("You are not authorized to view this reservation", "negative")
+        return redirect(url_for("my_profile"))
+    
+    #check if the reservation is already canceled
+    if reservation.state == "canceled":
+        flash("This reservation is already canceled", "negative")
+        return redirect(url_for("reservation", id=id))
+    
+    #get occurrence because of date
+    occurrence=occurrencies_dao.get_occurrence_by_id(reservation.occurrence_id)
+    if occurrence is None:
+        flash("Occurrence not found", "negative")
+        return redirect(url_for("my_profile"))
+    
+    #compute the exact datetime 
+    tour_datetime = datetime.combine(occurrence.date, datetime.strptime(occurrence.start_time, "%H:%M").time())
+    
+    # check if the reservation is cancellable
+    if datetime.now() > tour_datetime - timedelta(days=1):
+        flash("The reservation cannot be canceled less than 24 hours before the tour", "negative")
+        return redirect(url_for("reservation", id=id))
+    
+
+    if not reservations_dao.update_reservation_state(reservation.id, "canceled"):
+        flash("An error occurred, reservation not canceled", "negative")
+        return redirect(url_for("reservation", id=id))
+    
+    flash("Reservation canceled successfully", "positive")
+    return redirect(url_for("my_profile"))

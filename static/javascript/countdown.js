@@ -7,6 +7,10 @@ const hoursDiv = document.getElementById("hours");
 const minutesDiv = document.getElementById("minutes");
 const secondsDiv = document.getElementById("seconds");
 
+const cancelButton = document.getElementById("cancelButton");
+const limitExpired = document.getElementById("limitExpired");
+const limitNotExpired = document.getElementById("limitNotExpired");
+
 function updateCountdown() {
     const days = Math.floor(remainingSeconds / 86400);
 
@@ -23,8 +27,16 @@ function updateCountdown() {
     minutesDiv.textContent = minutes;
     secondsDiv.textContent = seconds;
 
+    //TODO: When the countdown reaches 0 button must be disabled
     if (remainingSeconds > 0) {
         remainingSeconds--;
+        cancelButton.disabled = false;
+    }
+    else {
+        cancelButton.disabled = true;
+        cancelButton.textContent = "Tour not cancellable";
+        limitExpired.classList.remove("d-none");
+        limitNotExpired.classList.add("d-none");
     }
 }
 

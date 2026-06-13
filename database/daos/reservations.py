@@ -73,3 +73,18 @@ def get_reservation_by_id(conn, cursor, reservation_id):
     reservation_obj=Reservation(reservation["id"], reservation["participant_id"], reservation["occurrence_id"], reservation["timestamp_booking"], reservation["state"])
 
     return reservation_obj
+
+@connect_db
+def update_reservation_state(conn, cursor, reservation_id, new_state):
+
+    success=False
+    query="UPDATE reservations SET state=(?) WHERE id=(?)"
+    
+    try:
+        cursor.execute(query, (new_state, reservation_id))
+        conn.commit()
+        success=True
+    except Exception as e:
+        print("ERROR", str(e))
+        conn.rollback()
+    return success

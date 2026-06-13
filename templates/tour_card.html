@@ -28,11 +28,11 @@
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-2">
                 {% if tour.guide.profile_photo is none %}
-                <a class="profile-initials lecce-text-impact fw-bold text-decoration-none" href="#">
+                <a class="profile-initials lecce-text-impact fw-bold text-decoration-none" href="{{ url_for('profile', id=tour.guide.id) }}">
                     {{ tour.guide.first_name[0] }}{{ tour.guide.last_name[0] }}
                 </a>
                 {% else %}
-                <a class="profile-initials p-1" href="#">
+                <a class="profile-initials p-1" href="{{ url_for('profile', id=tour.guide.id) }}">
                     <img src="{{ url_for('static', filename='images/profile_photos/' ~ tour.guide.profile_photo) }}"
                         alt="Guide Profile Photo" class="img-fluid rounded-circle object-fit-cover">
                 </a>

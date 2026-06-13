@@ -3,6 +3,7 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
+<!--TODO: personalize the profile page in case the user is viewing their own profile -->
 <main class="mx-4 my-5">
 
     <div class="container w-75">
@@ -20,29 +21,29 @@
 
                     <div
                         class="profile-initials-big lecce-primary-background d-flex align-items-center justify-content-center fw-bold fs-1">
-                        {% if current_user.profile_photo is not none %}
+                        {% if user.profile_photo is not none %}
                         <div class="p-1"><img
-                                src="{{ url_for('static', filename='images/profile_photos/' ~ current_user.profile_photo) }}"
+                                src="{{ url_for('static', filename='images/profile_photos/' ~ user.profile_photo) }}"
                                 alt="Profile Photo" class="img-fluid rounded-circle object-fit-cover"></div>
                         {% else %}
-                        <div class="fw-bold p-2">{{ current_user.first_name[0].upper() }}{{
-                            current_user.last_name[0].upper() }}</div>
+                        <div class="fw-bold p-2">{{ user.first_name[0].upper() }}{{
+                            user.last_name[0].upper() }}</div>
                         {% endif %}
                     </div>
 
                     <div class="d-flex flex-column align-items-start gap-2">
                         <span class="lecce-text-impact lecce-secondary-color fw-bold fs-1">
-                            Hi, {{ current_user.first_name }}!
+                            Hi, {{ user.first_name }}!
                         </span>
 
                         <span class="badge rounded-pill lecce-primary-background">
-                            {% if current_user.role == 'guide' %}Guide{% else %}Traveler{% endif %}
+                            {% if user.role == 'guide' %}Guide{% else %}Traveler{% endif %}
                         </span>
 
-                        {% if current_user.role == 'guide' %}
+                        {% if user.role == 'guide' %}
                         <p class="mb-0 fs-6 lecce-secondary-color">
                             <i class="bi bi-translate lecce-primary-color me-1"></i>
-                            {% for language in current_user.languages %}
+                            {% for language in user.languages %}
                             {{ language['name'] }}{% if not loop.last %} - {% endif %}
                             {% endfor %}
                         </p>
@@ -52,7 +53,7 @@
                 </div>
 
                 <div>
-                    {% if current_user.role == 'guide' %}
+                    {% if user.role == 'guide' %}
                     <a href="{{ url_for('new_tour') }}" class="btn lecce-btn lecce-primary-background px-4 py-3 shadow">
                         <i class="bi bi-plus me-1"></i>
                         New tour
@@ -200,7 +201,7 @@
                     </h2>
 
                     <p class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-2">
-                        {% if current_user.role == 'guide' %}
+                        {% if user.role == 'guide' %}
                         The tours I organize
                         {% else %}
                         The tours I have booked

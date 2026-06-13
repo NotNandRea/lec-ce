@@ -36,7 +36,8 @@
                             </div>
                         </div>
 
-                        <div class="col-5">
+                        {% if reservation.state == "active" %}
+                        <div class="col-5" id="limitNotExpired">
                             <div id="cancelCountdown" class="d-flex justify-content-end align-items-start gap-2"
                                 seconds="{{ seconds_remaining }}">
 
@@ -80,6 +81,22 @@
 
                             </div>
                         </div>
+                        <div class="d-none col-5" id="limitExpired">
+                            <div class="d-flex flex-column align-items-center">
+                                <div class="lecce-negative-color fw-bold fs-1 rounded-4">
+                                    CANCEL LIMIT EXPIRED
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="col-5">
+                            <div class="d-flex flex-column align-items-center">
+                                <div class="lecce-negative-color fw-bold fs-1 rounded-4">
+                                    CANCELED
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
 
                     </div>
                 </div>
@@ -176,7 +193,6 @@
 
                     </div>
 
-                    <!--TODO: use guide data-->
                     <div class="border-top pt-3 d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-3">
                             <a href="{{ url_for('my_profile') }}" class="text-decoration-none">
@@ -297,15 +313,22 @@
                     </a>
                 </div>
 
-                <!--TODO: implement cancel reservation -->
                 <div class="col-6">
-                    <form method="POST" action="#">
+                    {% if reservation.state == "active" %}
+                    <form method="POST" action="{{ url_for('delete_reservation', id=reservation.id) }}">
                         <button type="submit"
-                            class="btn lecce-btn lecce-negative-background shadow-sm w-100 py-3 fw-bold">
+                            class="btn lecce-btn lecce-negative-background shadow-sm w-100 py-3 fw-bold"
+                            id="cancelButton">
                             <i class="bi bi-trash me-2"></i>
                             Cancel reservation
                         </button>
                     </form>
+                    {% else %}
+                    <span class="btn lecce-btn lecce-negative-background shadow-sm w-100 py-3 fw-bold"
+                        id="cancelButton">
+                        Already canceled
+                    </span>
+                    {% endif %}
                 </div>
 
             </section>

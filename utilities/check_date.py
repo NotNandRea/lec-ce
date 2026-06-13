@@ -2,12 +2,12 @@ from datetime import datetime
 
 def check_date(date_str):
     try:
-        date = datetime.strptime(date_str, "%Y-%m-%d")
+        date = datetime.strptime(date_str, "%Y-%m-%d").date()
     except Exception as e:
-        return None
+        return None, "invalid date format."
     
-    today = datetime.now()
+    today = datetime.now().date()
     if date < today:
-        return None
+        return None, "Date is in the past."
 
-    return date
+    return date, "Date is valid."

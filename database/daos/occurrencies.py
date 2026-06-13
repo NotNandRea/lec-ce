@@ -84,3 +84,5 @@ def get_not_empty_occurrences_by_guide_id(conn, cursor, guide_id, limit=None, af
         occurrence_list.append(Occurrence(occurrence["id"], occurrence["tour_id"], datetime.datetime.strptime(occurrence["date"], "%Y-%m-%d"), occurrence["start_time"], occurrence["state"]))
 
     return occurrence_list
+
+#TODO: when editing a tour but a reservation was made and canceled, delete the occurrence
