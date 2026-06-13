@@ -60,3 +60,16 @@ def get_reservations_by_participant_id(conn, cursor, participant_id, limit=None,
         reservation_list.append(Reservation(reservation["id"], reservation["participant_id"], reservation["occurrence_id"], reservation["timestamp_booking"], reservation["state"]))
 
     return reservation_list
+
+@connect_db
+def get_reservation_by_id(conn, cursor, reservation_id):
+
+    query="SELECT * FROM reservations WHERE id=(?)"
+    cursor.execute(query, (reservation_id,))
+    reservation=cursor.fetchone()
+
+    if reservation is None:
+        return None
+    reservation_obj=Reservation(reservation["id"], reservation["participant_id"], reservation["occurrence_id"], reservation["timestamp_booking"], reservation["state"])
+
+    return reservation_obj

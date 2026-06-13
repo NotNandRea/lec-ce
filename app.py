@@ -1,4 +1,3 @@
-import datetime
 import os
 from dotenv import load_dotenv
 
@@ -31,7 +30,7 @@ from utilities.constants import PROFILE_IMG_HEIGHT, TOUR_PHOTO_IMG_HEIGHT, TOUR_
 import uuid
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 
 
@@ -274,6 +273,7 @@ def profile(id):
             occurrence.tour.language = languages_dao.get_language_by_id(occurrence.tour.language_id)["name"]
             occurrence.tour.theme = themes_dao.get_theme_by_id(occurrence.tour.theme_id)
             occurrence.tour.stops = stops_dao.get_first_stop_by_tour(occurrence.tour)
+            occurrence.reservation = reservation
             occurrencies.append(occurrence)
         
         upcoming = occurrencies
@@ -665,8 +665,46 @@ def book_tour(id):
     flash("Tour booked successfully", "positive")
     return redirect(url_for("my_profile"))
 
+#TODO: implement scadenza of the timer, participant side and guide side
 @app.route("/reservations/<id>")
 @login_required
 @participant_required
 def reservation(id):
-    return render_template("reservation.html")
+
+    #check ownership of the reservation
+    reservation=reservations_dao.get_reservation_by_id(id)
+    if reservation is None:
+        flash("Reservation not found", "negative")
+        return redirect(url_for("my_profile"))
+    
+    if reservation.participant_id != current_user.id:
+        flash("You are not authorized to view this reservation", "negative")
+        return redirect(url_for("my_profile"))
+    
+    #retrieving reservation data
+    occurrence=occurrencies_dao.get_occurrence_by_id(reservation.occurrence_id)
+    if occurrence is None:
+        flash("Occurrence not found", "negative")
+        return redirect(url_for("my_profile"))
+    
+    occurrence.tour = tours_dao.get_tour_by_id(occurrence.tour_id)
+    if occurrence.tour is None:
+        flash("Tour not found", "negative")
+        return redirect(url_for("my_profile"))
+    
+    occurrence.tour.language = languages_dao.get_language_by_id(occurrence.tour.language_id)["name"]
+    occurrence.tour.theme = themes_dao.get_theme_by_id(occurrence.tour.theme_id)
+    occurrence.tour.stops = stops_dao.get_first_stop_by_tour(occurrence.tour)
+    occurrence.tour.guide = users_dao.get_user_by_id(occurrence.tour.guide_id)
+
+    reservation.occurrence = occurrence
+    reservation.extra_participants = extra_participants_dao.get_extra_participants_by_reservation_id(reservation.id)
+    number_of_participants = len(reservation.extra_participants) + 1
+
+    #combine the occurrence date and time to get the actual tour datetime
+    tour_datetime = datetime.combine(occurrence.date, datetime.strptime(occurrence.start_time, "%H:%M").time())
+
+    cancelation_limit = tour_datetime - timedelta(days=1)
+    seconds_remaining = int((cancelation_limit - datetime.now()).total_seconds())
+
+    return render_template("reservation.html", reservation=reservation, cancelation_limit=cancelation_limit, seconds_remaining=seconds_remaining, number_of_participants=number_of_participants)

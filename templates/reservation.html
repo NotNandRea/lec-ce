@@ -29,7 +29,8 @@
                                         You can cancel in:
                                     </h2>
                                     <span class="fs-6">
-                                        Cancellation limit: <span class="fw-bold">23/06/2026 - 10:00</span>
+                                        Cancellation limit: <span class="fw-bold">{{
+                                            cancelation_limit.strftime("%d/%m/%Y - %H:%M") }}</span>
                                     </span>
                                 </div>
                             </div>
@@ -37,7 +38,7 @@
 
                         <div class="col-5">
                             <div id="cancelCountdown" class="d-flex justify-content-end align-items-start gap-2"
-                                seconds="3600">
+                                seconds="{{ seconds_remaining }}">
 
                                 <div class="d-flex flex-column align-items-center">
                                     <div class="lecce-profile-date lecce-primary-color fw-bold fs-4 rounded-4"
@@ -95,7 +96,7 @@
                     <div class="row g-4 mb-4">
 
                         <span class="lecce-text-impact fw-bold lecce-secondary-color mb-0 fs-6">
-                            Barocco Bello
+                            {{ reservation.occurrence.tour.title }}
                         </span>
 
                         <div class="col-6">
@@ -104,7 +105,8 @@
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bolder">WHEN</div>
                                     <div class="fw-semibold lecce-secondary-color">
-                                        24/06/2026 - 10:00
+                                        {{ reservation.occurrence.date.strftime("%d/%m/%Y") }} - {{
+                                        reservation.occurrence.start_time }}
                                     </div>
                                 </div>
                             </div>
@@ -116,7 +118,7 @@
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Duration</div>
                                     <div class="fw-semibold lecce-secondary-color">
-                                        230m
+                                        {{ reservation.occurrence.tour.duration }}m
                                     </div>
                                 </div>
                             </div>
@@ -129,7 +131,7 @@
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Meeting point
                                     </div>
                                     <div class="fw-semibold lecce-secondary-color">
-                                        Porta Napoli
+                                        {{ reservation.occurrence.tour.stops }}
                                     </div>
                                 </div>
                             </div>
@@ -141,7 +143,7 @@
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Language</div>
                                     <div class="fw-semibold lecce-secondary-color">
-                                        Italian
+                                        {{ reservation.occurrence.tour.language }}
                                     </div>
                                 </div>
                             </div>
@@ -154,7 +156,7 @@
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Participants
                                     </div>
                                     <div class="fw-semibold lecce-secondary-color">
-                                        3 people
+                                        {{ number_of_participants }} people
                                     </div>
                                 </div>
                             </div>
@@ -166,7 +168,7 @@
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Theme</div>
                                     <div class="fw-semibold lecce-secondary-color">
-                                        Baroque
+                                        {{ reservation.occurrence.tour.theme.name }}
                                     </div>
                                 </div>
                             </div>
@@ -178,19 +180,21 @@
                     <div class="border-top pt-3 d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-3">
                             <a href="{{ url_for('my_profile') }}" class="text-decoration-none">
-                                {% if current_user.profile_photo is not none %}
+                                {% if reservation.occurrence.tour.guide.profile_photo is not none %}
                                 <div class="profile-initials p-1"><img
-                                        src="{{ url_for('static', filename='images/profile_photos/' ~ current_user.profile_photo) }}"
+                                        src="{{ url_for('static', filename='images/profile_photos/' ~ reservation.occurrence.tour.guide.profile_photo) }}"
                                         alt="Profile Photo" class="img-fluid rounded-circle object-fit-cover"></div>
                                 {% else %}
-                                <div class="profile-initials fw-bold p-2">{{ current_user.first_name[0].upper() }}{{
-                                    current_user.last_name[0].upper() }}</div>
+                                <div class="profile-initials fw-bold p-2">{{
+                                    reservation.occurrence.tour.guide.first_name[0].upper() }}{{
+                                    reservation.occurrence.tour.guide.last_name[0].upper() }}</div>
                                 {% endif %}
                             </a>
 
                             <div>
                                 <div class="fw-bold lecce-secondary-color">
-                                    Marco Rizzo
+                                    {{ reservation.occurrence.tour.guide.first_name }} {{
+                                    reservation.occurrence.tour.guide.last_name }}
                                 </div>
                                 <div class="fs-6">
                                     Your guide
@@ -222,16 +226,23 @@
                     <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
 
                         <div class="d-flex align-items-center gap-3">
-                            <div class="profile-initials">
-                                GV
-                            </div>
+                            <a href="{{ url_for('my_profile') }}" class="text-decoration-none">
+                                {% if current_user.profile_photo is not none %}
+                                <div class="profile-initials p-1"><img
+                                        src="{{ url_for('static', filename='images/profile_photos/' ~ current_user.profile_photo) }}"
+                                        alt="Profile Photo" class="img-fluid rounded-circle object-fit-cover"></div>
+                                {% else %}
+                                <div class="profile-initials fw-bold p-2">{{ current_user.first_name[0].upper() }}{{
+                                    current_user.last_name[0].upper() }}</div>
+                                {% endif %}
+                            </a>
 
                             <div>
                                 <div class="fw-bold lecce-secondary-color">
-                                    Giulia Verdi
+                                    {{ current_user.first_name }} {{ current_user.last_name }}
                                 </div>
                                 <div class="fs-6">
-                                    g.verdi@email.it
+                                    {{ current_user.email }}
                                 </div>
                             </div>
                         </div>
@@ -242,19 +253,20 @@
 
                     </div>
 
+                    {% for participant in reservation.extra_participants %}
                     <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
 
                         <div class="d-flex align-items-center gap-3">
-                            <div class="profile-initials">
-                                EC
+                            <div class="profile-initials fw-bold p-2">
+                                {{ participant.first_name[0].upper() }}{{ participant.last_name[0].upper() }}
                             </div>
 
                             <div>
                                 <div class="fw-bold lecce-secondary-color">
-                                    Elena Conte
+                                    {{ participant.first_name }} {{ participant.last_name }}
                                 </div>
                                 <div class="fs-6">
-                                    elena.conte@email.it
+                                    {{ participant.email }}
                                 </div>
                             </div>
                         </div>
@@ -264,30 +276,7 @@
                         </span>
 
                     </div>
-
-
-                    <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
-
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="profile-initials">
-                                EC
-                            </div>
-
-                            <div>
-                                <div class="fw-bold lecce-secondary-color">
-                                    Elena Conte
-                                </div>
-                                <div class="fs-6">
-                                    elena.conte@email.it
-                                </div>
-                            </div>
-                        </div>
-
-                        <span class="badge lecce-btn lecce-primary-background lecce-primary-color">
-                            Extra
-                        </span>
-
-                    </div>
+                    {% endfor %}
 
                     <div class="d-flex justify-content-center align-items-center py-3 mt-3">
                         <p class="fw-bold mb-0">
