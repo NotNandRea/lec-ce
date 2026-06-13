@@ -153,7 +153,6 @@
 
                     <div class="bg-white rounded-5 shadow p-4">
 
-                        <!--TODO: fix order numbers-->
                         {% for order_number, stop in tour.stops.items() %}
                         <div class="d-flex align-items-center gap-3 border-bottom pb-3 mb-3">
                             <span
@@ -371,7 +370,6 @@
                             </h2>
                         </div>
 
-                        <!--TODO: implement route-->
                         {% if current_user.is_authenticated %}
                         {% if current_user.role == 'participant' %}
                         <form method="POST" action="{{ url_for('book_tour', id=tour.id) }}" class="p-4">

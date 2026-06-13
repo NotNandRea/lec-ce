@@ -3,13 +3,16 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-<!--TODO: personalize the profile page in case the user is viewing their own profile -->
 <main class="mx-4 my-5">
 
     <div class="container w-75">
 
         <h1 class="lecce-text-impact lecce-secondary-color fw-bold mb-4">
-            My Profile
+            {% if user.id == current_user.id %}
+                My Profile
+            {% else %}
+                {{ user.first_name }}'s Profile
+            {% endif %}
         </h1>
 
         <!-- Header -->
@@ -33,7 +36,11 @@
 
                     <div class="d-flex flex-column align-items-start gap-2">
                         <span class="lecce-text-impact lecce-secondary-color fw-bold fs-1">
-                            Hi, {{ user.first_name }}!
+                            {% if user.id == current_user.id %}
+                                Hi, {{ user.first_name }}!
+                            {% else %}
+                                {{ user.first_name }} {{ user.last_name }}
+                            {% endif %}
                         </span>
 
                         <span class="badge rounded-pill lecce-primary-background">
@@ -53,6 +60,7 @@
                 </div>
 
                 <div>
+                    {% if user.id == current_user.id %}
                     {% if user.role == 'guide' %}
                     <a href="{{ url_for('new_tour') }}" class="btn lecce-btn lecce-primary-background px-4 py-3 shadow">
                         <i class="bi bi-plus me-1"></i>
@@ -64,6 +72,7 @@
                         Explore tours
                     </a>
                     {% endif %}
+                    {% endif %}
                 </div>
 
             </div>
@@ -71,7 +80,7 @@
         </section>
 
         <!-- Stats -->
-        <!--TODO: implement stats after implementing bookings-->
+        <!--TODO: implement stats-->
         <section class="mb-5">
 
             <h2 class="lecce-section-label lecce-text-impact lecce-primary-color fw-bold mb-3 fs-6">
@@ -202,9 +211,17 @@
 
                     <p class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-2">
                         {% if user.role == 'guide' %}
+                        {% if user.id == current_user.id %}
                         The tours I organize
                         {% else %}
+                        The tours {{ user.first_name }} organizes
+                        {% endif %}
+                        {% else %}
+                        {% if user.id == current_user.id %}
                         The tours I have booked
+                        {% else %}
+                        The tours {{ user.first_name }} has booked
+                        {% endif %}
                         {% endif %}
                     </p>
                 </div>

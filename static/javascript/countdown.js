@@ -27,7 +27,6 @@ function updateCountdown() {
     minutesDiv.textContent = minutes;
     secondsDiv.textContent = seconds;
 
-    //TODO: When the countdown reaches 0 button must be disabled
     if (remainingSeconds > 0) {
         remainingSeconds--;
         cancelButton.disabled = false;

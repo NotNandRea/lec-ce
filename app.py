@@ -368,24 +368,22 @@ def tour(id):
 # TOUR MANAGEMENT
 
 #TODO: guides cannot create tours that overlap  with their tours
-#TODO: languages are chosen from the guide languages
 @app.route("/tours/new")
 @login_required
 @guide_required
 def new_tour():
 
-    languages=languages_dao.get_languages()
+    languages=languages_dao.get_languages_by_user_id(current_user.id)
     themes=themes_dao.get_themes()
 
     return render_template("new_tour.html", languages=languages, themes=themes, origin="new")
 
-#TODO: languages are chosen from the guide languages
 @app.route("/tours/new", methods=["POST"])
 @login_required
 @guide_required
 def new_tour_post():
 
-    languages=languages_dao.get_languages()
+    languages=languages_dao.get_languages_by_user_id(current_user.id)
     languages_names = []
     for language in languages:
         languages_names.append(language["name"])
@@ -541,7 +539,7 @@ def new_tour_post():
 
 
 
-#TODO: remove placeholder
+#TODO: implement route
 @app.route("/tours/edit/<id>")
 @login_required
 @guide_required
@@ -675,7 +673,7 @@ def book_tour(id):
     flash("Tour booked successfully", "positive")
     return redirect(url_for("my_profile"))
 
-#TODO: implement scadenza of the timer, participant side and guide side
+#TODO: implement scadenza of the timer and guide side
 @app.route("/reservations/<id>")
 @login_required
 @participant_required
