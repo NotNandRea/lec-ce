@@ -1,0 +1,331 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-8">
+
+            <header class="mb-4">
+                <h1 class="lecce-text-impact lecce-secondary-color fw-bold mb-3">
+                    Your reservation
+                </h1>
+            </header>
+
+
+            <section class="bg-white rounded-5 shadow mb-4">
+                <div class="p-4">
+                    <div class="row align-items-center g-4">
+
+                        <div class="col-7">
+                            <div class="d-flex gap-3 align-items-center">
+                                <div
+                                    class="border lecce-primary-color d-flex align-items-center justify-content-center p-3 profile-initials rounded-4">
+                                    <i class="bi bi-clock"></i>
+                                </div>
+
+                                <div>
+                                    <h2 class="fw-bold lecce-secondary-color mb-2 fs-3">
+                                        You can cancel in:
+                                    </h2>
+                                    <span class="fs-6">
+                                        Cancellation limit: <span class="fw-bold">23/06/2026 - 10:00</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-5">
+                            <div id="cancelCountdown" class="d-flex justify-content-end align-items-start gap-2"
+                                seconds="3600">
+
+                                <div class="d-flex flex-column align-items-center">
+                                    <div class="lecce-profile-date lecce-primary-color fw-bold fs-4 rounded-4"
+                                        id="days">
+                                        0
+                                    </div>
+                                    <div class="mt-1 fs-6">DAYS</div>
+                                </div>
+
+                                <div class="fs-3 lecce-primary-color fw-bold pt-2">:</div>
+
+                                <div class="d-flex flex-column align-items-center">
+                                    <div class="lecce-profile-date lecce-primary-color fw-bold fs-4 rounded-4"
+                                        id="hours">
+                                        0
+                                    </div>
+                                    <div class="mt-1 fs-6">HOURS</div>
+                                </div>
+
+                                <div class="fs-3 lecce-primary-color fw-bold pt-2">:</div>
+
+                                <div class="d-flex flex-column align-items-center">
+                                    <div class="lecce-profile-date lecce-primary-color fw-bold fs-4 rounded-4"
+                                        id="minutes">
+                                        0
+                                    </div>
+                                    <div class="mt-1 fs-6">MINUTES</div>
+                                </div>
+
+                                <div class="fs-3 lecce-primary-color fw-bold pt-2">:</div>
+
+                                <div class="d-flex flex-column align-items-center">
+                                    <div class="lecce-profile-date lecce-primary-color fw-bold fs-4 rounded-4"
+                                        id="seconds">
+                                        0
+                                    </div>
+                                    <div class="mt-1 fs-6">SECONDS</div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+
+            <section class="bg-white rounded-5 shadow mb-4">
+                <div class="p-4">
+
+                    <h2 class="lecce-text-impact fw-bold lecce-secondary-color mb-0 fs-3 mb-3">
+                        Summary
+                    </h2>
+
+                    <div class="row g-4 mb-4">
+
+                        <span class="lecce-text-impact fw-bold lecce-secondary-color mb-0 fs-6">
+                            Barocco Bello
+                        </span>
+
+                        <div class="col-6">
+                            <div class="d-flex gap-3">
+                                <i class="bi bi-calendar-event lecce-primary-color"></i>
+                                <div>
+                                    <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bolder">WHEN</div>
+                                    <div class="fw-semibold lecce-secondary-color">
+                                        24/06/2026 - 10:00
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="d-flex gap-3">
+                                <i class="bi bi-clock lecce-primary-color"></i>
+                                <div>
+                                    <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Duration</div>
+                                    <div class="fw-semibold lecce-secondary-color">
+                                        230m
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="d-flex gap-3">
+                                <i class="bi bi-geo-alt lecce-primary-color"></i>
+                                <div>
+                                    <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Meeting point
+                                    </div>
+                                    <div class="fw-semibold lecce-secondary-color">
+                                        Porta Napoli
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="d-flex gap-3">
+                                <i class="bi bi-translate lecce-primary-color"></i>
+                                <div>
+                                    <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Language</div>
+                                    <div class="fw-semibold lecce-secondary-color">
+                                        Italian
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="d-flex gap-3">
+                                <i class="bi bi-people lecce-primary-color"></i>
+                                <div>
+                                    <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Participants
+                                    </div>
+                                    <div class="fw-semibold lecce-secondary-color">
+                                        3 people
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="d-flex gap-3">
+                                <i class="bi bi-palette lecce-primary-color"></i>
+                                <div>
+                                    <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Theme</div>
+                                    <div class="fw-semibold lecce-secondary-color">
+                                        Baroque
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!--TODO: use guide data-->
+                    <div class="border-top pt-3 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-3">
+                            <a href="{{ url_for('my_profile') }}" class="text-decoration-none">
+                                {% if current_user.profile_photo is not none %}
+                                <div class="profile-initials p-1"><img
+                                        src="{{ url_for('static', filename='images/profile_photos/' ~ current_user.profile_photo) }}"
+                                        alt="Profile Photo" class="img-fluid rounded-circle object-fit-cover"></div>
+                                {% else %}
+                                <div class="profile-initials fw-bold p-2">{{ current_user.first_name[0].upper() }}{{
+                                    current_user.last_name[0].upper() }}</div>
+                                {% endif %}
+                            </a>
+
+                            <div>
+                                <div class="fw-bold lecce-secondary-color">
+                                    Marco Rizzo
+                                </div>
+                                <div class="fs-6">
+                                    Your guide
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--TODO: implement mail to-->
+                        <a href="#" class="btn lecce-btn text-black border lecce-secondary-color">
+                            <i class="bi bi-envelope me-1"></i>
+                            Contact
+                        </a>
+                    </div>
+
+                </div>
+            </section>
+
+
+            <section class="bg-white border-0 rounded-5 shadow mb-4">
+                <div class="p-4">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="fw-bold lecce-secondary-color mb-0 fs-3">
+                            Participants
+                        </h2>
+                    </div>
+
+
+                    <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="profile-initials">
+                                GV
+                            </div>
+
+                            <div>
+                                <div class="fw-bold lecce-secondary-color">
+                                    Giulia Verdi
+                                </div>
+                                <div class="fs-6">
+                                    g.verdi@email.it
+                                </div>
+                            </div>
+                        </div>
+
+                        <span class="badge lecce-btn lecce-secondary-background lecce-primary-color">
+                            Owner
+                        </span>
+
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="profile-initials">
+                                EC
+                            </div>
+
+                            <div>
+                                <div class="fw-bold lecce-secondary-color">
+                                    Elena Conte
+                                </div>
+                                <div class="fs-6">
+                                    elena.conte@email.it
+                                </div>
+                            </div>
+                        </div>
+
+                        <span class="badge lecce-btn lecce-primary-background lecce-primary-color">
+                            Extra
+                        </span>
+
+                    </div>
+
+
+                    <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="profile-initials">
+                                EC
+                            </div>
+
+                            <div>
+                                <div class="fw-bold lecce-secondary-color">
+                                    Elena Conte
+                                </div>
+                                <div class="fs-6">
+                                    elena.conte@email.it
+                                </div>
+                            </div>
+                        </div>
+
+                        <span class="badge lecce-btn lecce-primary-background lecce-primary-color">
+                            Extra
+                        </span>
+
+                    </div>
+
+                    <div class="d-flex justify-content-center align-items-center py-3 mt-3">
+                        <p class="fw-bold mb-0">
+                            If you need to make changes to your reservation, cancel it and book again.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+
+            <section class="row g-3 mb-3">
+
+                <!-- TODO: implement export calendar -->
+                <div class="col-6">
+                    <a href="#" class="btn lecce-btn lecce-secondary-background shadow-sm w-100 py-3 fw-bold">
+                        <i class="bi bi-calendar-plus me-2"></i>
+                        Add to calendar
+                    </a>
+                </div>
+
+                <!--TODO: implement cancel reservation -->
+                <div class="col-6">
+                    <form method="POST" action="#">
+                        <button type="submit"
+                            class="btn lecce-btn lecce-negative-background shadow-sm w-100 py-3 fw-bold">
+                            <i class="bi bi-trash me-2"></i>
+                            Cancel reservation
+                        </button>
+                    </form>
+                </div>
+
+            </section>
+        </div>
+    </div>
+</main>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='javascript/countdown.js') }}"></script>
+{% endblock %}

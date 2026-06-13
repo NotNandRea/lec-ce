@@ -232,15 +232,20 @@ def login():
 @login_required
 @app.route("/me")
 def my_profile():
+    return redirect(url_for("profile", id=current_user.id))
+
+@login_required
+@app.route("/profile/<id>")
+def profile(id):
 
     today = date.today()
+    user = users_dao.get_user_by_id(id)
     
-    #TODO: implement bookings
-    if current_user.role == "guide":
-        current_user.languages = languages_dao.get_languages_by_user_id(current_user.id)
+    if user.role == "guide":
+        user.languages = languages_dao.get_languages_by_user_id(user.id)
 
         #get occurrences of the tours that the guide has created
-        occurrences = occurrencies_dao.get_not_empty_occurrences_by_guide_id(current_user.id, limit=3, after_date=today)
+        occurrences = occurrencies_dao.get_not_empty_occurrences_by_guide_id(user.id, limit=3, after_date=today)
         for occurrence in occurrences:
             occurrence.tour = tours_dao.get_tour_by_id(occurrence.tour_id)
             occurrence.tour.language = languages_dao.get_language_by_id(occurrence.tour.language_id)["name"]
@@ -250,7 +255,7 @@ def my_profile():
         upcoming = occurrences
         
         # get the tours that the guide has created, indipendently from the occurrences
-        tours = tours_dao.get_tours_by_guide_id(current_user.id,6)
+        tours = tours_dao.get_tours_by_guide_id(user.id,6)
         for tour in tours:
             tour.photos=photos_dao.get_first_photo(tour)
             tour.language=languages_dao.get_language_by_id(tour.language_id)["name"]
@@ -261,7 +266,7 @@ def my_profile():
             
     else:
         #get occurrences of the tours that the user has booked (the main focus is the occurrence, then we add the tour info)
-        reservations = reservations_dao.get_reservations_by_participant_id(current_user.id, limit=3, after_date=today)
+        reservations = reservations_dao.get_reservations_by_participant_id(user.id, limit=3, after_date=today)
         occurrencies = []
         for reservation in reservations:
             occurrence = occurrencies_dao.get_occurrence_by_id(reservation.occurrence_id)
@@ -541,7 +546,7 @@ def edit_tour(id):
     pass
 
 
-
+# BOOKING MANAGEMENT
 
 #TODO: implement overlap check
 #TODO: implement if an extra participant email is already registered for the same occurrence
@@ -659,3 +664,9 @@ def book_tour(id):
         
     flash("Tour booked successfully", "positive")
     return redirect(url_for("my_profile"))
+
+@app.route("/reservations/<id>")
+@login_required
+@participant_required
+def reservation(id):
+    return render_template("reservation.html")

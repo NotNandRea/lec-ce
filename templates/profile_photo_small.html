@@ -1,0 +1,10 @@
+<a href="{{ url_for('my_profile') }}" class="text-decoration-none">
+    {% if user.profile_photo is not none %}
+    <div class="profile-initials p-1"><img
+            src="{{ url_for('static', filename='images/profile_photos/' ~ user.profile_photo) }}"
+            alt="Profile Photo" class="img-fluid rounded-circle object-fit-cover"></div>
+    {% else %}
+    <div class="profile-initials fw-bold p-2">{{ user.first_name[0].upper() }}{{
+        user.last_name[0].upper() }}</div>
+    {% endif %}
+</a>
