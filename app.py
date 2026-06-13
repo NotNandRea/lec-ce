@@ -367,7 +367,6 @@ def tour(id):
 
 # TOUR MANAGEMENT
 
-#TODO: guides cannot create tours that overlap  with their tours
 @app.route("/tours/new")
 @login_required
 @guide_required
@@ -378,6 +377,7 @@ def new_tour():
 
     return render_template("new_tour.html", languages=languages, themes=themes, origin="new")
 
+#TODO: guides cannot create tours that overlap  with their tours
 @app.route("/tours/new", methods=["POST"])
 @login_required
 @guide_required
@@ -469,7 +469,16 @@ def new_tour_post():
             flash("Invalid time for " + day, "negative")
             return redirect(url_for("new_tour"))
         selected_days_dict[day] = time
-    
+
+    #check overlap with other tours of the guide
+    for day in selected_days:
+        time = selected_days_dict[day]
+        tours_times_durations = tours_dao.get_times_and_duration_of_tours_by_guide_id_and_day(current_user.id, day)
+        for tour_time, tour_duration in tours_times_durations:
+            if check_time.check_overlap(time, duration, tour_time, tour_duration):
+                flash("The time you choose for " + day + " overlaps with another tour", "negative")
+                return redirect(url_for("new_tour"))
+
     # stops validation
     stops = request.form.getlist("stops")
     print(stops)

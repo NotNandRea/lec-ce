@@ -58,6 +58,19 @@ def get_tours_by_guide_id(conn, cursor, guide_id, limit=None):
     return tours_list
 
 @connect_db
+def get_times_and_duration_of_tours_by_guide_id_and_day(conn, cursor, guide_id, day):
+
+    query="SELECT tour_week_slots.time, tours.duration FROM tours, tour_week_slots WHERE tours.id = tour_week_slots.tour_id AND tours.guide_id=(?) AND tour_week_slots.day=(?) AND tours.state='active'"
+    cursor.execute(query, (guide_id, day))
+    results=cursor.fetchall()
+
+    temp = []
+    for result in results:
+        temp.append((result["time"], int(result["duration"])))
+
+    return temp
+
+@connect_db
 def add_tour(conn, cursor, tour):
 
     success = False
