@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <a href="{{ url_for('tour', id=tour.id) }}" class="btn lecce-btn lecce-primary-background px-4">Book</a>
+            <a href="{{ url_for('tour', id=tour.id) }}" class="btn lecce-btn lecce-primary-background px-4">{% if current_user.role != "guide" %}Book{% else %}View{% endif %}</a>
         </div>
     </div>
 

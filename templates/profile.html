@@ -178,9 +178,11 @@
                     </span>
                 </div>
 
-                <a href="#" class="lecce-primary-color fw-bold text-decoration-none fs-6">
-                    View every future tour
+                {% if user.id == current_user.id %}
+                <a href="{{ url_for('personal_schedule') }}" class="lecce-primary-color fw-bold text-decoration-none fs-6">
+                    {% if user.role == 'guide' %}View my schedule{% else %}View my bookings{% endif %}
                 </a>
+                {% endif %}
 
             </div>
 

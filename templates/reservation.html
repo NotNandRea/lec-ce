@@ -195,7 +195,7 @@
 
                     <div class="border-top pt-3 d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-3">
-                            <a href="{{ url_for('my_profile') }}" class="text-decoration-none">
+                            <a href="{{ url_for('profile', id=reservation.occurrence.tour.guide.id) }}" class="text-decoration-none">
                                 {% if reservation.occurrence.tour.guide.profile_photo is not none %}
                                 <div class="profile-initials p-1"><img
                                         src="{{ url_for('static', filename='images/profile_photos/' ~ reservation.occurrence.tour.guide.profile_photo) }}"

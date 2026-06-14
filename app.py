@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
+from database.models import occurrence
 from database.models.user import User
 from database.models.tour import Tour
 from database.models.theme import Theme
@@ -11,7 +12,7 @@ from database.models.occurrence import Occurrence
 from database.models.reservation import Reservation
 from database.models.extra_participant import Extra_Participant
 
-from database.daos import users as users_dao
+from database.daos import reservations, users as users_dao
 from database.daos import tours as tours_dao
 from database.daos import themes as themes_dao
 from database.daos import languages as languages_dao
@@ -232,6 +233,37 @@ def login():
 @app.route("/me")
 def my_profile():
     return redirect(url_for("profile", id=current_user.id))
+
+@login_required
+@app.route("/schedule")
+def personal_schedule():
+
+    today = date.today()
+
+    if current_user.role == "guide":
+        occurrences = occurrencies_dao.get_not_empty_occurrences_by_guide_id(current_user.id)
+        for occurrence in occurrences:
+            occurrence.tour = tours_dao.get_tour_by_id(occurrence.tour_id)
+            occurrence.tour.language = languages_dao.get_language_by_id(occurrence.tour.language_id)["name"]
+            occurrence.tour.theme = themes_dao.get_theme_by_id(occurrence.tour.theme_id)
+            occurrence.tour.stops = stops_dao.get_first_stop_by_tour(occurrence.tour)
+        
+        upcoming = occurrences
+    else:
+        reservations = reservations_dao.get_reservations_by_participant_id(current_user.id)
+        occurrencies = []
+        for reservation in reservations:
+            occurrence = occurrencies_dao.get_occurrence_by_id(reservation.occurrence_id)
+            occurrence.tour = tours_dao.get_tour_by_id(occurrence.tour_id)
+            occurrence.tour.language = languages_dao.get_language_by_id(occurrence.tour.language_id)["name"]
+            occurrence.tour.theme = themes_dao.get_theme_by_id(occurrence.tour.theme_id)
+            occurrence.tour.stops = stops_dao.get_first_stop_by_tour(occurrence.tour)
+            occurrence.reservation = reservation
+            occurrencies.append(occurrence)
+        
+        upcoming = occurrencies
+
+    return render_template("personal_schedule.html", upcoming=upcoming)
 
 @login_required
 @app.route("/profile/<id>")
@@ -609,11 +641,22 @@ def book_tour(id):
     occurrence_obj.tour = tour
     
     # check if the user has already booked the tour on the selected date
-    reservation_obj=reservations_dao.get_reservation_by_participant_and_occurrence(current_user, occurrence_obj)
+    reservation_obj=reservations_dao.get_active_reservation_by_participant_and_occurrence(current_user, occurrence_obj)
     if reservation_obj is not None:
         flash("You have already booked this tour on the selected date", "negative")
         return redirect(url_for("tour", id=id))
 
+    #check overlap with other reservations
+    temp_reservations = reservations_dao.get_active_reservations_by_participant_id(current_user.id)
+    for temp_reservation in temp_reservations:
+        temp_occurrence = occurrencies_dao.get_occurrence_by_id(temp_reservation.occurrence_id)
+        if temp_occurrence.date == occurrence_obj.date:
+            temp_tour = tours_dao.get_tour_by_id(temp_occurrence.tour_id)
+            occurrence_duration = temp_tour.duration
+            occurrence_time = temp_occurrence.start_time
+            if check_time.check_overlap(time, tour.duration, occurrence_time, occurrence_duration):
+                flash("The tour you want to book overlaps with another tour", "negative")
+                return redirect(url_for("tour", id=id))
 
     # participants validation
     participant_first_name_1 = reservation.get("participant_first_name_1")
@@ -746,7 +789,7 @@ def delete_reservation(id):
         flash("This reservation is already canceled", "negative")
         return redirect(url_for("reservation", id=id))
     
-    #get occurrence because of date
+    #get occurrence because we need the date of the tour to check if it can be canceled
     occurrence=occurrencies_dao.get_occurrence_by_id(reservation.occurrence_id)
     if occurrence is None:
         flash("Occurrence not found", "negative")

@@ -33,8 +33,22 @@ def get_reservation_by_participant_and_occurrence(conn, cursor, participant, occ
     return reservation_obj
 
 @connect_db
+def get_active_reservation_by_participant_and_occurrence(conn, cursor, participant, occurrence):
+
+    query="SELECT * FROM reservations WHERE participant_id=(?) AND occurrence_id=(?) AND state='active'"
+    cursor.execute(query, (participant.id, occurrence.id))
+    reservation=cursor.fetchone()
+
+    if reservation is None:
+        return None
+    reservation_obj=Reservation(reservation["id"], reservation["participant_id"], reservation["occurrence_id"], reservation["timestamp_booking"], reservation["state"])
+
+    return reservation_obj
+
+@connect_db
 def get_reservations_by_participant_id(conn, cursor, participant_id, limit=None, after_date=None, reverse_order=False):
 
+    #here we need to join in order to order by date that is in occurrencies table
     query="SELECT * FROM reservations, tour_occurrences, tours WHERE reservations.occurrence_id=tour_occurrences.id AND tour_occurrences.tour_id=tours.id AND reservations.participant_id=(?)"
     parameters=(participant_id,)
 
@@ -53,6 +67,19 @@ def get_reservations_by_participant_id(conn, cursor, participant_id, limit=None,
         parameters += (limit,)
 
     cursor.execute(query, parameters)
+    reservations=cursor.fetchall()
+
+    reservation_list=[]
+    for reservation in reservations:
+        reservation_list.append(Reservation(reservation["id"], reservation["participant_id"], reservation["occurrence_id"], reservation["timestamp_booking"], reservation["state"]))
+
+    return reservation_list
+
+@connect_db
+def get_active_reservations_by_participant_id(conn, cursor, participant_id):
+
+    query="SELECT * FROM reservations WHERE participant_id=(?) AND state='active'"
+    cursor.execute(query, (participant_id,))
     reservations=cursor.fetchall()
 
     reservation_list=[]

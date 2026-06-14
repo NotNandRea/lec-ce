@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}My Schedule{% endblock %}
+
+{% block content %}
+<main class="mx-4 my-5">
+
+    <div class="container w-75">
+
+        <section class="mb-5">
+
+            <div class="mb-3">
+
+                <h1 class="lecce-text-impact lecce-primary-color fw-bold mb-2 fs-6">
+                    MY SCHEDULE
+                </h1>
+
+                <span class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-2">
+                    Upcoming tours
+                </span>
+
+            </div>
+
+            <div class="bg-white rounded-5 shadow overflow-hidden">
+
+                {% if upcoming|length > 0 %}
+
+                {% for occurrence in upcoming %}
+                {% include "booking_card.html" %}
+                {% endfor %}
+
+                {% else %}
+
+                <div class="d-flex justify-content-center p-4">
+                    <p class="mb-0">No upcoming occurrences found</p>
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+{% endblock %}
