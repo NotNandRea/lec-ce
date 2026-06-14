@@ -647,16 +647,22 @@ def book_tour(id):
         return redirect(url_for("tour", id=id))
 
     #check overlap with other reservations
+
+    #convert time to datetime for overlap check in case one tour ends after midnight
+    new_start = datetime.combine(occurrence_obj.date,datetime.strptime(time, "%H:%M").time())
+    new_end = new_start + timedelta(minutes=tour.duration)
+
     temp_reservations = reservations_dao.get_active_reservations_by_participant_id(current_user.id)
     for temp_reservation in temp_reservations:
         temp_occurrence = occurrencies_dao.get_occurrence_by_id(temp_reservation.occurrence_id)
-        if temp_occurrence.date == occurrence_obj.date:
-            temp_tour = tours_dao.get_tour_by_id(temp_occurrence.tour_id)
-            occurrence_duration = temp_tour.duration
-            occurrence_time = temp_occurrence.start_time
-            if check_time.check_overlap(time, tour.duration, occurrence_time, occurrence_duration):
-                flash("The tour you want to book overlaps with another tour", "negative")
-                return redirect(url_for("tour", id=id))
+        temp_tour = tours_dao.get_tour_by_id(temp_occurrence.tour_id)
+
+        temp_start = datetime.combine(temp_occurrence.date,datetime.strptime(temp_occurrence.start_time, "%H:%M").time())
+        temp_end = temp_start + timedelta(minutes=temp_tour.duration)
+
+        if new_start < temp_end and new_end > temp_start:
+            flash("You have already booked another tour that overlaps with this one", "negative")
+            return redirect(url_for("tour", id=id))
 
     # participants validation
     participant_first_name_1 = reservation.get("participant_first_name_1")
