@@ -14,7 +14,7 @@ def get_occurrence_by_tour_and_date(conn, cursor, tour_id, date):
 
     if occurrence is None:
         return None
-    occurrence_obj=Occurrence(occurrence["id"], occurrence["tour_id"], datetime.datetime.strptime(occurrence["date"], "%Y-%m-%d"), occurrence["start_time"], occurrence["state"])
+    occurrence_obj=Occurrence(occurrence["id"], occurrence["tour_id"], datetime.datetime.strptime(occurrence["date"], "%Y-%m-%d").date(), occurrence["start_time"], occurrence["state"])
 
     return occurrence_obj
 
@@ -51,7 +51,7 @@ def get_occurrence_by_id(conn, cursor, occurrence_id):
 
     if occurrence is None:
         return None
-    occurrence_obj=Occurrence(occurrence["id"], occurrence["tour_id"], datetime.datetime.strptime(occurrence["date"], "%Y-%m-%d"), occurrence["start_time"], occurrence["state"])
+    occurrence_obj=Occurrence(occurrence["id"], occurrence["tour_id"], datetime.datetime.strptime(occurrence["date"], "%Y-%m-%d").date(), occurrence["start_time"], occurrence["state"])
 
     return occurrence_obj
 
@@ -81,7 +81,7 @@ def get_not_empty_occurrences_by_guide_id(conn, cursor, guide_id, limit=None, af
 
     occurrence_list=[]
     for occurrence in occurrences:
-        occurrence_list.append(Occurrence(occurrence["id"], occurrence["tour_id"], datetime.datetime.strptime(occurrence["date"], "%Y-%m-%d"), occurrence["start_time"], occurrence["state"]))
+        occurrence_list.append(Occurrence(occurrence["id"], occurrence["tour_id"], datetime.datetime.strptime(occurrence["date"], "%Y-%m-%d").date(), occurrence["start_time"], occurrence["state"]))
 
     return occurrence_list
 

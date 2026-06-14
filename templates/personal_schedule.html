@@ -16,7 +16,7 @@
                 </h1>
 
                 <span class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-2">
-                    Upcoming tours
+                    {% if current_user.role == 'guide' %}Every tour I guide{% else %}My Bookings{% endif %}
                 </span>
 
             </div>
