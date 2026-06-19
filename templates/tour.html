@@ -328,7 +328,8 @@
                             <!--TODO: Implement guide profile link-->
                             <div class="d-flex align-items-center gap-3">
                                 {% if tour.guide.profile_photo is none %}
-                                <a class="profile-initials lecce-text-impact fw-bold text-decoration-none" href="{{ url_for('profile', id=tour.guide.id) }}">
+                                <a class="profile-initials lecce-text-impact fw-bold text-decoration-none"
+                                    href="{{ url_for('profile', id=tour.guide.id) }}">
                                     {{ tour.guide.first_name[0] }}{{ tour.guide.last_name[0] }}
                                 </a>
                                 {% else %}
@@ -370,6 +371,7 @@
                             </h2>
                         </div>
 
+                        {% if tour.state == 'active' %}
                         {% if current_user.is_authenticated %}
                         {% if current_user.role == 'participant' %}
                         <form method="POST" action="{{ url_for('book_tour', id=tour.id) }}" class="p-4">
@@ -380,7 +382,8 @@
                                 </label>
 
                                 <input type="date" class="form-control rounded-4" id="tourDate" name="tour_date"
-                                    placeholder="Choose a date" dates-to-be-enabled="{{ avaiable_days }}" value="{{ today }}" min="{{ today }}" required>
+                                    placeholder="Choose a date" dates-to-be-enabled="{{ avaiable_days }}"
+                                    value="{{ today }}" min="{{ today }}" required>
                             </div>
 
                             <div class="mb-3">
@@ -534,24 +537,52 @@
                         <div class="p-4 d-flex flex-column align-items-center">
                             <p class="fw-semibold">As a guide, you cannot book tours.</p>
                             {% if tour.guide.id == current_user.id %}
-                            <a type="button" href="{{ url_for('login') }}"
-                                class="btn lecce-btn lecce-primary-background text-white fw-bold w-100 py-3 user-select-none text-decoration-none d-flex justify-content-center align-items-center text-center p-5 fw-bold">
+                            {% if has_reservations == 0 %}
+                            <a href="{{ url_for('edit_tour', id=tour.id) }}"
+                                class="btn lecce-btn lecce-primary-background text-white fw-bold w-100 py-3 user-select-none text-decoration-none d-flex justify-content-center align-items-center text-center p-5 fw-bold mb-3">
                                 <i class="bi bi-pencil me-1"></i>
                                 Edit this tour
                             </a>
+                            {% else %}
+                            <a href="#"
+                                class="lecce-btn lecce-negative-background text-white fw-bold w-100 py-3 user-select-none text-decoration-none d-flex justify-content-center align-items-center text-center p-5 fw-bold mb-3">
+                                Uneditable Tour
+                            </a>
                             {% endif %}
+                            {% if has_active_reservations == 0 %}
+                            <!--TODO: ADD A MODAL FOR CONFIRMATION-->
+                            <a href="{{ url_for('delete_tour', id=tour.id) }}"
+                                class="btn lecce-btn lecce-negative-background text-white fw-bold w-100 py-3 user-select-none text-decoration-none d-flex justify-content-center align-items-center text-center p-5 fw-bold">
+                                <i class="bi bi-trash me-1"></i>
+                                Delete this tour
+                            </a>
+                            {% else %}
+                            <a href="#"
+                                class="lecce-btn lecce-negative-background text-white fw-bold w-100 py-3 user-select-none text-decoration-none d-flex justify-content-center align-items-center text-center p-5 fw-bold">
+                                Undeletable Tour
+                            </a>
+                            {% endif %}
+                            {% else %}
+
                         </div>
+                        {% endif %}
                         {% endif %}
                         {% else %} <!--IF USER IS NOT LOGGED IN-->
                         <div class="p-4 d-flex flex-column align-items-center">
                             <p class="fw-semibold">Only logged in users can book tours.</p>
-                            <a type="button" href="{{ url_for('login') }}"
+                            <a href="{{ url_for('login') }}"
                                 class="btn lecce-btn lecce-negative-background text-white fw-bold w-100 py-3 user-select-none text-decoration-none d-flex justify-content-center align-items-center text-center p-5 fw-bold">
                                 <i class="bi bi-x-lg me-1"></i>
                                 Log in
                             </a>
                         </div>
                         {% endif %}
+                        {% else %} <!--IF TOUR IS NOT ACTIVE-->
+                        <div class="p-4 d-flex flex-column align-items-center">
+                            <p class="fw-semibold">This tour is not active.</p>
+                        </div>
+                        {% endif %}
+
 
                     </div>
 

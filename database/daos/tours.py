@@ -71,6 +71,19 @@ def get_times_and_duration_of_tours_by_guide_id_and_day(conn, cursor, guide_id, 
     return temp
 
 @connect_db
+def get_times_and_duration_of_tours_by_guide_id_and_day_this_excluded(conn, cursor, guide_id, day, tour_id):
+
+    query="SELECT tour_week_slots.time, tours.duration FROM tours, tour_week_slots WHERE tours.id = tour_week_slots.tour_id AND tours.guide_id=(?) AND tour_week_slots.day=(?) AND tours.state='active' AND tours.id != (?)"
+    cursor.execute(query, (guide_id, day, tour_id))
+    results=cursor.fetchall()
+
+    temp = []
+    for result in results:
+        temp.append((result["time"], int(result["duration"])))
+
+    return temp
+
+@connect_db
 def add_tour(conn, cursor, tour):
 
     success = False
@@ -116,13 +129,13 @@ def get_schedule_by_tour(conn, cursor, tour):
     return schedule_dict
 
 @connect_db
-def delete_tour(conn, cursor, tour):
-    
+def update_tour(conn, cursor, tour):
+
     success = False
-    query = "DELETE FROM tours WHERE id=(?)"
+    query = "UPDATE tours SET title=(?), description=(?), duration=(?), max_participants=(?), language_id=(?), theme_id=(?) WHERE id=(?)"
 
     try:
-        cursor.execute(query, (tour.id,))
+        cursor.execute(query, (tour.title, tour.description, tour.duration, tour.max_participants, tour.language["id"], tour.theme.id, tour.id))
         conn.commit()
         success = True
     except Exception as e:
@@ -130,7 +143,40 @@ def delete_tour(conn, cursor, tour):
         conn.rollback()
     return success
 
-#UTILITY FUNCTIONS
+@connect_db
+def update_tour_schedule(conn, cursor, tour, schedule):
+
+    success = False
+    delete_query = "DELETE FROM tour_week_slots WHERE tour_id=(?)"
+    insert_query = "INSERT INTO tour_week_slots (tour_id, day, time) VALUES (?, ?, ?)"
+
+    try:
+        cursor.execute(delete_query, (tour.id,))
+        for day, time in schedule.items():
+            if time is not None:
+                cursor.execute(insert_query, (tour.id, day, time))
+        conn.commit()
+        success = True
+    except Exception as e:
+        print("ERROR", str(e))
+        conn.rollback()
+    return success
+
+@connect_db
+def update_tour_state(conn, cursor, tour, state):
+
+    success = False
+    query = "UPDATE tours SET state=(?) WHERE id=(?)"
+
+    try:
+        cursor.execute(query, (state, tour.id))
+        conn.commit()
+        success = True
+    except Exception as e:
+        print("ERROR", str(e))
+        conn.rollback()
+    return success
+
 
 @connect_db
 def count_tours(conn, cursor):

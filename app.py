@@ -363,7 +363,7 @@ def tours():
 
     today=date.today()
     
-    tours=tours_dao.get_tours(8)
+    tours=tours_dao.get_tours()
 
     for tour in tours:
         tour.photos=photos_dao.get_first_photo(tour)
@@ -395,7 +395,10 @@ def tour(id):
     theme=tour.theme.name.lower()   
     avaiable_days=days_to_numbers.days_to_numbers(tour)
 
-    return render_template("tour.html", tour=tour, theme=theme, avaiable_days=avaiable_days, today=today)
+    has_active_reservations=reservations_dao.count_reservations_by_tour_id(tour.id, "active")
+    has_reservations=reservations_dao.count_reservations_by_tour_id(tour.id)
+
+    return render_template("tour.html", tour=tour, theme=theme, avaiable_days=avaiable_days, today=today, has_active_reservations=has_active_reservations, has_reservations=has_reservations)
 
 # TOUR MANAGEMENT
 
@@ -600,13 +603,278 @@ def new_tour_post():
 
 
 
-#TODO: implement route
 @app.route("/tours/edit/<id>")
 @login_required
 @guide_required
 def edit_tour(id):
-    pass
+    
+    tour=tours_dao.get_tour_by_id(id)
 
+    if tour is None:
+        flash("Tour not found", "negative")
+        return redirect(url_for("home"))
+    
+    if tour.guide_id != current_user.id:
+        flash("You are not authorized to edit this tour", "negative")
+        return redirect(url_for("home"))
+
+    if tour.state != "active":
+        flash("You cannot edit a tour that is not active", "negative")
+        return redirect(url_for("home"))
+
+    if reservations_dao.count_reservations_by_tour_id(tour.id) > 0:
+        flash("You cannot edit a tour that had reservations", "negative")
+        return redirect(url_for("home"))
+
+    languages=languages_dao.get_languages_by_user_id(current_user.id)
+    themes=themes_dao.get_themes()
+
+    tour.language = languages_dao.get_language_by_id(tour.language_id)["name"]
+    tour.theme = themes_dao.get_theme_by_id(tour.theme_id)
+    tour.weekly_schedule=tours_dao.get_schedule_by_tour(tour)
+    tour.stops = stops_dao.get_stops_by_tour(tour)
+
+    return render_template("new_tour.html", languages=languages, themes=themes, tour=tour, origin="edit")
+
+@app.route("/tours/edit/<id>", methods=["POST"])
+@login_required
+@guide_required
+def edit_tour_post(id):
+    
+    tour_db=tours_dao.get_tour_by_id(id)
+
+    # check ownership of the tour
+    if tour_db is None:
+        flash("Tour not found", "negative")
+        return redirect(url_for("home"))
+    
+    if tour_db.guide_id != current_user.id:
+        flash("You are not authorized to edit this tour", "negative")
+        return redirect(url_for("home"))
+    
+    if tour_db.state != "active":
+        flash("You cannot edit a tour that is not active", "negative")
+        return redirect(url_for("home"))
+    
+    if reservations_dao.count_reservations_by_tour_id(tour_db.id) > 0:
+        flash("You cannot edit a tour that had reservations", "negative")
+        return redirect(url_for("home"))
+
+    languages=languages_dao.get_languages_by_user_id(current_user.id)
+    languages_names = []
+    for language in languages:
+        languages_names.append(language["name"])
+    
+    tour=request.form.to_dict()
+
+    # title validation
+    title=tour.get("title")
+    if title in [None, ""]:
+        flash("Invalid title", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    elif len(title) < 2 or len(title) > 100:
+        flash("Title must be between 2 and 100 characters", "negative")
+        return redirect(url_for("edit_tour", id=id))
+
+    # description validation
+    description=tour.get("description")
+    if description in [None, ""]:
+        flash("Invalid description", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    elif len(description) < 10 or len(description) > 1000:
+        flash("Description must be between 10 and 1000 characters", "negative")
+        return redirect(url_for("edit_tour", id=id))
+
+    # duration validation
+    duration=tour.get("duration")
+    if duration in [None, ""]:
+        flash("Invalid duration", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    elif not duration.isdigit() or (int(duration) < 30 or int(duration) > 300):
+        flash("Duration must be between 30 and 300", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    duration=int(duration)
+
+    # max participants validation
+    max_participants=tour.get("max_participants")
+    if max_participants in [None, ""]:
+        flash("Invalid max participants", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    elif not max_participants.isdigit() or int(max_participants) < 1:
+        flash("Max participants must be a positive integer", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    max_participants=int(max_participants)
+
+    # language validation
+    language=tour.get("language")
+    if language in [None, ""]:
+        flash("Invalid language", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    if language not in languages_names:
+        flash("Invalid language", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    
+    # theme validation
+    theme=tour.get("theme")
+    theme_obj=themes_dao.get_theme_by_name(theme)
+    if theme in [None, ""]:
+        flash("Invalid theme", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    if theme_obj is None:
+        flash("Invalid theme", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    
+    # schedule validation
+    selected_days_dict = {"monday": None, "tuesday": None, "wednesday": None, "thursday": None, "friday": None, "saturday": None, "sunday": None}
+    selected_days = request.form.getlist("days")
+    if len(selected_days) == 0:
+        flash("At least one day must be selected", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    if len(selected_days) > 7:
+        flash("Invalid number of days selected", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    if not set(selected_days).issubset(set(["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"])):
+        flash("Invalid days selected", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    
+    for day in selected_days:
+        time = tour.get(day + "_time")
+        if time in [None, ""]:
+            flash("Invalid time for " + day, "negative")
+            return redirect(url_for("edit_tour", id=id))
+        if check_time.check_time(time) == False:
+            flash("Invalid time for " + day, "negative")
+            return redirect(url_for("edit_tour", id=id))
+        selected_days_dict[day] = time
+
+
+    # check overlap inside the tour
+    checked_days = []
+
+    for day in selected_days:
+        time = selected_days_dict[day]
+
+        for checked_day in checked_days:
+            checked_time = selected_days_dict[checked_day]
+
+            if check_time.check_week_overlap(day, time, duration, checked_day, checked_time, duration):
+                flash("The selected times overlap each other", "negative")
+                return redirect(url_for("edit_tour", id=id))
+
+        checked_days.append(day)
+
+
+    # check overlap with other tours of the guide
+    temp_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+
+    for day in selected_days:
+        time = selected_days_dict[day]
+
+        for temp_day in temp_days:
+            tours_times_durations = tours_dao.get_times_and_duration_of_tours_by_guide_id_and_day_this_excluded(current_user.id, temp_day, tour_db.id)
+
+            for tour_time, tour_duration in tours_times_durations:
+                if check_time.check_week_overlap(day, time, duration, temp_day, tour_time, tour_duration):
+                    flash("The time you choose for " + day + " overlaps with another tour", "negative")
+                    return redirect(url_for("edit_tour", id=id))
+
+    # stops validation
+    stops = request.form.getlist("stops")
+    if len(stops) < 4:
+        flash("At least 4 stops must be added", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    for stop in stops:
+        if stop in [None, ""]:
+            flash("Invalid stop", "negative")
+            return redirect(url_for("edit_tour", id=id))
+        if len(stop) < 2 or len(stop) > 20:
+            flash("Stop must be between 2 and 20 characters", "negative")
+            return redirect(url_for("edit_tour", id=id))
+
+    # photos validation
+    photo1=request.files.get("photo1", None)
+    photo2=request.files.get("photo2", None)
+    photo3=request.files.get("photo3", None)
+    photo4=request.files.get("photo4", None)
+    photo5=request.files.get("photo5", None)
+    photos = [photo1, photo2, photo3, photo4, photo5]
+
+    for photo in photos:
+        
+        if photo is not None and photo.filename != "":
+            if (images.is_image(photo) == False):
+                flash("One of the uploaded files is not an image", "negative")
+                return redirect(url_for("edit_tour", id=id))
+            if (images.is_16_9able(photo) == False):
+                flash(f"One of the uploaded photos is too small and cannot be resized to 16:9, minimum size is {TOUR_PHOTO_IMG_WIDTH}x{TOUR_PHOTO_IMG_HEIGHT}", "negative")
+                return redirect(url_for("edit_tour", id=id))
+
+            extension=secure_filename(photo.filename).split(".")[-1].lower()
+            photo_filename=str(uuid.uuid4()) + "." + extension
+            photo.filename = photo_filename
+            photo= images.to_16_9(photo)
+            photo.save("static/images/tour_photos/" + photo_filename)
+
+    # tour creation
+    tour_obj=Tour(tour_db.id, title, description, duration, max_participants)
+    tour_obj.language = languages_dao.get_language_by_name(language)
+    tour_obj.guide = current_user
+    tour_obj.theme = theme_obj
+
+    if not tours_dao.update_tour(tour_obj):
+        flash("An error occurred, tour not created", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    
+    #add photos to database
+    old_photos = photos_dao.get_tour_photos(tour_obj)
+
+    i=1
+    for photo in photos:
+        if photo is not None and photo.filename != "":
+            if not photos_dao.update_photo_to_tour(tour_obj, i, photo.filename):
+                flash("An error occurred, photos not added to tour", "negative")
+                return redirect(url_for("edit_tour", id=id))
+            if os.path.exists("static/images/tour_photos/" + old_photos[f"photo{i}"]):
+                os.remove("static/images/tour_photos/" + old_photos[f"photo{i}"])
+        i += 1
+
+    #add stops to database
+    if not stops_dao.update_stops_of_tour(tour_obj, stops):
+        flash("An error occurred, stops not added to tour", "negative")
+        return redirect(url_for("edit_tour", id=id))
+
+    #add schedule to database
+    if not tours_dao.update_tour_schedule(tour_obj, selected_days_dict):
+        flash("An error occurred, schedule not added to tour", "negative")
+        return redirect(url_for("edit_tour", id=id))
+    
+    flash("Tour edited successfully", "positive")
+    return redirect(url_for("tour", id=tour_obj.id))
+
+@app.route("/tours/delete/<id>")
+@login_required
+@guide_required
+def delete_tour(id):
+    tour=tours_dao.get_tour_by_id(id)
+
+    if tour is None:
+        flash("Tour not found", "negative")
+        return redirect(url_for("home"))
+    
+    if tour.guide_id != current_user.id:
+        flash("You are not authorized to delete this tour", "negative")
+        return redirect(url_for("home"))
+
+    if reservations_dao.count_reservations_by_tour_id(tour.id, "active") > 0:
+        flash("You cannot edit a tour that has active reservations", "negative")
+        return redirect(url_for("home"))
+    
+    if not tours_dao.update_tour_state(tour, "deleted"):
+        flash("An error occurred, tour not deleted", "negative")
+        return redirect(url_for("tour", id=id))
+    
+    flash("Tour deleted successfully", "positive")
+    return redirect(url_for("home"))
 
 # BOOKING MANAGEMENT
 
@@ -619,6 +887,10 @@ def book_tour(id):
     tour=tours_dao.get_tour_by_id(id)
     if tour is None:
         flash("Tour not found", "negative")
+        return redirect(url_for("home"))
+
+    if tour.state != "active":
+        flash("This tour is not available for booking", "negative")
         return redirect(url_for("home"))
     
     reservation=request.form.to_dict()

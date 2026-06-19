@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Crea tour{% endblock %}
+{% block title %}{% if origin == "edit" %}Edit Tour{% else %}Create Tour{% endif %}{% endblock %}
 
 {% block content %}
 
@@ -9,7 +9,7 @@
 
         <span id="origin" class="d-none">{{ origin }}</span>
 
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" action="{% if origin == "edit" %}{{ url_for("edit_tour_post", id=tour.id) }}{% else %}{{ url_for("new_tour_post") }}{% endif %}">
 
             <div
                 class="d-flex align-items-center justify-content-between mb-5 position-sticky top-0 lecce-default-background pt-4 pb-3">
@@ -31,7 +31,7 @@
 
                     <button type="submit" class="lecce-btn lecce-primary-background shadow-sm fw-bold px-4 py-2"
                         id="submitButton">
-                        Publish
+                        Go live
                     </button>
                 </div>
             </div>
@@ -95,7 +95,7 @@
 
                                 <select class="form-select rounded-4" id="theme" name="theme" required>
                                     {% for theme in themes %}
-                                    <option value="{{ theme.name }}" {% if origin=="edit" and tour.theme==theme.name
+                                    <option value="{{ theme.name }}" {% if origin=="edit" and tour.theme.name==theme.name
                                         %}selected{% endif %}>{{ theme.name }}</option>
                                     {% endfor %}
                                 </select>
@@ -181,7 +181,7 @@
                                     <div class="d-flex align-items-center rounded-5 border overflow-hidden">
                                         <input type="time" class="form-control border-0 fw-bold" name="monday_time" {%
                                             if origin=="edit" and tour.weekly_schedule.get("monday") is not none
-                                            %}value="{{ tour.weekly_schedule.get("monday") }}"{% elif origin=="new"
+                                            %}value="{{ tour.weekly_schedule.get("monday") }}"{% else
                                             %}value="10:00" {% endif %}>
                                     </div>
                                 </div>
@@ -194,7 +194,7 @@
                                     <div class="d-flex align-items-center rounded-5 border overflow-hidden">
                                         <input type="time" class="form-control border-0 fw-bold" name="tuesday_time" {%
                                             if origin=="edit" and tour.weekly_schedule.get("tuesday") is not none
-                                            %}value="{{ tour.weekly_schedule.get("tuesday") }}"{% elif origin=="new"
+                                            %}value="{{ tour.weekly_schedule.get("tuesday") }}"{% else
                                             %}value="10:00" {% endif %}>
                                     </div>
                                 </div>
@@ -207,7 +207,7 @@
                                     <div class="d-flex align-items-center rounded-5 border overflow-hidden">
                                         <input type="time" class="form-control border-0 fw-bold" name="wednesday_time"
                                             {% if origin=="edit" and tour.weekly_schedule.get("wednesday") is not none
-                                            %}value="{{ tour.weekly_schedule.get("wednesday") }}"{% elif origin=="new"
+                                            %}value="{{ tour.weekly_schedule.get("wednesday") }}"{% else
                                             %}value="10:00" {% endif %}>
                                     </div>
                                 </div>
@@ -220,7 +220,7 @@
                                     <div class="d-flex align-items-center rounded-5 border overflow-hidden">
                                         <input type="time" class="form-control border-0 fw-bold" name="thursday_time" {%
                                             if origin=="edit" and tour.weekly_schedule.get("thursday") is not none
-                                            %}value="{{ tour.weekly_schedule.get("thursday") }}"{% elif origin=="new"
+                                            %}value="{{ tour.weekly_schedule.get("thursday") }}"{% else
                                             %}value="10:00" {% endif %}>
                                     </div>
                                 </div>
@@ -233,7 +233,7 @@
                                     <div class="d-flex align-items-center rounded-5 border overflow-hidden">
                                         <input type="time" class="form-control border-0 fw-bold" name="friday_time" {%
                                             if origin=="edit" and tour.weekly_schedule.get("friday") is not none
-                                            %}value="{{ tour.weekly_schedule.get("friday") }}"{% elif origin=="new"
+                                            %}value="{{ tour.weekly_schedule.get("friday") }}"{% else
                                             %}value="10:00" {% endif %}>
                                     </div>
                                 </div>
@@ -246,7 +246,7 @@
                                     <div class="d-flex align-items-center rounded-5 border overflow-hidden">
                                         <input type="time" class="form-control border-0 fw-bold" name="saturday_time" {%
                                             if origin=="edit" and tour.weekly_schedule.get("saturday") is not none
-                                            %}value="{{ tour.weekly_schedule.get("saturday") }}"{% elif origin=="new"
+                                            %}value="{{ tour.weekly_schedule.get("saturday") }}"{% else
                                             %}value="10:00" {% endif %}>
                                     </div>
                                 </div>
@@ -259,7 +259,7 @@
                                     <div class="d-flex align-items-center rounded-5 border overflow-hidden">
                                         <input type="time" class="form-control border-0 fw-bold" name="sunday_time" {%
                                             if origin=="edit" and tour.weekly_schedule.get("sunday") is not none
-                                            %}value="{{ tour.weekly_schedule.get("sunday") }}"{% elif origin=="new"
+                                            %}value="{{ tour.weekly_schedule.get("sunday") }}"{% else
                                             %}value="10:00" {% endif %}>
                                     </div>
                                 </div>
@@ -283,7 +283,7 @@
                         <div id="stopsList" class="d-flex flex-column gap-2">
 
                             {% if origin == "edit" %}
-                            {% for stop in tour.stops %}
+                            {% for stop in tour.stops.values() %}
                             <div class="d-flex align-items-center gap-2 border rounded-4 p-2 ps-3 stop-item">
                                 <input type="text" class="form-control border-0" name="stops" minlength="2" maxlength="20"
                                     value="{{ stop }}" required>

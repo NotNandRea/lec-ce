@@ -171,15 +171,15 @@ setInterval(function() {
 
     if ( (photo1.files.length === 0 && origin === "new") || (photo2.files.length === 0 && origin === "new") || (photo3.files.length === 0 && origin === "new") || (photo4.files.length === 0 && origin === "new") || (photo5.files.length === 0 && origin === "new") ) {
         noPhotosSelected.classList.remove("d-none");
-        submittable[3] = false;
+        submittable[2] = false;
     } else {
         noPhotosSelected.classList.add("d-none");
-        submittable[3] = true;
+        submittable[2] = true;
     }
 
     // common part
 
-    if (submittable[0] === true && submittable[1] === true && submittable[3] === true) {
+    if (submittable[0] === true && submittable[1] === true && submittable[2] === true) {
         submitButton.disabled = false;
         submitButton.textContent = "Go live";
         submitButton.classList.remove("lecce-negative-background");

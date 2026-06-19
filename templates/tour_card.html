@@ -1,9 +1,9 @@
 <div class="card border-0 rounded-5 shadow overflow-hidden h-100">
 
-    <div class="shadow overflow-hidden tour-preview-photo">
+    <a href="{{ url_for('tour', id=tour.id) }}" class="shadow overflow-hidden tour-preview-photo">
         <img class="object-fit-cover h-100 w-100"
             src="{{ url_for('static', filename='images/tour_photos/' ~ tour.photos) }}" alt="Tour photo">
-    </div>
+    </a>
 
     <div class="card-body p-4 d-flex flex-column">
         <h3 class="h4 fw-bold mb-3 lecce-text-impact">{{ tour.title }}</h3>
@@ -12,6 +12,17 @@
             class="badge lecce-{{ tour.theme.name.lower() }}-background lecce-{{ tour.theme.name.lower() }}-text lecce-btn position-absolute top-0 start-0 m-3">
             {{ tour.theme.name }}
         </span>
+        {% if tour.state == "active" %}
+        <span
+            class="badge lecce-positive-background lecce-primary-text lecce-btn position-absolute top-0 end-0 m-3">
+            Active
+        </span>
+        {% else %}
+        <span
+            class="badge lecce-negative-background lecce-primary-text lecce-btn position-absolute top-0 end-0 m-3">
+            Inactive
+        </span>
+        {% endif %}
 
         <p class="mb-4 overflow-hidden lecce-tour-card border-bottom">
             {{ tour.description }}
@@ -28,7 +39,8 @@
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-2">
                 {% if tour.guide.profile_photo is none %}
-                <a class="profile-initials lecce-text-impact fw-bold text-decoration-none" href="{{ url_for('profile', id=tour.guide.id) }}">
+                <a class="profile-initials lecce-text-impact fw-bold text-decoration-none"
+                    href="{{ url_for('profile', id=tour.guide.id) }}">
                     {{ tour.guide.first_name[0] }}{{ tour.guide.last_name[0] }}
                 </a>
                 {% else %}
@@ -44,7 +56,8 @@
                 </div>
             </div>
 
-            <a href="{{ url_for('tour', id=tour.id) }}" class="btn lecce-btn lecce-primary-background px-4">{% if current_user.role != "guide" %}Book{% else %}View{% endif %}</a>
+            <a href="{{ url_for('tour', id=tour.id) }}" class="btn lecce-btn lecce-primary-background px-4">{% if
+                current_user.role != "guide" and tour.state == "active" %}Book{% else %}View{% endif %}</a>
         </div>
     </div>
 

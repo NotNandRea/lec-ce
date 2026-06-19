@@ -22,6 +22,21 @@ def add_photos_to_tour(conn, cursor, tour, photos):
     return success
 
 @connect_db
+def update_photo_to_tour(conn, cursor, tour, photo_number, new_photo_path):
+
+    success = False
+    query = "UPDATE tour_photos SET path=(?) WHERE tour_id=(?) AND order_number=(?)"
+
+    try:
+        cursor.execute(query, (new_photo_path, tour.id, photo_number))
+        conn.commit()
+        success = True
+    except Exception as e:
+        print("ERROR:", str(e))
+        conn.rollback()
+    return success
+
+@connect_db
 def get_tour_photos(conn, cursor, tour):
     query="SELECT order_number, path FROM tour_photos WHERE tour_id=(?) ORDER BY order_number"
     cursor.execute(query, (tour.id,))

@@ -26,6 +26,29 @@ def add_stops_to_tour(conn, cursor, tour, stops):
     return success
 
 @connect_db
+def update_stops_of_tour(conn, cursor, tour, stops):
+
+    success = False
+    delete_query = "DELETE FROM stops WHERE tour_id=(?)"
+    insert_query = "INSERT INTO stops (tour_id, place_name, order_number) VALUES (?, ?, ?)"
+
+    try:
+        cursor.execute(delete_query, (tour.id,))
+        order_number = 1
+
+        for stop in stops:
+            cursor.execute(insert_query, (tour.id, stop, order_number))
+            order_number=order_number + 1
+        conn.commit()
+        success = True
+    except Exception as e:
+        print("ERROR:", str(e))
+        conn.rollback()
+        success = False
+
+    return success
+
+@connect_db
 def get_stops_by_tour(conn, cursor, tour):
 
     query = "SELECT order_number, place_name FROM stops WHERE tour_id=(?) ORDER BY order_number ASC"

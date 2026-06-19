@@ -102,6 +102,21 @@ def get_reservation_by_id(conn, cursor, reservation_id):
     return reservation_obj
 
 @connect_db
+def count_reservations_by_tour_id(conn, cursor, tour_id, state=None):
+
+    query="SELECT COUNT(*) as count FROM reservations, tour_occurrences WHERE reservations.occurrence_id = tour_occurrences.id AND tour_occurrences.tour_id=(?)"
+    parameters = (tour_id,)
+
+    if state is not None:
+        query += " AND reservations.state=(?)"
+        parameters += (state,)
+
+    cursor.execute(query, parameters)
+    count=cursor.fetchone()["count"]
+
+    return count
+
+@connect_db
 def update_reservation_state(conn, cursor, reservation_id, new_state):
 
     success=False
