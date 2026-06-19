@@ -228,7 +228,6 @@ def login():
 
 # NON-AUTH ROUTES
 
-#TODO: unify in one query with joins
 @login_required
 @app.route("/me")
 def my_profile():
@@ -339,7 +338,6 @@ def profile(id):
 
 # TOUR LISTING
 
-#TODO: unify in one query with joins
 @app.route("/")
 def home():
 
@@ -356,7 +354,6 @@ def home():
 
     return render_template("home.html", today=today, tours=tours)
 
-#TODO: unify in one query with joins
 #TODO: implement filtering
 @app.route("/tours/list")
 def tours():
@@ -851,7 +848,7 @@ def edit_tour_post(id):
     flash("Tour edited successfully", "positive")
     return redirect(url_for("tour", id=tour_obj.id))
 
-@app.route("/tours/delete/<id>")
+@app.route("/tours/delete/<id>", methods=["POST"])
 @login_required
 @guide_required
 def delete_tour(id):
@@ -878,7 +875,6 @@ def delete_tour(id):
 
 # BOOKING MANAGEMENT
 
-#TODO: implement if an extra participant email is already registered for the same occurrence
 @app.route("/tours/<id>/book", methods=["POST"])
 @login_required
 @participant_required
@@ -1022,7 +1018,6 @@ def book_tour(id):
     flash("Tour booked successfully", "positive")
     return redirect(url_for("my_profile"))
 
-#TODO: implement scadenza of the timer and guide side
 @app.route("/reservations/<id>")
 @login_required
 @participant_required
