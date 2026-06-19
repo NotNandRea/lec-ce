@@ -409,7 +409,6 @@ def new_tour():
 
     return render_template("new_tour.html", languages=languages, themes=themes, origin="new")
 
-#TODO: guides cannot create tours that overlap  with their tours
 @app.route("/tours/new", methods=["POST"])
 @login_required
 @guide_required
@@ -502,18 +501,39 @@ def new_tour_post():
             return redirect(url_for("new_tour"))
         selected_days_dict[day] = time
 
-    #check overlap with other tours of the guide
+
+    # check overlap inside the tour
+    checked_days = []
+
     for day in selected_days:
         time = selected_days_dict[day]
-        tours_times_durations = tours_dao.get_times_and_duration_of_tours_by_guide_id_and_day(current_user.id, day)
-        for tour_time, tour_duration in tours_times_durations:
-            if check_time.check_overlap(time, duration, tour_time, tour_duration):
-                flash("The time you choose for " + day + " overlaps with another tour", "negative")
+
+        for checked_day in checked_days:
+            checked_time = selected_days_dict[checked_day]
+
+            if check_time.check_week_overlap(day, time, duration, checked_day, checked_time, duration):
+                flash("The selected times overlap each other", "negative")
                 return redirect(url_for("new_tour"))
+
+        checked_days.append(day)
+
+
+    # check overlap with other tours of the guide
+    temp_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+
+    for day in selected_days:
+        time = selected_days_dict[day]
+
+        for temp_day in temp_days:
+            tours_times_durations = tours_dao.get_times_and_duration_of_tours_by_guide_id_and_day(current_user.id, temp_day)
+
+            for tour_time, tour_duration in tours_times_durations:
+                if check_time.check_week_overlap(day, time, duration, temp_day, tour_time, tour_duration):
+                    flash("The time you choose for " + day + " overlaps with another tour", "negative")
+                    return redirect(url_for("new_tour"))
 
     # stops validation
     stops = request.form.getlist("stops")
-    print(stops)
     if len(stops) < 4:
         flash("At least 4 stops must be added", "negative")
         return redirect(url_for("new_tour"))
@@ -590,7 +610,6 @@ def edit_tour(id):
 
 # BOOKING MANAGEMENT
 
-#TODO: implement overlap check
 #TODO: implement if an extra participant email is already registered for the same occurrence
 @app.route("/tours/<id>/book", methods=["POST"])
 @login_required
