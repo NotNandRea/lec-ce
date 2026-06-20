@@ -102,6 +102,19 @@ def get_reservation_by_id(conn, cursor, reservation_id):
     return reservation_obj
 
 @connect_db
+def get_active_reservations_by_occurrence_id(conn, cursor, occurrence_id):
+
+    query="SELECT * FROM reservations WHERE occurrence_id=(?) AND state='active'"
+    cursor.execute(query, (occurrence_id,))
+    reservations=cursor.fetchall()
+
+    reservation_list=[]
+    for reservation in reservations:
+        reservation_list.append(Reservation(reservation["id"], reservation["participant_id"], reservation["occurrence_id"], reservation["timestamp_booking"], reservation["state"]))
+
+    return reservation_list
+
+@connect_db
 def count_reservations_by_tour_id(conn, cursor, tour_id, state=None):
 
     query="SELECT COUNT(*) as count FROM reservations, tour_occurrences WHERE reservations.occurrence_id = tour_occurrences.id AND tour_occurrences.tour_id=(?)"

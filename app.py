@@ -371,6 +371,8 @@ def tours():
 
     return render_template("tours.html", today=today, tours=tours)
 
+#TODO: quando un tour finisce, le reservation attive vengono sottratte? perchè altrimenti il tour è sempre incancellabile
+# si potrebbe oltre che per attive, per data futura
 @app.route("/tour/<id>")
 def tour(id):
 
@@ -875,12 +877,55 @@ def delete_tour(id):
 
 
 # OCCURRENCE MANAGEMENT FOR GUIDES
+
+#TODO: cosa succede se tutte le persone hanno cancellato la prenotazione? forse dovrei cancellare l'occurrence
 @app.route("/occurrences/<id>")
 @login_required
 @guide_required
-def view_occurrences(id):
+def occurrence_details(id):
+
+    occurrence=occurrencies_dao.get_occurrence_by_id(id)
+    if occurrence is None:
+        flash("Occurrence not found", "negative")
+        return redirect(url_for("home"))
     
-    return render_template("occurrence_guide.html")
+    occurrence.tour = tours_dao.get_tour_by_id(occurrence.tour_id)
+    if occurrence.tour is None:
+        flash("Tour not found", "negative")
+        return redirect(url_for("home"))
+    
+    if occurrence.tour.guide_id != current_user.id:
+        flash("You are not authorized to view this occurrence", "negative")
+        return redirect(url_for("home"))
+    
+    occurrence.tour.language = languages_dao.get_language_by_id(occurrence.tour.language_id)["name"]
+    occurrence.tour.theme = themes_dao.get_theme_by_id(occurrence.tour.theme_id)
+    occurrence.tour.stops = stops_dao.get_first_stop_by_tour(occurrence.tour)
+    occurrence.tour.theme = themes_dao.get_theme_by_id(occurrence.tour.theme_id)
+
+    participants = []
+    participants_number = 0
+
+    reservations = reservations_dao.get_active_reservations_by_occurrence_id(occurrence.id)
+    for reservation in reservations:
+        temp = {}
+        participant = users_dao.get_user_by_id(reservation.participant_id)
+        temp["Registered"] = participant
+        participants_number = participants_number + 1
+        extra_participants = extra_participants_dao.get_extra_participants_by_reservation_id(reservation.id)
+        temp["Extra"] = []
+        i=0
+        for extra_participant in extra_participants:
+            temp["Extra"].append(extra_participant)
+            i = i + 1
+            participants_number = participants_number + 1
+        participants.append(temp)
+
+    tour_datetime = datetime.combine(occurrence.date, datetime.strptime(occurrence.start_time, "%H:%M").time())
+    seconds_remaining = int((tour_datetime - datetime.now()).total_seconds())
+
+
+    return render_template("occurrence_guide.html", occurrence=occurrence, participants=participants, participants_number=participants_number, seconds_remaining=seconds_remaining)
 
 # BOOKING MANAGEMENT
 

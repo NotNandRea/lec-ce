@@ -2,6 +2,7 @@
 
 {% block content %}
 
+<!--TODO: implement tour departed without javascript-->
 <main class="container py-5">
     <div class="row justify-content-center">
         <div class="col-8">
@@ -29,15 +30,16 @@
                                         The tour starts in:
                                     </h2>
                                     <span class="fs-6">
-                                        Departure: <span class="fw-bold">31/05/2026 - 10:00</span>
+                                        Departure: <span class="fw-bold">{{ occurrence.date }} - {{
+                                            occurrence.start_time }}</span>
                                     </span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-5" id="limitNotExpired">
-                            <div id="cancelCountdown" class="d-flex justify-content-end align-items-start gap-2"
-                                seconds="{{ seconds_remaining }}">
+                            <div id="startCountdown" class="d-flex justify-content-end align-items-start gap-2"
+                                seconds="5">
 
                                 <div class="d-flex flex-column align-items-center">
                                     <div class="lecce-profile-date lecce-primary-color fw-bold fs-4 rounded-4"
@@ -76,10 +78,16 @@
                                     </div>
                                     <div class="mt-1 fs-6">SECONDS</div>
                                 </div>
-
+                            </div>
+                            <div class="d-none col-5" id="startedExpired">
+                                <!--TODO: fix this text-->
+                                <div class="d-flex flex-column align-items-center">
+                                    <div class="lecce-positive-color fw-bold fs-1 rounded-4">
+                                        STARTED
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </section>
@@ -95,7 +103,7 @@
                     <div class="row g-4 mb-4">
 
                         <span class="lecce-text-impact fw-bold lecce-secondary-color mb-0 fs-6">
-                            Barocco & Meraviglie
+                            {{ occurrence.tour.name }}
                         </span>
 
                         <div class="col-6">
@@ -104,7 +112,7 @@
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bolder">WHEN</div>
                                     <div class="fw-semibold lecce-secondary-color">
-                                        31/05/2026 - 10:00
+                                        {{ occurrence.date }} - {{ occurrence.start_time }}
                                     </div>
                                 </div>
                             </div>
@@ -116,7 +124,7 @@
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Duration</div>
                                     <div class="fw-semibold lecce-secondary-color">
-                                        150m
+                                        {{ occurrence.tour.duration }}m
                                     </div>
                                 </div>
                             </div>
@@ -129,7 +137,7 @@
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Meeting point
                                     </div>
                                     <div class="fw-semibold lecce-secondary-color">
-                                        Porta Napoli
+                                        {{ occurrence.tour.stops }}
                                     </div>
                                 </div>
                             </div>
@@ -141,7 +149,7 @@
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Language</div>
                                     <div class="fw-semibold lecce-secondary-color">
-                                        Italian
+                                        {{ occurrence.tour.language }}
                                     </div>
                                 </div>
                             </div>
@@ -154,7 +162,7 @@
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Participants
                                     </div>
                                     <div class="fw-semibold lecce-secondary-color">
-                                        9 people
+                                        {{ participants_number }} people
                                     </div>
                                 </div>
                             </div>
@@ -162,11 +170,11 @@
 
                         <div class="col-6">
                             <div class="d-flex gap-3">
-                                <i class="bi bi-check2-square lecce-primary-color"></i>
+                                <i class="bi bi-palette lecce-primary-color"></i>
                                 <div>
-                                    <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Present</div>
+                                    <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Theme</div>
                                     <div class="fw-semibold lecce-secondary-color">
-                                        6 people
+                                        {{ occurrence.tour.theme.name }}
                                     </div>
                                 </div>
                             </div>
@@ -187,43 +195,60 @@
                         </h2>
                     </div>
 
-
+                    {% if participants_number == 0 %}
+                    <p class="mb-0 d-flex justify-content-center fw-bold lecce-secondary-color">
+                        No participants registered for this occurrence.
+                    </p>
+                    {% else %}
+                    {% for participants_group in participants %}
                     <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
 
                         <div class="d-flex align-items-center gap-3">
-                            <a href="#" class="text-decoration-none">
-                                <div class="profile-initials fw-bold p-2">GV</div>
+                            <a href="{{ url_for('profile', id=participants_group['Registered'].id) }}"
+                                class="text-decoration-none">
+                                {% if participants_group["Registered"].profile_photo is not none %}
+                                <div class="profile-initials p-1"><img
+                                        src="{{ url_for('static', filename='images/profile_photos/' ~ participants_group["
+                                        Registered"].profile_photo) }}" alt="Profile Photo"
+                                        class="img-fluid rounded-circle object-fit-cover"></div>
+                                {% else %}
+                                <div class="profile-initials fw-bold p-2">{{
+                                    participants_group["Registered"].first_name[0].upper() }}{{
+                                    participants_group["Registered"].last_name[0].upper() }}</div>
+                                {% endif %}
                             </a>
 
                             <div>
                                 <div class="fw-bold lecce-secondary-color">
-                                    Giulia Verdi
+                                    {{ participants_group["Registered"].first_name }} {{
+                                    participants_group["Registered"].last_name }}
                                 </div>
                                 <div class="fs-6">
-                                    g.verdi@email.it
+                                    {{ participants_group["Registered"].email }}
                                 </div>
                             </div>
                         </div>
 
                         <span class="badge lecce-btn lecce-secondary-background lecce-primary-color">
-                            Owner
+                            Registered
                         </span>
 
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                    {% for extra in participants_group["Extra"] %}
+                    <div class="d-flex justify-content-between align-items-center py-3 border-bottom ms-5">
 
                         <div class="d-flex align-items-center gap-3">
                             <div class="profile-initials fw-bold p-2">
-                                PV
+                                {{ extra.first_name[0].upper() }}{{ extra.last_name[0].upper() }}
                             </div>
 
                             <div>
                                 <div class="fw-bold lecce-secondary-color">
-                                    Paolo Verdi
+                                    {{ extra.first_name }} {{ extra.last_name }}
                                 </div>
                                 <div class="fs-6">
-                                    p.verdi@email.it
+                                    {{ extra.email }}
                                 </div>
                             </div>
                         </div>
@@ -233,6 +258,10 @@
                         </span>
 
                     </div>
+                    {% endfor %}
+
+                    {% endfor %}
+                    {% endif %}
 
                 </div>
             </section>
@@ -248,41 +277,54 @@
                         Not sent
                     </span>
                 </div>
+                <form method="POST" action="#" enctype="multipart/form-data" class="d-none" id="reportForm">
 
-                <div class="row g-3">
-                    <div class="col-4">
-                        <div class="lecce-default-background border rounded-5 p-4">
-                            <div class="lecce-text-impact lecce-primary-color fw-bold fs-6 mb-2">
-                                Effective participants
+                    <div class="row g-3">
+                        <div class="col-4">
+                            <div class="lecce-default-background border rounded-5 p-4">
+                                <div class="lecce-text-impact lecce-primary-color fw-bold fs-6 mb-2">
+                                    Effective participants
+                                </div>
+                                <div class="lecce-text-impact lecce-secondary-color fw-bold fs-1 gap-3">
+                                    <span id="effectiveParticipants">0</span><span class="mx-2">/</span><span
+                                        id="totalParticipants">{{ participants_number }}</span>
+                                </div>
+                                <p class="mb-0">
+                                    Select the participants who took part in the tour.
+                                </p>
                             </div>
-                            <div class="lecce-text-impact lecce-secondary-color fw-bold fs-1 gap-3">
-                                <span id="effectiveParticipants">6</span><span class="mx-2">/</span><span
-                                    id="totalParticipants">9</span>
-                            </div>
-                            <p class="mb-0">
-                                Select the participants who took part in the tour.
-                            </p>
+                        </div>
+
+                        <div class="col-8">
+                            <label for="groupPhoto" class="form-label fw-bold lecce-secondary-color">
+                                Upload group photo
+                            </label>
+                            <input type="file" class="form-control rounded-4" id="groupPhoto" name="groupPhoto"
+                                accept="image/png, image/jpeg, image/jpg">
                         </div>
                     </div>
 
-                    <div class="col-8">
-                        <label for="groupPhoto" class="form-label fw-bold lecce-secondary-color">
-                            Upload group photo
-                        </label>
-                        <input type="file" class="form-control rounded-4" id="groupPhoto" name="groupPhoto"
-                            accept="image/png, image/jpeg, image/jpg">
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="submit" class="btn lecce-btn lecce-primary-background p-3 fw-bold">
+                            <i class="bi bi-check-lg me-2"></i>
+                            Send report
+                        </button>
                     </div>
-                </div>
 
-                <div class="d-flex justify-content-end mt-2">
-                    <button type="button" class="btn lecce-btn lecce-primary-background p-3 fw-bold">
-                        <i class="bi bi-check-lg me-2"></i>
-                        Send report
-                    </button>
+                </form>
+
+                <div id="tooEarly">
+                    <p class="mb-0 d-flex justify-content-center fw-bold lecce-secondary-color">
+                        The report form will be available after the tour starts.
+                    </p>
                 </div>
             </section>
         </div>
     </div>
 </main>
 
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='javascript/countdown_occurrence.js') }}"></script>
 {% endblock %}
