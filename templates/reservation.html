@@ -218,8 +218,7 @@
                             </div>
                         </div>
 
-                        <!--TODO: implement mail to-->
-                        <a href="#" class="btn lecce-btn text-black border lecce-secondary-color">
+                        <a href="mailto:{{ reservation.occurrence.tour.guide.email }}?subject=Informations about tour: {{ reservation.occurrence.tour.title }}" class="btn lecce-btn text-black border lecce-secondary-color">
                             <i class="bi bi-envelope me-1"></i>
                             Contact
                         </a>
@@ -307,7 +306,7 @@
 
                 <!-- TODO: implement export calendar -->
                 <div class="col-6">
-                    <a href="#" class="btn lecce-btn lecce-secondary-background shadow-sm w-100 py-3 fw-bold">
+                    <a href="{{ url_for('add_reservation_to_calendar', id=reservation.id) }}" class="btn lecce-btn lecce-secondary-background shadow-sm w-100 py-3 fw-bold">
                         <i class="bi bi-calendar-plus me-2"></i>
                         Add to calendar
                     </a>

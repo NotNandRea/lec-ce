@@ -9,9 +9,9 @@
 
         <h1 class="lecce-text-impact lecce-secondary-color fw-bold mb-4">
             {% if user.id == current_user.id %}
-                My Profile
+            My Profile
             {% else %}
-                {{ user.first_name }}'s Profile
+            {{ user.first_name }}'s Profile
             {% endif %}
         </h1>
 
@@ -37,9 +37,9 @@
                     <div class="d-flex flex-column align-items-start gap-2">
                         <span class="lecce-text-impact lecce-secondary-color fw-bold fs-1">
                             {% if user.id == current_user.id %}
-                                Hi, {{ user.first_name }}!
+                            Hi, {{ user.first_name }}!
                             {% else %}
-                                {{ user.first_name }} {{ user.last_name }}
+                            {{ user.first_name }} {{ user.last_name }}
                             {% endif %}
                         </span>
 
@@ -179,9 +179,17 @@
                 </div>
 
                 {% if user.id == current_user.id %}
-                <a href="{{ url_for('personal_schedule') }}" class="lecce-primary-color fw-bold text-decoration-none fs-6">
-                    {% if user.role == 'guide' %}View my schedule{% else %}View my bookings{% endif %}
-                </a>
+                <div class="d-flex flex-row align-items-center gap-2">
+                    <a href="{{ url_for('my_calendar') }}"
+                        class="btn lecce-btn lecce-secondary-background shadow-sm p-3 fw-bold">
+                        <i class="bi bi-calendar3 me-1"></i>
+                        Download full calendar
+                    </a>
+                    <a href="{{ url_for('personal_schedule') }}"
+                        class="lecce-primary-color fw-bold text-decoration-none fs-6">
+                        {% if user.role == 'guide' %}View my schedule{% else %}View my bookings{% endif %}
+                    </a>
+                </div>
                 {% endif %}
 
             </div>

@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-from flask import Flask, flash, redirect, render_template, request, url_for
+from flask import Flask, flash, redirect, render_template, request, url_for, Response
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from database.models import occurrence
@@ -34,6 +34,8 @@ import uuid
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from datetime import date, datetime, timedelta
+from ics import Calendar, Event
+from zoneinfo import ZoneInfo
 
 
 
@@ -373,8 +375,6 @@ def tours():
 
     return render_template("tours.html", today=today, tours=tours)
 
-#TODO: quando un tour finisce, le reservation attive vengono sottratte? perchè altrimenti il tour è sempre incancellabile
-# si potrebbe oltre che per attive, per data futura
 @app.route("/tour/<id>")
 def tour(id):
 
@@ -396,7 +396,7 @@ def tour(id):
     theme=tour.theme.name.lower()   
     avaiable_days=days_to_numbers.days_to_numbers(tour)
 
-    has_active_reservations=reservations_dao.count_reservations_by_tour_id(tour.id, "active")
+    has_active_reservations=reservations_dao.count_reservations_by_tour_id(tour.id, "active", today)
     has_reservations=reservations_dao.count_reservations_by_tour_id(tour.id)
 
     return render_template("tour.html", tour=tour, theme=theme, avaiable_days=avaiable_days, today=today, has_active_reservations=has_active_reservations, has_reservations=has_reservations)
@@ -856,6 +856,9 @@ def edit_tour_post(id):
 @login_required
 @guide_required
 def delete_tour(id):
+
+    today = date.today()
+
     tour=tours_dao.get_tour_by_id(id)
 
     if tour is None:
@@ -866,7 +869,7 @@ def delete_tour(id):
         flash("You are not authorized to delete this tour", "negative")
         return redirect(url_for("home"))
 
-    if reservations_dao.count_reservations_by_tour_id(tour.id, "active") > 0:
+    if reservations_dao.count_reservations_by_tour_id(tour.id, "active", today) > 0:
         flash("You cannot edit a tour that has active reservations", "negative")
         return redirect(url_for("home"))
     
@@ -880,7 +883,6 @@ def delete_tour(id):
 
 # OCCURRENCE MANAGEMENT FOR GUIDES
 
-#TODO: cosa succede se tutte le persone hanno cancellato la prenotazione? forse dovrei cancellare l'occurrence
 @app.route("/occurrences/<id>")
 @login_required
 @guide_required
@@ -996,7 +998,7 @@ def submit_report(id):
     
     return redirect(url_for("occurrence_details", id=id))
 
-# BOOKING MANAGEMENT
+# RESERVATIONS MANAGEMENT
 
 @app.route("/tours/<id>/book", methods=["POST"])
 @login_required
@@ -1225,3 +1227,80 @@ def delete_reservation(id):
     
     flash("Reservation canceled successfully", "positive")
     return redirect(url_for("my_profile"))
+
+@app.route("/reservations/<id>/calendar")
+@login_required
+@participant_required
+def add_reservation_to_calendar(id):
+
+    zone = ZoneInfo("Europe/Rome")
+    
+    #check ownership of the reservation
+    reservation=reservations_dao.get_reservation_by_id(id)
+    if reservation is None:
+        flash("Reservation not found", "negative")
+        return redirect(url_for("my_profile"))
+    
+    if reservation.participant_id != current_user.id:
+        flash("You are not authorized to view this reservation", "negative")
+        return redirect(url_for("my_profile"))
+    
+    reservation.occurrence = occurrencies_dao.get_occurrence_by_id(reservation.occurrence_id)
+    reservation.occurrence.tour = tours_dao.get_tour_by_id(reservation.occurrence.tour_id)
+
+    calendar = Calendar()
+    event = Event()
+
+    event.name = reservation.occurrence.tour.title
+    start_datetime = datetime.combine(reservation.occurrence.date, datetime.strptime(reservation.occurrence.start_time, "%H:%M").time(), tzinfo=zone)
+    end_datetime = start_datetime + timedelta(minutes=reservation.occurrence.tour.duration)
+    event.begin = start_datetime
+    event.end = end_datetime
+
+    calendar.events.add(event)
+
+    response = Response(calendar.serialize(), mimetype='text/calendar')
+
+    return response
+
+@app.route("/me/calendar")
+@login_required
+def my_calendar():
+
+    calendar = Calendar()
+    zone = ZoneInfo("Europe/Rome")
+
+    if current_user.role == "guide":
+        occurrences = occurrencies_dao.get_not_empty_occurrences_by_guide_id(current_user.id)
+        for occurrence in occurrences:
+            occurrence.tour = tours_dao.get_tour_by_id(occurrence.tour_id)
+            occurrence.reservations = reservations_dao.get_active_reservations_by_occurrence_id(occurrence.id)
+
+            event = Event()
+            event.name = occurrence.tour.title
+            start_datetime = datetime.combine(occurrence.date, datetime.strptime(occurrence.start_time, "%H:%M").time(), tzinfo=zone)
+            end_datetime = start_datetime + timedelta(minutes=occurrence.tour.duration)
+            event.begin = start_datetime
+            event.end = end_datetime
+            
+            calendar.events.add(event)
+
+    else:
+        reservations = reservations_dao.get_active_reservations_by_participant_id(current_user.id)
+
+        for reservation in reservations:
+            reservation.occurrence = occurrencies_dao.get_occurrence_by_id(reservation.occurrence_id)
+            reservation.occurrence.tour = tours_dao.get_tour_by_id(reservation.occurrence.tour_id)
+
+            event = Event()
+            event.name = reservation.occurrence.tour.title
+            start_datetime = datetime.combine(reservation.occurrence.date, datetime.strptime(reservation.occurrence.start_time, "%H:%M").time(), tzinfo=zone)
+            end_datetime = start_datetime + timedelta(minutes=reservation.occurrence.tour.duration)
+            event.begin = start_datetime
+            event.end = end_datetime
+
+            calendar.events.add(event)
+
+    response = Response(calendar.serialize(), mimetype='text/calendar')
+
+    return response

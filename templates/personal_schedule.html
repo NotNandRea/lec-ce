@@ -15,9 +15,16 @@
                     MY SCHEDULE
                 </h1>
 
-                <span class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-2">
-                    {% if current_user.role == 'guide' %}Every tour I guide{% else %}My Bookings{% endif %}
-                </span>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-2">
+                        {% if current_user.role == 'guide' %}Every tour I guide{% else %}My Bookings{% endif %}
+                    </span>
+                    <a href="{{ url_for('my_calendar') }}"
+                        class="btn lecce-btn lecce-secondary-background shadow-sm p-3 fw-bold">
+                        <i class="bi bi-calendar3 me-1"></i>
+                        Download full calendar
+                    </a>
+                </div>
 
             </div>
 

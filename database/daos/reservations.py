@@ -115,7 +115,7 @@ def get_active_reservations_by_occurrence_id(conn, cursor, occurrence_id):
     return reservation_list
 
 @connect_db
-def count_reservations_by_tour_id(conn, cursor, tour_id, state=None):
+def count_reservations_by_tour_id(conn, cursor, tour_id, state=None, after_date=None):
 
     query="SELECT COUNT(*) as count FROM reservations, tour_occurrences WHERE reservations.occurrence_id = tour_occurrences.id AND tour_occurrences.tour_id=(?)"
     parameters = (tour_id,)
@@ -123,6 +123,9 @@ def count_reservations_by_tour_id(conn, cursor, tour_id, state=None):
     if state is not None:
         query += " AND reservations.state=(?)"
         parameters += (state,)
+    if after_date is not None:
+        query += " AND tour_occurrences.date >= (?)"
+        parameters += (after_date.strftime("%Y-%m-%d"),)
 
     cursor.execute(query, parameters)
     count=cursor.fetchone()["count"]
