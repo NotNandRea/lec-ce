@@ -11,6 +11,7 @@ from database.models.theme import Theme
 from database.models.occurrence import Occurrence
 from database.models.reservation import Reservation
 from database.models.extra_participant import Extra_Participant
+from database.models.report import Report
 
 from database.daos import reservations, users as users_dao
 from database.daos import tours as tours_dao
@@ -21,6 +22,7 @@ from database.daos import stops as stops_dao
 from database.daos import occurrencies as occurrencies_dao
 from database.daos import reservations as reservations_dao
 from database.daos import extra_participants as extra_participants_dao
+from database.daos import reports as reports_dao
 
 from utilities import check_date, check_email, check_password, images, days_to_numbers, check_time, date_to_day
 from utilities.role_decorators import guide_required
@@ -924,8 +926,75 @@ def occurrence_details(id):
     tour_datetime = datetime.combine(occurrence.date, datetime.strptime(occurrence.start_time, "%H:%M").time())
     seconds_remaining = int((tour_datetime - datetime.now()).total_seconds())
 
+    report = reports_dao.get_report_by_occurrence_id(occurrence.id)
 
-    return render_template("occurrence_guide.html", occurrence=occurrence, participants=participants, participants_number=participants_number, seconds_remaining=seconds_remaining)
+    return render_template("occurrence_guide.html", occurrence=occurrence, participants=participants, participants_number=participants_number, seconds_remaining=seconds_remaining, report=report)
+
+@app.route("/occurrences/<id>/report", methods=["POST"])
+@login_required
+@guide_required
+def submit_report(id):
+    
+    occurrence=occurrencies_dao.get_occurrence_by_id(id)
+    if occurrence is None:
+        flash("Occurrence not found", "negative")
+        return redirect(url_for("home"))
+    
+    occurrence.tour = tours_dao.get_tour_by_id(occurrence.tour_id)
+    if occurrence.tour is None:
+        flash("Tour not found", "negative")
+        return redirect(url_for("home"))
+    
+    if occurrence.tour.guide_id != current_user.id:
+        flash("You are not authorized to view this occurrence", "negative")
+        return redirect(url_for("home"))
+    
+    #check if the occurrence happened
+    tour_datetime = datetime.combine(occurrence.date, datetime.strptime(occurrence.start_time, "%H:%M").time())
+    if tour_datetime > datetime.now():
+        flash("This occurrence has not happened yet", "negative")
+        return redirect(url_for("occurrence_details", id=id))
+
+    # number validation
+    participants_number = request.form.get("effectiveParticipants")
+    if participants_number in [None, ""]:
+        flash("Invalid number of participants", "negative")
+        return redirect(url_for("occurrence_details", id=id))
+    if not participants_number.isdigit():
+        flash("Invalid number of participants", "negative")
+        return redirect(url_for("occurrence_details", id=id))
+    participants_number = int(participants_number)
+
+    reserved_number= occurrencies_dao.get_participants_number(occurrence) + occurrencies_dao.get_extra_participants_number(occurrence)
+    if participants_number > reserved_number or participants_number < 0:
+        flash("Too high or low number of participants", "negative")
+        return redirect(url_for("occurrence_details", id=id))
+    
+    # image validation
+    report_image=request.files.get("reportImage", None)
+    if report_image is None:
+        flash("Report image is required", "negative")
+        return redirect(url_for("occurrence_details", id=id))
+    if images.is_image(report_image) == False:
+        flash("The uploaded file is not an image", "negative")
+        return redirect(url_for("occurrence_details", id=id))
+    if images.is_16_9able(report_image) == False:
+        flash(f"The uploaded photo is too small and cannot be resized to 16:9, minimum size is {TOUR_PHOTO_IMG_WIDTH}x{TOUR_PHOTO_IMG_HEIGHT}", "negative")
+        return redirect(url_for("occurrence_details", id=id))
+    
+    extension=secure_filename(report_image.filename).split(".")[-1].lower()
+    report_image_filename=str(uuid.uuid4()) + "." + extension
+    report_image.filename = report_image_filename
+    report_image = images.to_16_9(report_image)
+    report_image.save("static/images/report_photos/" + report_image_filename)
+
+    # report creation
+    report_obj=Report(str(uuid.uuid4()), occurrence.id, participants_number, report_image_filename)
+    if not reports_dao.add_report(report_obj):
+        flash("An error occurred, report not created", "negative")
+        return redirect(url_for("occurrence_details", id=id))
+    
+    return redirect(url_for("occurrence_details", id=id))
 
 # BOOKING MANAGEMENT
 
@@ -1034,7 +1103,7 @@ def book_tour(id):
     if participant_number > tour.max_participants:
         flash("The number of participants exceeds the maximum allowed for this tour", "negative")
         return redirect(url_for("tour", id=id))
-    if participant_number + occurrencies_dao.get_participants_number(occurrence_obj) > tour.max_participants:
+    if participant_number + occurrencies_dao.get_participants_number(occurrence_obj) + occurrencies_dao.get_extra_participants_number(occurrence_obj) > tour.max_participants:
         flash("The number of participants exceeds the maximum allowed for this tour", "negative")
         return redirect(url_for("tour", id=id))
 

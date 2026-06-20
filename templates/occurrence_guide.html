@@ -37,9 +37,10 @@
                             </div>
                         </div>
 
+                        {% if report is none %}
                         <div class="col-5" id="limitNotExpired">
                             <div id="startCountdown" class="d-flex justify-content-end align-items-start gap-2"
-                                seconds="5">
+                                seconds="{{ seconds_remaining }}">
 
                                 <div class="d-flex flex-column align-items-center">
                                     <div class="lecce-profile-date lecce-primary-color fw-bold fs-4 rounded-4"
@@ -79,8 +80,7 @@
                                     <div class="mt-1 fs-6">SECONDS</div>
                                 </div>
                             </div>
-                            <div class="d-none col-5" id="startedExpired">
-                                <!--TODO: fix this text-->
+                            <div class="d-none" id="startedExpired">
                                 <div class="d-flex flex-column align-items-center">
                                     <div class="lecce-positive-color fw-bold fs-1 rounded-4">
                                         STARTED
@@ -88,6 +88,15 @@
                                 </div>
                             </div>
                         </div>
+                        {% else %}
+                        <div class="col-5" id="startedExpired">
+                            <div class="d-flex flex-column align-items-center">
+                                <div class="lecce-positive-color fw-bold fs-1 rounded-4">
+                                    REPORTED
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </section>
@@ -273,34 +282,45 @@
                         Report post-tour
                     </h2>
 
+                    {% if report is none %}
                     <span class="badge lecce-btn lecce-secondary-background">
                         Not sent
                     </span>
+                    {% else %}
+                    <span class="badge lecce-btn lecce-positive-background">
+                        Sent
+                    </span>
+                    {% endif %}
                 </div>
-                <form method="POST" action="#" enctype="multipart/form-data" class="d-none" id="reportForm">
+                {% if participants_number > 0 %}
+                {% if report is none %}
+                <form method="POST" action="{{ url_for('submit_report', id=occurrence.id) }}"
+                    enctype="multipart/form-data" class="d-none" id="reportForm">
 
                     <div class="row g-3">
                         <div class="col-4">
                             <div class="lecce-default-background border rounded-5 p-4">
-                                <div class="lecce-text-impact lecce-primary-color fw-bold fs-6 mb-2">
+                                <label for="effectiveParticipants"
+                                    class="lecce-text-impact lecce-primary-color fw-bold fs-6 mb-2">
                                     Effective participants
+                                </label>
+                                <div class="row lecce-text-impact lecce-secondary-color fw-bold fs-1">
+                                    <input id="effectiveParticipants" name="effectiveParticipants"
+                                        class="col-5 lecce-default-background border" type="number" min="0"
+                                        max="{{ participants_number }}" value="0" required>
+                                    <span class="col-2">/</span>
+                                    <span id="totalParticipants" class="col-5">{{ participants_number }}</span>
                                 </div>
-                                <div class="lecce-text-impact lecce-secondary-color fw-bold fs-1 gap-3">
-                                    <span id="effectiveParticipants">0</span><span class="mx-2">/</span><span
-                                        id="totalParticipants">{{ participants_number }}</span>
-                                </div>
-                                <p class="mb-0">
-                                    Select the participants who took part in the tour.
-                                </p>
                             </div>
                         </div>
 
                         <div class="col-8">
-                            <label for="groupPhoto" class="form-label fw-bold lecce-secondary-color">
+                            <label for="reportImage" class="form-label fw-bold lecce-secondary-color">
                                 Upload group photo
                             </label>
-                            <input type="file" class="form-control rounded-4" id="groupPhoto" name="groupPhoto"
-                                accept="image/png, image/jpeg, image/jpg">
+                            <input type="file" class="form-control rounded-4" id="reportImage" name="reportImage"
+                                accept="image/png, image/jpeg, image/jpg" required>
+                            <p class="mt-3 ms-1">The photo must have minimum dimensions of 533x300 pixels.</p>
                         </div>
                     </div>
 
@@ -318,6 +338,41 @@
                         The report form will be available after the tour starts.
                     </p>
                 </div>
+                {% else %}
+                <div>
+                    <div class="row g-3">
+                        <div class="col-4">
+                            <div class="lecce-default-background border rounded-5 p-4">
+                                <span class="lecce-text-impact lecce-primary-color fw-bold fs-6 mb-2">
+                                    Effective participants
+                                </span>
+                                <div class="row lecce-text-impact lecce-secondary-color fw-bold fs-1">
+                                    <span class="col-5">{{ report.actual_participants }}</span>
+                                    <span class="col-2">/</span>
+                                    <span id="totalParticipants" class="col-5">{{ participants_number }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-8">
+                            <span class="fw-bold lecce-secondary-color">
+                                Uploaded photo
+                            </span>
+                            <div class="mt-2">
+                                <img src="{{ url_for('static', filename='images/report_photos/' ~ report.photo_path) }}"
+                                    alt="Report Photo" class="img-fluid rounded-4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% else %}
+                <div>
+                    <p class="mb-0 d-flex justify-content-center fw-bold lecce-secondary-color">
+                        Report unavailable: no participants registered for this occurrence.
+                    </p>
+                </div>
+                {% endif %}
             </section>
         </div>
     </div>

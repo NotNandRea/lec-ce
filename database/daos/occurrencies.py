@@ -36,11 +36,20 @@ def add_occurrence(conn, cursor, occurrence):
 @connect_db
 def get_participants_number(conn, cursor, occurrence):
 
-    query="SELECT COUNT(*) as num_participants FROM reservations WHERE occurrence_id=(?)"
+    query="SELECT COUNT(*) as num_participants FROM reservations WHERE occurrence_id=(?) AND state = 'active'"
     cursor.execute(query, (occurrence.id,))
     num_participants=cursor.fetchone()
 
     return int(num_participants["num_participants"])
+
+@connect_db
+def get_extra_participants_number(conn, cursor, occurrence):
+
+    query="SELECT COUNT(*) as num_extra_participants FROM extra_participants, reservations WHERE extra_participants.reservation_id = reservations.id AND reservations.occurrence_id=(?) AND reservations.state = 'active'"
+    cursor.execute(query, (occurrence.id,))
+    num_extra_participants=cursor.fetchone()
+
+    return int(num_extra_participants["num_extra_participants"])
 
 @connect_db
 def get_occurrence_by_id(conn, cursor, occurrence_id):
@@ -59,7 +68,7 @@ def get_occurrence_by_id(conn, cursor, occurrence_id):
 @connect_db
 def get_not_empty_occurrences_by_guide_id(conn, cursor, guide_id, limit=None, after_date=None, reverse_order=False):
 
-    query="SELECT DISTINCT tour_occurrences.* FROM tour_occurrences, reservations, tours WHERE tour_occurrences.id = reservations.occurrence_id AND tour_occurrences.tour_id = tours.id AND tours.guide_id = ? AND reservations.state != 'canceled'"
+    query="SELECT DISTINCT tour_occurrences.* FROM tour_occurrences, reservations, tours WHERE tour_occurrences.id = reservations.occurrence_id AND tour_occurrences.tour_id = tours.id AND tours.guide_id = ? AND reservations.state = 'active'"
     parameters = (guide_id,)
 
     if after_date is not None:
