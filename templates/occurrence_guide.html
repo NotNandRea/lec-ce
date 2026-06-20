@@ -311,6 +311,9 @@
                                     <span class="col-2">/</span>
                                     <span id="totalParticipants" class="col-5">{{ participants_number }}</span>
                                 </div>
+                                <div class="progress mt-2">
+                                    <div id="participantsProgress" class="progress-bar lecce-primary-background"></div>
+                                </div>
                             </div>
                         </div>
 
@@ -347,9 +350,12 @@
                                     Effective participants
                                 </span>
                                 <div class="row lecce-text-impact lecce-secondary-color fw-bold fs-1">
-                                    <span class="col-5">{{ report.actual_participants }}</span>
+                                    <span id="effectiveParticipants" class="col-5">{{ report.actual_participants }}</span>
                                     <span class="col-2">/</span>
                                     <span id="totalParticipants" class="col-5">{{ participants_number }}</span>
+                                </div>
+                                <div class="progress mt-2">
+                                    <div id="participantsProgress" class="progress-bar lecce-primary-background"></div>
                                 </div>
                             </div>
                         </div>
@@ -382,4 +388,5 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='javascript/countdown_occurrence.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/progress.js') }}"></script>
 {% endblock %}
