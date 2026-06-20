@@ -873,6 +873,15 @@ def delete_tour(id):
     flash("Tour deleted successfully", "positive")
     return redirect(url_for("home"))
 
+
+# OCCURRENCE MANAGEMENT FOR GUIDES
+@app.route("/occurrences/<id>")
+@login_required
+@guide_required
+def view_occurrences(id):
+    
+    return render_template("occurrence_guide.html")
+
 # BOOKING MANAGEMENT
 
 @app.route("/tours/<id>/book", methods=["POST"])
