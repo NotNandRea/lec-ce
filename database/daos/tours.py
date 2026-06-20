@@ -7,14 +7,44 @@ from utilities.db_connection import connect_db
 #CORE FUNCTIONS
 
 @connect_db
-def get_tours(conn, cursor, limit=None):
+def get_tours(conn, cursor, limit=None, state=None, weekday=None, duration_start=None, duration_end=None, language=None, theme=None, max_participants=None):
 
-    query="SELECT * FROM tours"
+    query="SELECT DISTINCT tours.* FROM tours, tour_week_slots WHERE tours.id = tour_week_slots.tour_id"
+    parameters = ()
+
+    if state is not None:
+        query += " AND state=(?)"
+        parameters += (state,)
+
+    if weekday is not None:
+        query += " AND day=(?)"
+        parameters += (weekday,)
+
+    if duration_start is not None:
+        query += " AND duration >= (?)"
+        parameters += (duration_start,)
+
+    if duration_end is not None:
+        query += " AND duration <= (?)"
+        parameters += (duration_end,)
+
+    if language is not None:
+        query += " AND language_id=(?)"
+        parameters += (language,)
+
+    if theme is not None:
+        query += " AND theme_id=(?)"
+        parameters += (theme,)
+
+    if max_participants is not None:
+        query += " AND max_participants<=(?)"
+        parameters += (max_participants,)
+
     if limit is not None:
         query += " LIMIT (?)"
-        cursor.execute(query, (limit,))
-    else:
-        cursor.execute(query)
+        parameters += (limit,)
+
+    cursor.execute(query, parameters)
     tours=cursor.fetchall()
 
     tours_list=[]

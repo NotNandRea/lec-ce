@@ -346,8 +346,10 @@ def profile(id):
 def home():
 
     today=date.today()
+    languages=languages_dao.get_languages()
+    themes=themes_dao.get_themes()
     
-    tours=tours_dao.get_tours(8)
+    tours=tours_dao.get_tours(limit=8, state="active")
 
     for tour in tours:
         tour.photos=photos_dao.get_first_photo(tour)
@@ -356,15 +358,84 @@ def home():
         tour.stops=stops_dao.get_first_stop_by_tour(tour)
         tour.guide = users_dao.get_user_by_id(tour.guide_id)
 
-    return render_template("home.html", today=today, tours=tours)
+    return render_template("home.html", today=today, tours=tours, languages=languages, themes=themes)
 
 #TODO: implement filtering
 @app.route("/tours/list")
 def tours():
 
     today=date.today()
+
+    # weekday check and filtering
+    weekday_allowed = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    weekday = request.args.get("weekday", "Any day")
+    if weekday not in weekday_allowed:
+        if weekday == "Any day":
+            weekday = None
+        else:
+            flash("Invalid weekday", "negative")
+            return redirect(url_for("home"))
+
+    # duration check and filtering
+    duration_allowed = ["0 - 1:30 h", "1:30 - 3 h", "3 h +"]
+    duration = request.args.get("duration", "Any duration")
+    if duration not in duration_allowed:
+        if duration == "Any duration":
+            duration = (0, None)
+        else:
+            flash("Invalid duration", "negative")
+            return redirect(url_for("home"))
+    elif duration == "0 - 1:30 h":
+        duration = (0, 90)
+    elif duration == "1:30 - 3 h":
+        duration = (90, 180)
+    elif duration == "3 h +":
+        duration = (180, None)
     
-    tours=tours_dao.get_tours()
+    # language check and filtering
+    languages=languages_dao.get_languages()
+    languages_names = []
+    for language in languages:
+        languages_names.append(language["name"])
+    language = request.args.get("language", "Any language")
+    if language not in languages_names:
+        if language == "Any language":
+            language = None
+        else:
+            flash("Invalid language", "negative")
+            return redirect(url_for("home"))
+    else:
+        language_db = languages_dao.get_language_by_name(language)
+        language = language_db["id"]
+
+    # theme check and filtering
+    themes=themes_dao.get_themes()
+    themes_names = []
+    for theme in themes:
+        themes_names.append(theme.name)
+    theme = request.args.get("theme", "Any theme")
+    if theme not in themes_names:
+        if theme == "Any theme":
+            theme = None
+        else:
+            flash("Invalid theme", "negative")
+            return redirect(url_for("home"))
+    else:
+        theme_obj = themes_dao.get_theme_by_name(theme)
+        theme = theme_obj.id
+
+    # max participants check and filtering
+    max_participants = request.args.get("maxPeople")
+    if max_participants is not None and max_participants != "":
+        if not max_participants.isdigit() or int(max_participants) < 1:
+            flash("Max participants must be a positive integer", "negative")
+            return redirect(url_for("home"))
+        max_participants = int(max_participants)
+    else:
+        max_participants = None
+
+
+    tours=tours_dao.get_tours(state="active", weekday=weekday, duration_start=duration[0], duration_end=duration[1], language=language, theme=theme, max_participants=max_participants)
 
     for tour in tours:
         tour.photos=photos_dao.get_first_photo(tour)
@@ -373,7 +444,7 @@ def tours():
         tour.stops=stops_dao.get_first_stop_by_tour(tour)
         tour.guide = users_dao.get_user_by_id(tour.guide_id)
 
-    return render_template("tours.html", today=today, tours=tours)
+    return render_template("tours.html", today=today, tours=tours, languages=languages, themes=themes)
 
 @app.route("/tour/<id>")
 def tour(id):
