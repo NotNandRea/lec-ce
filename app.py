@@ -13,7 +13,7 @@ from database.models.reservation import Reservation
 from database.models.extra_participant import Extra_Participant
 from database.models.report import Report
 
-from database.daos import reservations, users as users_dao
+from database.daos import users as users_dao
 from database.daos import tours as tours_dao
 from database.daos import themes as themes_dao
 from database.daos import languages as languages_dao
@@ -23,6 +23,7 @@ from database.daos import occurrencies as occurrencies_dao
 from database.daos import reservations as reservations_dao
 from database.daos import extra_participants as extra_participants_dao
 from database.daos import reports as reports_dao
+from database.daos import admins as admins_dao
 
 from utilities import check_date, check_email, check_password, images, days_to_numbers, check_time, date_to_day
 from utilities.role_decorators import guide_required
@@ -31,7 +32,7 @@ from utilities.role_decorators import participant_required
 from utilities.constants import PROFILE_IMG_HEIGHT, TOUR_PHOTO_IMG_HEIGHT, TOUR_PHOTO_IMG_WIDTH
 
 import uuid
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from datetime import date, datetime, timedelta
 from ics import Calendar, Event
@@ -1491,3 +1492,35 @@ def my_calendar():
     response = Response(calendar.serialize(), mimetype='text/calendar')
 
     return response
+
+
+# ADMIN MANAGEMENT
+
+@app.route("/admin")
+def admin_login():
+    
+    return render_template("admin_login.html")
+
+@app.route("/admin", methods=["POST"])
+def admin_login_post():
+
+    username = request.form.get("username")
+    password = request.form.get("password")
+
+    if username in [None, ""]:
+        flash("Invalid username", "negative")
+        return redirect(url_for("admin_login"))
+    if password in [None, ""]:
+        flash("Invalid password", "negative")
+        return redirect(url_for("admin_login"))
+    
+    admin = admins_dao.get_admin_by_username(username)
+    if admin is None:
+        flash("Wrong username or password", "negative")
+        return redirect(url_for("admin_login"))
+    if check_password_hash(admin["password"], password) == False:
+        flash("Wrong username or password", "negative")
+        return redirect(url_for("admin_login"))
+
+    flash("Welcome Back Admin!", "positive")
+    return redirect(url_for("home"))

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<main class="mx-4 my-5">
+
+    <section>
+        <div class="container">
+
+            <div class="row justify-content-center">
+                <div class="col-5">
+
+                    <div class="bg-white rounded-5 shadow p-5">
+
+                        <div class="text-center mb-5">
+                            <h1 class="display-6 fw-bold lecce-text-impact lecce-secondary-color">
+                                Admin Login
+                            </h1>
+                        </div>
+
+                        <form method="POST" action="{{ url_for('admin_login_post') }}">
+
+                            <div class="mt-3">
+                                <label for="username" class="form-label fw-semibold lecce-secondary-color">
+                                    <i class="bi bi-person me-1"></i>
+                                    Username <span class="lecce-primary-color">*</span>
+                                </label>
+
+                                <input type="text" class="form-control rounded-4 py-3" id="username" name="username"
+                                    placeholder="username" required>
+                            </div>
+
+                            <div class="mt-3">
+                                <label for="password" class="form-label fw-semibold lecce-secondary-color">
+                                    <i class="bi bi-lock me-1"></i>
+                                    Password <span class="lecce-primary-color">*</span>
+                                </label>
+
+                                <input type="password" class="form-control rounded-4 py-3" id="password" name="password"
+                                    required>
+                            </div>
+
+                            <button type="submit"
+                                class="btn lecce-btn lecce-primary-background py-3 mt-4 fw-bold shadow w-100">
+                                Log In As Admin
+                            </button>
+                            <p class="fs-6 mt-4 mb-0">
+                                Everytime you want to access the admin panel you have to log in.
+                            </p>
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+{% endblock %}
