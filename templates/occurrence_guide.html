@@ -4,7 +4,7 @@
 
 <main class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-8">
+        <div class="col-12 col-lg-8">
 
             <header class="mb-4">
                 <h1 class="lecce-text-impact lecce-secondary-color fw-bold mb-3">
@@ -17,8 +17,8 @@
                 <div class="p-4">
                     <div class="row align-items-center g-4">
 
-                        <div class="col-7">
-                            <div class="d-flex gap-3 align-items-center">
+                        <div class="col-12 col-lg-6">
+                            <div class="d-flex flex-column flex-lg-row gap-3 align-items-center text-center text-lg-start">
                                 <div
                                     class="border lecce-primary-color d-flex align-items-center justify-content-center p-3 profile-initials rounded-4">
                                     <i class="bi bi-calendar-check"></i>
@@ -37,8 +37,8 @@
                         </div>
 
                         {% if report is none %}
-                        <div class="col-5" id="limitNotExpired">
-                            <div id="startCountdown" class="d-flex justify-content-end align-items-start gap-2"
+                        <div class="col-12 col-lg-6" id="limitNotExpired">
+                            <div id="startCountdown" class="d-flex justify-content-center justify-content-lg-end align-items-start gap-1 gap-lg-2"
                                 seconds="{{ seconds_remaining }}">
 
                                 <div class="d-flex flex-column align-items-center">
@@ -88,7 +88,7 @@
                             </div>
                         </div>
                         {% else %}
-                        <div class="col-5" id="startedExpired">
+                        <div class="col-12 col-lg-6" id="startedExpired">
                             <div class="d-flex flex-column align-items-center">
                                 <div class="lecce-positive-color fw-bold fs-1 rounded-4">
                                     REPORTED
@@ -114,7 +114,7 @@
                             {{ occurrence.tour.title }}
                         </span>
 
-                        <div class="col-6">
+                        <div class="col-12 col-lg-6">
                             <div class="d-flex gap-3">
                                 <i class="bi bi-calendar-event lecce-primary-color"></i>
                                 <div>
@@ -126,7 +126,7 @@
                             </div>
                         </div>
 
-                        <div class="col-6">
+                        <div class="col-12 col-lg-6">
                             <div class="d-flex gap-3">
                                 <i class="bi bi-clock lecce-primary-color"></i>
                                 <div>
@@ -138,7 +138,7 @@
                             </div>
                         </div>
 
-                        <div class="col-6">
+                        <div class="col-12 col-lg-6">
                             <div class="d-flex gap-3">
                                 <i class="bi bi-geo-alt lecce-primary-color"></i>
                                 <div>
@@ -151,7 +151,7 @@
                             </div>
                         </div>
 
-                        <div class="col-6">
+                        <div class="col-12 col-lg-6">
                             <div class="d-flex gap-3">
                                 <i class="bi bi-translate lecce-primary-color"></i>
                                 <div>
@@ -163,7 +163,7 @@
                             </div>
                         </div>
 
-                        <div class="col-6">
+                        <div class="col-12 col-lg-6">
                             <div class="d-flex gap-3">
                                 <i class="bi bi-people lecce-primary-color"></i>
                                 <div>
@@ -176,7 +176,7 @@
                             </div>
                         </div>
 
-                        <div class="col-6">
+                        <div class="col-12 col-lg-6">
                             <div class="d-flex gap-3">
                                 <i class="bi bi-palette lecce-primary-color"></i>
                                 <div>
@@ -209,7 +209,7 @@
                     </p>
                     {% else %}
                     {% for participants_group in participants %}
-                    <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                    <div class="d-flex flex-column flex-lg-row justify-content-lg-between align-items-center gap-3 py-3 border-bottom">
 
                         <div class="d-flex align-items-center gap-3">
                             <a href="{{ url_for('profile', id=participants_group['Registered'].id) }}"
@@ -244,7 +244,7 @@
                     </div>
 
                     {% for extra in participants_group["Extra"] %}
-                    <div class="d-flex justify-content-between align-items-center py-3 border-bottom ms-5">
+                    <div class="d-flex flex-column flex-lg-row justify-content-lg-between align-items-center gap-3 py-3 border-bottom ms-lg-5">
 
                         <div class="d-flex align-items-center gap-3">
                             <div class="profile-initials fw-bold p-2">
@@ -276,7 +276,7 @@
 
 
             <section class="bg-white rounded-5 shadow mb-4 p-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex flex-column flex-lg-row justify-content-lg-between align-items-start align-items-lg-center gap-3 mb-3">
                     <h2 class="fw-bold lecce-secondary-color mb-0 fs-3">
                         Report post-tour
                     </h2>
@@ -297,7 +297,7 @@
                     enctype="multipart/form-data" class="d-none" id="reportForm">
 
                     <div class="row g-3">
-                        <div class="col-4">
+                        <div class="col-12 col-lg-4">
                             <div class="lecce-default-background border rounded-5 p-4">
                                 <label for="effectiveParticipants"
                                     class="lecce-text-impact lecce-primary-color fw-bold fs-6 mb-2">
@@ -316,7 +316,7 @@
                             </div>
                         </div>
 
-                        <div class="col-8">
+                        <div class="col-12 col-lg-8">
                             <label for="reportImage" class="form-label fw-bold lecce-secondary-color">
                                 Upload group photo
                             </label>
@@ -343,7 +343,7 @@
                 {% else %}
                 <div>
                     <div class="row g-3">
-                        <div class="col-4">
+                        <div class="col-12 col-lg-4">
                             <div class="lecce-default-background border rounded-5 p-4">
                                 <span class="lecce-text-impact lecce-primary-color fw-bold fs-6 mb-2">
                                     Effective participants
@@ -360,7 +360,7 @@
                             </div>
                         </div>
 
-                        <div class="col-8">
+                        <div class="col-12 col-lg-8">
                             <span class="fw-bold lecce-secondary-color">
                                 Uploaded photo
                             </span>

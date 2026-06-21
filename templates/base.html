@@ -64,8 +64,8 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
-        <div class="d-flex justify-content-center position-fixed top-0 mt-3 w-100 z-3">
-            <div class="alert lecce-{{ category }}-background alert-dismissible fade show shadow text-white w-25"
+        <div class="d-flex justify-content-center position-fixed top-0 mt-3 w-100 z-3 row">
+            <div class="alert lecce-{{ category }}-background alert-dismissible fade show shadow text-white col-11 col-lg-4"
                 role="alert">
                 {{ message }}
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>

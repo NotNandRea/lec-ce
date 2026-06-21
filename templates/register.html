@@ -3,13 +3,13 @@
 {% block title %}Create Account{% endblock %}
 
 {% block content %}
-<main class="mx-4 my-5">
+<main class="mx-3 mx-lg-4 my-5">
 
     <section>
         <div class="container">
 
             <div class="row justify-content-center">
-                <div class="col-7">
+                <div class="col-12 col-lg-7">
 
                     <div class="mb-4">
                         <p class="lecce-text-impact lecce-primary-color my-2 fs-6 fw-semibold">JOIN LECC'È</p>
@@ -21,18 +21,18 @@
 
                         <div class="row g-4 mb-4">
 
-                            <div class="col-6">
+                            <div class="col-12 col-lg-6">
 
                                 <div class="btn lecce-register-checkbox w-100 p-3 rounded-4">
                                     <input type="radio" class="btn-check" name="role" id="participant"
                                         value="participant" checked>
-                                    <label class="d-flex flex-row gap-3" for="participant">
+                                    <label class="d-flex flex-column flex-lg-row align-items-center gap-3" for="participant">
 
                                         <span
                                             class="profile-initials rounded-3 lecce-primary-background text-white d-flex align-items-center justify-content-center"><i
                                                 class="bi bi-person"></i></span>
 
-                                        <div class="d-flex flex-column align-items-start">
+                                        <div class="d-flex flex-column align-items-center align-items-lg-start">
                                             <span class="fw-bold">I am a traveler</span>
                                             <span class="fs-6">Just explore the city</span>
                                         </div>
@@ -42,17 +42,17 @@
 
                             </div>
 
-                            <div class="col-6">
+                            <div class="col-12 col-lg-6">
 
                                 <div class="btn lecce-register-checkbox w-100 p-3 rounded-4">
                                     <input type="radio" class="btn-check" name="role" id="guide" value="guide">
-                                    <label class="d-flex flex-row gap-3" for="guide">
+                                    <label class="d-flex flex-column flex-lg-row align-items-center gap-3" for="guide">
 
                                         <span
                                             class="profile-initials rounded-3 lecce-primary-background text-white d-flex align-items-center justify-content-center"><i
                                                 class="bi bi-geo-alt"></i></span>
 
-                                        <div class="d-flex flex-column align-items-start">
+                                        <div class="d-flex flex-column align-items-center align-items-lg-start">
                                             <span class="fw-bold">I am a guide</span>
                                             <span class="fs-6">Create and lead walking tours</span>
                                         </div>
@@ -63,7 +63,7 @@
                             </div>
                         </div>
 
-                        <div class="bg-white rounded-5 shadow p-5">
+                        <div class="bg-white rounded-5 shadow p-4 p-lg-5">
 
                             <div class="mb-4">
                                 <label for="profile_photo" class="form-label fw-semibold lecce-secondary-color">
@@ -80,7 +80,7 @@
                             </div>
 
                             <div class="row g-4">
-                                <div class="col-6">
+                                <div class="col-12 col-lg-6">
                                     <label for="first_name" class="form-label fw-semibold lecce-secondary-color">
                                         First name <span class="lecce-primary-color">*</span>
                                     </label>
@@ -89,7 +89,7 @@
                                         name="first_name" placeholder="My name is..." required>
                                 </div>
 
-                                <div class="col-6">
+                                <div class="col-12 col-lg-6">
                                     <label for="last_name" class="form-label fw-semibold lecce-secondary-color">
                                         Last name <span class="lecce-primary-color">*</span>
                                     </label>
@@ -172,7 +172,7 @@
 
                             <div class="d-flex justify-content-between gap-3 mt-4">
                                 <button type="reset"
-                                    class="btn lecce-btn lecce-secondary-background py-3fw-bold shadow-sm w-100">
+                                    class="btn lecce-btn lecce-secondary-background py-3 fw-bold shadow-sm w-100">
                                     Clear All
                                 </button>
                                 <button type="submit"

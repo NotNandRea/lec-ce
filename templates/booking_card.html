@@ -1,6 +1,6 @@
-<div class="d-flex flex-row align-items-center justify-content-between gap-3 p-4 border-bottom">
+<div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 p-4 border-bottom">
 
-    <div class="d-flex align-items-center gap-3">
+    <div class="d-flex flex-column flex-lg-row align-items-center gap-3">
 
         <div class="rounded-4 lecce-profile-date p-5">
             <span class="lecce-primary-color fw-bold mb-0 fs-6">{{ occurrence.date.strftime('%A') }}</span>
@@ -11,7 +11,7 @@
         </div>
 
         <div>
-            <div class="d-flex align-items-center gap-2 mb-2">
+            <div class="d-flex flex-column flex-lg-row align-items-center gap-2 mb-2">
                 <h3 class="h5 lecce-text-impact lecce-secondary-color fw-bold m-0">
                     <a href="{{ url_for('tour', id=occurrence.tour.id) }}"
                         class="text-decoration-none lecce-secondary-color">
@@ -29,7 +29,7 @@
                 {% endif %}
             </div>
 
-            <div class="d-flex flex-wrap gap-3 small lecce-secondary-color">
+            <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-3 fs-6 lecce-secondary-color">
                 <span>
                     <i class="bi bi-clock lecce-primary-color me-1"></i>
                     {{ occurrence.start_time }} - {{ occurrence.tour.duration }}m
@@ -49,19 +49,21 @@
 
     </div>
 
-    <div>
-        {% if current_user.role == 'participant' and current_user.id == occurrence.reservation.participant_id %}
+    <div class="d-flex justify-content-center align-items-center gap-3">
+        {% if current_user.id == user.id %}
+        {% if current_user.role == 'participant' %}
         <a href="{{ url_for('reservation', id=occurrence.reservation.id) }}"
             class="btn lecce-btn lecce-primary-background px-4">
             <i class="bi bi-eye me-1"></i>
             Details
         </a>
         {% else %}
-        {% if current_user.role == 'guide' and current_user.id == occurrence.tour.guide_id %}
+        {% if current_user.role == 'guide' %}
         <a href="{{ url_for('occurrence_details', id=occurrence.id) }}" class="btn lecce-btn lecce-primary-background px-4">
             <i class="bi bi-eye me-1"></i>
             Details
         </a>
+        {% endif %}
         {% endif %}
         {% endif %}
     </div>

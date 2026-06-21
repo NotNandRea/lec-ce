@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<main class="py-5">
+<main class="py-lg-5">
     <div class="container">
 
         <span id="origin" class="d-none">{{ origin }}</span>
@@ -12,9 +12,9 @@
         <form method="POST" enctype="multipart/form-data" action="{% if origin == "edit" %}{{ url_for("edit_tour_post", id=tour.id) }}{% else %}{{ url_for("new_tour_post") }}{% endif %}">
 
             <div
-                class="d-flex align-items-center justify-content-between mb-5 position-sticky top-0 lecce-default-background pt-4 pb-3">
+                class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-lg-between gap-3 mb-5 position-sticky top-0 lecce-default-background pt-4 pb-3">
                 <div>
-                    <div class="lecce-primary-color fw-bold small mb-2">
+                    <div class="lecce-primary-color fw-bold fs-6 mb-2">
                         WHAT MAKES IT SPECIAL?
                     </div>
 
@@ -36,9 +36,9 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-center">
+            <div class="row justify-content-center">
 
-                <div class="w-75">
+                <div class="col-12 col-lg-9">
 
                     <section class="bg-white rounded-5 shadow-sm p-4 mb-4">
                         <h2 class="lecce-secondary-color fw-bold mb-3 fs-4 border-bottom pb-2">
@@ -65,7 +65,7 @@
 
                         <div class="row g-3">
 
-                            <div class="col-6">
+                            <div class="col-12 col-lg-6">
                                 <label for="language" class="form-label fw-bold lecce-secondary-color fs-6">
                                     Language <span class="lecce-primary-color">*</span>
                                 </label>
@@ -78,7 +78,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-6">
+                            <div class="col-12 col-lg-6">
                                 <label for="duration" class="form-label fw-bold lecce-secondary-color fs-6">
                                     Duration (minutes) <span class="lecce-primary-color">*</span>
                                 </label>
@@ -88,7 +88,7 @@
                                     min="30" max="300" required>
                             </div>
 
-                            <div class="col-6">
+                            <div class="col-12 col-lg-6">
                                 <label for="theme" class="form-label fw-bold lecce-secondary-color fs-6">
                                     Theme <span class="lecce-primary-color">*</span>
                                 </label>
@@ -101,7 +101,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-6">
+                            <div class="col-12 col-lg-6">
                                 <label for="max_participants" class="form-label fw-bold lecce-secondary-color fs-6">
                                     Max participants <span class="lecce-primary-color">*</span>
                                 </label>
@@ -330,7 +330,7 @@
                                     accept="image/png, image/jpeg, image/jpg" {% if origin == "new" %}required{% endif %}>
                             </div>
 
-                            <div class="col-6">
+                            <div class="col-12 col-lg-6">
                                 <label for="photo2" class="form-label fw-bold lecce-secondary-color fs-6">
                                     Photo 2
                                 </label>
@@ -338,7 +338,7 @@
                                     accept="image/png, image/jpeg, image/jpg" {% if origin == "new" %}required{% endif %}>
                             </div>
 
-                            <div class="col-6">
+                            <div class="col-12 col-lg-6">
                                 <label for="photo3" class="form-label fw-bold lecce-secondary-color fs-6">
                                     Photo 3
                                 </label>
@@ -346,7 +346,7 @@
                                     accept="image/png, image/jpeg, image/jpg" {% if origin == "new" %}required{% endif %}>
                             </div>
 
-                            <div class="col-6">
+                            <div class="col-12 col-lg-6">
                                 <label for="photo4" class="form-label fw-bold lecce-secondary-color fs-6">
                                     Photo 4
                                 </label>
@@ -354,7 +354,7 @@
                                     accept="image/png, image/jpeg, image/jpg" {% if origin == "new" %}required{% endif %}>
                             </div>
 
-                            <div class="col-6">
+                            <div class="col-12 col-lg-6">
                                 <label for="photo5" class="form-label fw-bold lecce-secondary-color fs-6">
                                     Photo 5
                                 </label>

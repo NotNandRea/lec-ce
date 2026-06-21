@@ -1,7 +1,7 @@
 <form class="lecce-secondary-background rounded-4 shadow-lg p-4 mt-3" action="{{ url_for('tours') }}" id="collapseFilters">
     <div class="row g-4">
 
-        <div class="col-4">
+        <div class="col-12 col-lg-4">
             <label for="weekday" class="form-label">Day of week</label>
             <select class="form-select" id="weekday" name="weekday">
                 <option value="Any day">Any day</option>
@@ -15,7 +15,7 @@
             </select>
         </div>
 
-        <div class="col-4">
+        <div class="col-12 col-lg-4">
             <label for="duration" class="form-label">Duration</label>
             <select class="form-select" id="duration" name="duration">
                 <option value="Any duration">Any duration</option>
@@ -25,7 +25,7 @@
             </select>
         </div>
 
-        <div class="col-4">
+        <div class="col-12 col-lg-4">
             <label for="language" class="form-label">Language</label>
             <select class="form-select" id="language" name="language">
                 <option value="Any language">Any language</option>
@@ -35,7 +35,7 @@
             </select>
         </div>
 
-        <div class="col-4">
+        <div class="col-12 col-lg-4">
             <label for="theme" class="form-label">Theme</label>
             <select class="form-select" id="theme" name="theme">
                 <option value="Any theme">Any theme</option>
@@ -45,20 +45,20 @@
             </select>
         </div>
 
-        <div class="col-4">
+        <div class="col-12 col-lg-4">
             <label for="maxPeople" class="form-label">Max Capacity</label>
             <input type="number" class="form-control" id="maxPeople" name="maxPeople" placeholder="10" min="1">
         </div>
         
-        <div class="col-4">
+        <div class="col-12 col-lg-4">
             <label for="minPeople" class="form-label">Min Capacity</label>
             <input type="number" class="form-control" id="minPeople" name="minPeople" placeholder="2" min="1">
         </div>
 
-        <div class="col-4"></div>
+        <div class="d-none d-lg-inline col-lg-4"></div>
 
 
-        <div class="col-4 d-flex justify-content-end align-items-end">
+        <div class="col-12 col-lg-4 d-flex justify-content-end align-items-end">
             <button type="submit" class="btn lecce-btn lecce-primary-background w-100">
                 Search <i class="bi-search"></i>
             </button>

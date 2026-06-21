@@ -3,14 +3,14 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<main class="mx-4 my-5">
+<main class="mx-3 mx-lg-4 my-5">
 
     <section>
         <div class="container">
 
 
             <div class="row align-items-center g-5">
-                <div class="col-6">
+                <div class="col-12 col-lg-6 order-2 order-lg-1">
 
                     <p class="lecce-text-impact lecce-primary-color my-2 fs-6 fw-semibold">NOT A COMMON CITY</p>
                     <h1 class="display-4 fw-bold lecce-text-impact">
@@ -18,7 +18,7 @@
                         Discover it <span class="lecce-primary-color">step by step.</span>
                     </h1>
 
-                    <div class="d-flex gap-3 mt-4">
+                    <div class="d-flex flex-column flex-lg-row gap-3 mt-4">
                         <a href="{{ url_for('tours') }}" class="btn lecce-btn lecce-primary-background px-4 lh-2">Book
                             our Tours</a>
                         {% if not current_user.is_authenticated %}
@@ -29,7 +29,7 @@
                 </div>
 
                 <!--TODO: select random tour photo-->
-                <div class="col-6">
+                <div class="col-12 col-lg-6 order-1 order-lg-2">
                     <div class="rounded-5 shadow overflow-hidden home-main-photo-container">
                         <img class="object-fit-cover h-100 w-100"
                             src="{{ url_for('static', filename='images/tour_photos/' + photo) }}"
@@ -74,7 +74,7 @@
             <div class="row g-4">
                 {% if tours|length > 0 %}
                 {% for tour in tours %}
-                <div class="col-3">
+                <div class="col-12 col-md-6 col-lg-3">
                     {% include "tour_card.html" %}
                 </div>
                 {% endfor %}

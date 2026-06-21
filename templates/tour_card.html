@@ -13,30 +13,31 @@
             {{ tour.theme.name }}
         </span>
         {% if tour.state == "active" %}
-        <span
-            class="badge lecce-positive-background lecce-primary-text lecce-btn position-absolute top-0 end-0 m-3">
+        <span class="badge lecce-positive-background lecce-primary-text lecce-btn position-absolute top-0 end-0 m-3">
             Active
         </span>
         {% else %}
-        <span
-            class="badge lecce-negative-background lecce-primary-text lecce-btn position-absolute top-0 end-0 m-3">
+        <span class="badge lecce-negative-background lecce-primary-text lecce-btn position-absolute top-0 end-0 m-3">
             Inactive
         </span>
         {% endif %}
 
-        <p class="mb-4 overflow-hidden lecce-tour-card border-bottom">
+        <p class="mb-4 overflow-hidden lecce-tour-card border-bottom flex-grow-1">
             {{ tour.description }}
         </p>
 
-        <div class="d-flex flex-wrap gap-3 mb-4 border-bottom pb-4">
-            <span><i class="bi bi-clock lecce-primary-color me-1"></i>{{ tour.duration }}m</span>
+        <div class="mb-4 border-bottom pb-4">
+            <div class="d-flex gap-3 mb-3">
+                <span><i class="bi bi-clock lecce-primary-color me-1"></i>{{ tour.duration }}m</span>
 
-            <span><i class="bi bi-translate lecce-primary-color me-1"></i>{{ tour.language[0:2].upper() }}</span>
-
-            <span><i class="bi bi-geo-alt lecce-primary-color me-1"></i>{{ tour.stops }}</span>
+                <span><i class="bi bi-translate lecce-primary-color me-1"></i>{{ tour.language[0:2].upper() }}</span>
+            </div>
+            <div>
+                <span><i class="bi bi-geo-alt lecce-primary-color me-1"></i>{{ tour.stops }}</span>
+            </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex flex-column gap-3">
             <div class="d-flex align-items-center gap-2">
                 {% if tour.guide.profile_photo is none %}
                 <a class="profile-initials lecce-text-impact fw-bold text-decoration-none"
@@ -57,7 +58,7 @@
                 </div>
             </div>
 
-            <a href="{{ url_for('tour', id=tour.id) }}" class="btn lecce-btn lecce-primary-background px-4">{% if
+            <a href="{{ url_for('tour', id=tour.id) }}" class="btn lecce-btn lecce-primary-background px-4 w-100">{% if
                 current_user.role != "guide" and tour.state == "active" %}Book{% else %}View{% endif %}</a>
         </div>
     </div>

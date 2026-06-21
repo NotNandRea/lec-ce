@@ -244,7 +244,6 @@ def my_profile():
 @app.route("/schedule")
 def personal_schedule():
 
-    today = date.today()
 
     if current_user.role == "guide":
         occurrences = occurrencies_dao.get_not_empty_occurrences_by_guide_id(current_user.id)
@@ -269,7 +268,7 @@ def personal_schedule():
         
         upcoming = occurrencies
 
-    return render_template("personal_schedule.html", upcoming=upcoming)
+    return render_template("personal_schedule.html", upcoming=upcoming, user=current_user)
 
 @login_required
 @app.route("/profile/<id>")
@@ -1522,6 +1521,10 @@ def admin_login_post():
     if check_password_hash(admin["password"], password) == False:
         flash("Wrong username or password", "negative")
         return redirect(url_for("admin_login"))
+
+    #logout the user from the normal profile
+    if current_user.is_authenticated:
+        logout_user()
 
     # retrieve all informations
     participant_number = users_dao.count_users(role="participant")

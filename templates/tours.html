@@ -3,7 +3,7 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<main class="mx-4 my-5">
+<main class="mx-3 mx-lg-4 my-5">
 
     <section class="my-5">
         <div class="container">
@@ -40,7 +40,7 @@
             <div class="row g-4">
                 {% if tours|length > 0 %}
                 {% for tour in tours %}
-                <div class="col-3">
+                <div class="col-12 col-md-6 col-lg-3">
                     {% include "tour_card.html" %}
                 </div>
                 {% endfor %}
