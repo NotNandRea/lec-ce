@@ -38,6 +38,8 @@ from ics import Calendar, Event
 from zoneinfo import ZoneInfo
 
 
+#TODO: put every constant in constants.py
+#TODO: comment everything
 
 #load everythings from .env file
 load_dotenv()
@@ -274,6 +276,9 @@ def profile(id):
 
     today = date.today()
     user = users_dao.get_user_by_id(id)
+    if user is None:
+        flash("User not found", "negative")
+        return redirect(url_for("home"))
     
     if user.role == "guide":
         user.languages = languages_dao.get_languages_by_user_id(user.id)
@@ -289,7 +294,7 @@ def profile(id):
         upcoming = occurrences
         
         # get the tours that the guide has created, indipendently from the occurrences
-        tours = tours_dao.get_tours_by_guide_id(user.id,6)
+        tours = tours_dao.get_tours_by_guide_id(user.id, limit=3)
         for tour in tours:
             tour.photos=photos_dao.get_first_photo(tour)
             tour.language=languages_dao.get_language_by_id(tour.language_id)["name"]
@@ -299,44 +304,40 @@ def profile(id):
 
             
     else:
-        #get occurrences of the tours that the user has booked (the main focus is the occurrence, then we add the tour info)
+        #get occurrences and tours that the user has booked
         reservations = reservations_dao.get_reservations_by_participant_id(user.id, limit=3, after_date=today)
         occurrencies = []
-        for reservation in reservations:
-            occurrence = occurrencies_dao.get_occurrence_by_id(reservation.occurrence_id)
-            occurrence.tour = tours_dao.get_tour_by_id(occurrence.tour_id)
-            occurrence.tour.language = languages_dao.get_language_by_id(occurrence.tour.language_id)["name"]
-            occurrence.tour.theme = themes_dao.get_theme_by_id(occurrence.tour.theme_id)
-            occurrence.tour.stops = stops_dao.get_first_stop_by_tour(occurrence.tour)
-            occurrence.reservation = reservation
-            occurrencies.append(occurrence)
-        
-        upcoming = occurrencies
-
-        #get tours that the user has booked (the main focus is the tour, we need to pass through the occurrences to get the actual tours that the user has booked)
         temp_tours = []
         for reservation in reservations:
             occurrence = occurrencies_dao.get_occurrence_by_id(reservation.occurrence_id)
-            
+
             tour = tours_dao.get_tour_by_id(occurrence.tour_id)
             tour.photos=photos_dao.get_first_photo(tour)
-            tour.language=languages_dao.get_language_by_id(tour.language_id)["name"]
-            tour.theme=themes_dao.get_theme_by_id(tour.theme_id)
-            tour.stops=stops_dao.get_first_stop_by_tour(tour)
+            tour.language = languages_dao.get_language_by_id(tour.language_id)["name"]
+            tour.theme = themes_dao.get_theme_by_id(tour.theme_id)
+            tour.stops = stops_dao.get_first_stop_by_tour(tour)
             tour.guide = users_dao.get_user_by_id(tour.guide_id)
             tour.occurrence_date = occurrence.date
+
+            occurrence.tour = tour
+            occurrence.reservation = reservation
+            
+            occurrencies.append(occurrence)
             temp_tours.append(tour)
+        
+        upcoming = occurrencies
 
     
         #remove tour duplicates
         tours = []
         for tour in temp_tours:
-            if len(tours) == 0:
-                tours.append(tour)
+            already_present = False
             for temp in tours:
-                if tour.id != temp.id:
-                    tours.append(tour)
+                if tour.id == temp.id:
+                    already_present = True
                     break
+            if not already_present:
+                tours.append(tour)
     
     return render_template("profile.html", upcoming=upcoming, tours=tours, user=user)
 
@@ -360,7 +361,6 @@ def home():
 
     return render_template("home.html", today=today, tours=tours, languages=languages, themes=themes)
 
-#TODO: implement filtering
 @app.route("/tours/list")
 def tours():
 
@@ -434,8 +434,18 @@ def tours():
     else:
         max_participants = None
 
+    # min participants check and filtering
+    min_participants = request.args.get("minPeople")
+    if min_participants is not None and min_participants != "":
+        if not min_participants.isdigit() or int(min_participants) < 1:
+            flash("Min participants must be a positive integer", "negative")
+            return redirect(url_for("home"))
+        min_participants = int(min_participants)
+    else:
+        min_participants = None
 
-    tours=tours_dao.get_tours(state="active", weekday=weekday, duration_start=duration[0], duration_end=duration[1], language=language, theme=theme, max_participants=max_participants)
+
+    tours=tours_dao.get_tours(state="active", weekday=weekday, duration_start=duration[0], duration_end=duration[1], language=language, theme=theme, max_participants=max_participants, min_participants=min_participants)
 
     for tour in tours:
         tour.photos=photos_dao.get_first_photo(tour)
@@ -444,7 +454,7 @@ def tours():
         tour.stops=stops_dao.get_first_stop_by_tour(tour)
         tour.guide = users_dao.get_user_by_id(tour.guide_id)
 
-    return render_template("tours.html", today=today, tours=tours, languages=languages, themes=themes)
+    return render_template("tours.html", today=today, tours=tours, languages=languages, themes=themes, origin="list")
 
 @app.route("/tour/<id>")
 def tour(id):
@@ -471,6 +481,71 @@ def tour(id):
     has_reservations=reservations_dao.count_reservations_by_tour_id(tour.id)
 
     return render_template("tour.html", tour=tour, theme=theme, avaiable_days=avaiable_days, today=today, has_active_reservations=has_active_reservations, has_reservations=has_reservations)
+
+@app.route("/tours/<user_id>")
+def user_tours(user_id):
+
+    user = users_dao.get_user_by_id(user_id)
+    if user is None:
+        flash("User not found", "negative")
+        return redirect(url_for("home"))
+    
+    if user.role == "guide":
+            user.languages = languages_dao.get_languages_by_user_id(user.id)
+
+            #get occurrences of the tours that the guide has created
+            occurrences = occurrencies_dao.get_not_empty_occurrences_by_guide_id(user.id)
+            for occurrence in occurrences:
+                occurrence.tour = tours_dao.get_tour_by_id(occurrence.tour_id)
+                occurrence.tour.language = languages_dao.get_language_by_id(occurrence.tour.language_id)["name"]
+                occurrence.tour.theme = themes_dao.get_theme_by_id(occurrence.tour.theme_id)
+                occurrence.tour.stops = stops_dao.get_first_stop_by_tour(occurrence.tour)
+            
+            
+            # get the tours that the guide has created, indipendently from the occurrences
+            tours = tours_dao.get_tours_by_guide_id(user.id,6)
+            for tour in tours:
+                tour.photos=photos_dao.get_first_photo(tour)
+                tour.language=languages_dao.get_language_by_id(tour.language_id)["name"]
+                tour.theme=themes_dao.get_theme_by_id(tour.theme_id)
+                tour.stops=stops_dao.get_first_stop_by_tour(tour)
+                tour.guide = users_dao.get_user_by_id(tour.guide_id)
+
+            
+    else:
+        #get the tours that the user has booked
+        reservations = reservations_dao.get_reservations_by_participant_id(user.id)
+        temp_tours = []
+        for reservation in reservations:
+            occurrence = occurrencies_dao.get_occurrence_by_id(reservation.occurrence_id)
+
+            tour = tours_dao.get_tour_by_id(occurrence.tour_id)
+            tour.photos=photos_dao.get_first_photo(tour)
+            tour.language = languages_dao.get_language_by_id(tour.language_id)["name"]
+            tour.theme = themes_dao.get_theme_by_id(tour.theme_id)
+            tour.stops = stops_dao.get_first_stop_by_tour(tour)
+            tour.guide = users_dao.get_user_by_id(tour.guide_id)
+            tour.occurrence_date = occurrence.date
+
+            occurrence.tour = tour
+            occurrence.reservation = reservation
+            
+            temp_tours.append(tour)
+
+
+    
+        #remove tour duplicates
+        tours = []
+        for tour in temp_tours:
+            already_present = False
+            for temp in tours:
+                if tour.id == temp.id:
+                    already_present = True
+                    break
+            if not already_present:
+                tours.append(tour)
+    
+    return render_template("tours.html", tours=tours, user=user, origin="user_tours")
 
 # TOUR MANAGEMENT
 
@@ -1002,6 +1077,47 @@ def occurrence_details(id):
     report = reports_dao.get_report_by_occurrence_id(occurrence.id)
 
     return render_template("occurrence_guide.html", occurrence=occurrence, participants=participants, participants_number=participants_number, seconds_remaining=seconds_remaining, report=report)
+
+@app.route("/occurrences/<id>/calendar")
+@login_required
+@guide_required
+def add_occurrence_to_calendar(id):
+
+    zone = ZoneInfo("Europe/Rome")
+    
+    #check ownership of the occurrence
+    occurrence=occurrencies_dao.get_occurrence_by_id(id)
+    if occurrence is None:
+        flash("Occurrence not found", "negative")
+        return redirect(url_for("my_profile"))
+    
+    occurrence.tour = tours_dao.get_tour_by_id(occurrence.tour_id)
+    if occurrence.tour is None:
+        flash("Tour not found", "negative")
+        return redirect(url_for("my_profile"))
+
+
+    if occurrence.tour.guide_id != current_user.id:
+        flash("You are not authorized to view this occurrence", "negative")
+        return redirect(url_for("my_profile"))
+    
+    occurrence.tour = tours_dao.get_tour_by_id(occurrence.tour_id)
+
+    calendar = Calendar()
+    event = Event()
+
+    event.name = occurrence.tour.title
+    start_datetime = datetime.combine(occurrence.date, datetime.strptime(occurrence.start_time, "%H:%M").time(), tzinfo=zone)
+    end_datetime = start_datetime + timedelta(minutes=occurrence.tour.duration)
+    event.begin = start_datetime
+    event.end = end_datetime
+
+    calendar.events.add(event)
+
+    response = Response(calendar.serialize(), mimetype='text/calendar')
+
+    return response
+    
 
 @app.route("/occurrences/<id>/report", methods=["POST"])
 @login_required

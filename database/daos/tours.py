@@ -7,7 +7,7 @@ from utilities.db_connection import connect_db
 #CORE FUNCTIONS
 
 @connect_db
-def get_tours(conn, cursor, limit=None, state=None, weekday=None, duration_start=None, duration_end=None, language=None, theme=None, max_participants=None):
+def get_tours(conn, cursor, limit=None, state=None, weekday=None, duration_start=None, duration_end=None, language=None, theme=None, max_participants=None, min_participants=None):
 
     query="SELECT DISTINCT tours.* FROM tours, tour_week_slots WHERE tours.id = tour_week_slots.tour_id"
     parameters = ()
@@ -39,6 +39,10 @@ def get_tours(conn, cursor, limit=None, state=None, weekday=None, duration_start
     if max_participants is not None:
         query += " AND max_participants<=(?)"
         parameters += (max_participants,)
+
+    if min_participants is not None:
+        query += " AND max_participants>=(?)"
+        parameters += (min_participants,)
 
     if limit is not None:
         query += " LIMIT (?)"

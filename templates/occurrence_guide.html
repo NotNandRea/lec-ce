@@ -111,7 +111,7 @@
                     <div class="row g-4 mb-4">
 
                         <span class="lecce-text-impact fw-bold lecce-secondary-color mb-0 fs-6">
-                            {{ occurrence.tour.name }}
+                            {{ occurrence.tour.title }}
                         </span>
 
                         <div class="col-6">
@@ -349,7 +349,8 @@
                                     Effective participants
                                 </span>
                                 <div class="row lecce-text-impact lecce-secondary-color fw-bold fs-1">
-                                    <span id="effectiveParticipants" class="col-5">{{ report.actual_participants }}</span>
+                                    <span id="effectiveParticipants" class="col-5">{{ report.actual_participants
+                                        }}</span>
                                     <span class="col-2">/</span>
                                     <span id="totalParticipants" class="col-5">{{ participants_number }}</span>
                                 </div>
@@ -379,6 +380,13 @@
                 </div>
                 {% endif %}
             </section>
+            <div>
+                <a href="{{ url_for('add_occurrence_to_calendar', id=occurrence.id) }}"
+                    class="btn lecce-btn lecce-secondary-background shadow-sm w-100 py-3 fw-bold">
+                    <i class="bi bi-calendar-plus me-2"></i>
+                    Add to calendar
+                </a>
+            </div>
         </div>
     </div>
 </main>

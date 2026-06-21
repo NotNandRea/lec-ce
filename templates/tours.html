@@ -10,15 +10,25 @@
 
 
             <h1 class="fw-bold mb-3">
-                What we offer
+                {% if origin == "list" %}
+                All tours
+                {% elif origin == "user_tours" %}
+                {% if current_user.id == user.id %}
+                My tours
+                {% else %}
+                {{ user.first_name }}'s tours
+                {% endif %}
+                {% endif %}
             </h1>
 
+            {% if origin == "list" %}
             <a class="btn lecce-btn lecce-primary-background" data-bs-toggle="collapse" href="#collapseFilters">
                 Apply new filters <i class="bi-funnel"></i>
             </a>
             <div class="collapse" id="collapseFilters">
                 {% include "searchbar.html" %}
             </div>
+            {% endif %}
 
         </div>
     </section>
@@ -35,7 +45,7 @@
                 </div>
                 {% endfor %}
                 {% else %}
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center align-items-center py-5 fw-bold fs-4">
                     <p>No tours found</p>
                 </div>
                 {% endif %}

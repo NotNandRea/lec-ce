@@ -7,6 +7,7 @@
     <!--TODO: implement title in every page -->
     <!--TODO: implement favicon -->
     <!--TODO: implement responsiveness -->
+    <!--TODO: implement navbar -->
     <title>LecCÈ - {% block title %}{% endblock %}</title>
 
     <!-- Bootstrap -->
@@ -26,7 +27,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 
-<body>
+<body class="min-vh-100 d-flex flex-column">
     <header class="lecce-header">
         <nav class="navbar mx-4">
             <div class="container-fluid d-flex align-items-center justify-content-between">
@@ -59,7 +60,7 @@
     </header>
 
     <!-- Flash messages -->
-    <div class="container-fluid">
+    <div class="container-fluid flex-grow-1">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}

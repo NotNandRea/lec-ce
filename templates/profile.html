@@ -84,7 +84,11 @@
         <section class="mb-5">
 
             <h2 class="lecce-section-label lecce-text-impact lecce-primary-color fw-bold mb-3 fs-6">
-                MY STATS
+                {% if user.id == current_user.id %}
+                    My Stats
+                {% else %}
+                    {{ user.first_name }}'s Stats
+                {% endif %}
             </h2>
 
             <div class="row g-4">
@@ -144,7 +148,7 @@
 
                             <div class="d-flex flex-column align-items-start">
                                 <span class="fw-bold mb-0">
-                                    Your Rating
+                                    {{ user.first_name }}'s Rating
                                 </span>
 
                                 <div class="d-flex align-items-center gap-2">
@@ -170,7 +174,11 @@
 
                 <div>
                     <h2 class="lecce-text-impact lecce-primary-color fw-bold mb-2 fs-6">
-                        MY SCHEDULE
+                        {% if user.id == current_user.id %}
+                            My Schedule
+                        {% else %}
+                            {{ user.first_name }}'s Schedule
+                        {% endif %}
                     </h2>
 
                     <span class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-2">
@@ -181,12 +189,12 @@
                 {% if user.id == current_user.id %}
                 <div class="d-flex flex-row align-items-center gap-2">
                     <a href="{{ url_for('my_calendar') }}"
-                        class="btn lecce-btn lecce-secondary-background shadow-sm p-3 fw-bold">
+                        class="btn lecce-btn lecce-secondary-background shadow-sm px-3 py-2 fw-bold">
                         <i class="bi bi-calendar3 me-1"></i>
                         Download full calendar
                     </a>
                     <a href="{{ url_for('personal_schedule') }}"
-                        class="lecce-primary-color fw-bold text-decoration-none fs-6">
+                        class="btn lecce-btn lecce-primary-background shadow-sm px-3 py-2 fw-bold">
                         {% if user.role == 'guide' %}View my schedule{% else %}View my bookings{% endif %}
                     </a>
                 </div>
@@ -216,7 +224,11 @@
 
                 <div>
                     <h2 class="lecce-text-impact lecce-primary-color fw-bold mb-2 fs-6">
-                        MY TOURS
+                        {% if user.id == current_user.id %}
+                            My Tours
+                        {% else %}
+                            {{ user.first_name }}'s Tours
+                        {% endif %}
                     </h2>
 
                     <p class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-2">
@@ -236,7 +248,7 @@
                     </p>
                 </div>
 
-                <a href="#" class="lecce-primary-color fw-bold text-decoration-none fs-6">
+                <a href="{{ url_for('user_tours', user_id=user.id) }}" class="btn lecce-btn lecce-primary-background shadow-sm px-3 py-2 fw-bold">
                     View every tour
                 </a>
 
