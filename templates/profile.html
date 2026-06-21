@@ -128,7 +128,11 @@
                                 </span>
 
                                 <span class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-2">
-                                    Mon
+                                    {% if upcoming|length > 0 %}
+                                        {{ upcoming[0].date.strftime('%A')[0:3] }}
+                                    {% else %}
+                                        --
+                                    {% endif %}
                                 </span>
 
 
@@ -148,7 +152,11 @@
 
                             <div class="d-flex flex-column align-items-start">
                                 <span class="fw-bold mb-0">
+                                    {% if user.id == current_user.id %}
+                                        My Rating
+                                    {% else %}
                                     {{ user.first_name }}'s Rating
+                                    {% endif %}
                                 </span>
 
                                 <div class="d-flex align-items-center gap-2">

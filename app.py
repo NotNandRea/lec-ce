@@ -347,9 +347,10 @@ def profile(id):
 @app.route("/")
 def home():
 
-    today=date.today()
     languages=languages_dao.get_languages()
     themes=themes_dao.get_themes()
+
+    photo=photos_dao.get_random_photo()
     
     tours=tours_dao.get_tours(limit=8, state="active")
 
@@ -360,7 +361,7 @@ def home():
         tour.stops=stops_dao.get_first_stop_by_tour(tour)
         tour.guide = users_dao.get_user_by_id(tour.guide_id)
 
-    return render_template("home.html", today=today, tours=tours, languages=languages, themes=themes)
+    return render_template("home.html", tours=tours, languages=languages, themes=themes, photo=photo)
 
 @app.route("/tours/list")
 def tours():

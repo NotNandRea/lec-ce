@@ -59,3 +59,14 @@ def get_first_photo(conn, cursor, tour):
         return photo["path"]
     else:
         return None
+
+@connect_db
+def get_random_photo(conn, cursor):
+    query="SELECT path FROM tour_photos ORDER BY RANDOM() LIMIT 1"
+    cursor.execute(query)
+    photo=cursor.fetchone()
+
+    if photo:
+        return photo["path"]
+    else:
+        return None

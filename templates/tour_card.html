@@ -28,7 +28,7 @@
             {{ tour.description }}
         </p>
 
-        <div class="d-flex flex-wrap gap-3 mb-4 border-bottom pb-4 mt-auto">
+        <div class="d-flex flex-wrap gap-3 mb-4 border-bottom pb-4">
             <span><i class="bi bi-clock lecce-primary-color me-1"></i>{{ tour.duration }}m</span>
 
             <span><i class="bi bi-translate lecce-primary-color me-1"></i>{{ tour.language[0:2].upper() }}</span>
@@ -51,7 +51,8 @@
                 {% endif %}
 
                 <div class="d-flex flex-column align-items-start">
-                    <span class="fw-bold mb-0">{{ tour.guide.first_name }} {{ tour.guide.last_name }}</span>
+                    <span class="fw-bold mb-0">{{ tour.guide.first_name }}</span>
+                    <span class="fw-bold mb-0">{{ tour.guide.last_name }}</span>
                     <span class="mb-0 fs-6">Local Guide</span>
                 </div>
             </div>
