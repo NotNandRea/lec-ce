@@ -213,10 +213,16 @@ def update_tour_state(conn, cursor, tour, state):
 
 
 @connect_db
-def count_tours(conn, cursor):
+def count_tours(conn, cursor, state=None):
     
     query="SELECT COUNT(*) AS count FROM tours"
-    cursor.execute(query)
+    parameters=()
+
+    if state is not None:
+        query+=" WHERE state=(?)"
+        parameters=(state,)
+
+    cursor.execute(query, parameters)
     count=cursor.fetchone()["count"]
 
     return count

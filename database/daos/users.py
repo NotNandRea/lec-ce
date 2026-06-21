@@ -7,10 +7,16 @@ from utilities.db_connection import connect_db
 #CORE FUNCTIONS
 
 @connect_db
-def get_users(conn, cursor):
+def get_users(conn, cursor, role=None):
 
     query="SELECT * FROM users"
-    cursor.execute(query)
+    parameters=()
+
+    if role is not None:
+        query+=" WHERE role=(?)"
+        parameters=(role,)
+    
+    cursor.execute(query, parameters)
     users=cursor.fetchall()
 
     users_list=[]
@@ -65,24 +71,17 @@ def add_user(conn, cursor, user):
 
     return success
 
-# UTILITY FUNCTIONS
-
 @connect_db
-def count_guides(conn, cursor):
-    
-    query="SELECT COUNT(*) AS count FROM users WHERE role='guide'"
-    cursor.execute(query)
-    result = cursor.fetchone()
-    count = result["count"]
+def count_users(conn, cursor, role=None):
 
-    return count
+    query="SELECT COUNT(*) as count FROM users"
+    parameters=()
 
-@connect_db
-def count_participants(conn, cursor):
-    
-    query="SELECT COUNT(*) AS count FROM users WHERE role='participant'"
-    cursor.execute(query)
-    result = cursor.fetchone()
-    count = result["count"]
+    if role is not None:
+        query+=" WHERE role=(?)"
+        parameters=(role,)
+
+    cursor.execute(query, parameters)
+    count=cursor.fetchone()["count"]
 
     return count

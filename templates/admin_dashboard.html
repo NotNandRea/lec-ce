@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LecCÈ - Admin Dashboard</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+        rel="stylesheet">
+
+</head>
+
+<body class="min-vh-100 d-flex flex-column">
+    <header class="lecce-header">
+        <nav class="navbar mx-4">
+            <div class="container-fluid d-flex align-items-center justify-content-between">
+                <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home') }}">
+                    <img class="lecce-logo p-0 m-0"
+                        src="{{ url_for('static', filename='images/utility_images/LecCE_logo_primary.png') }}"
+                        alt="LecCÈ Logo">
+                </a>
+
+                <div class="d-flex align-items-center gap-1">
+                    <span class="lecce-btn lecce-secondary-background p-2 px-3 user-select-none">ADMIN DASHBOARD</span>
+                    <span class="user-select-none">
+                        <div class="profile-initials fw-bold p-2">{{ admin.first_name[0].upper() }}{{
+                            admin.last_name[0].upper() }}</div>
+                    </span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-grow-1 mx-4 my-5">
+        <div class="container w-75">
+
+            <h1 class="lecce-text-impact lecce-secondary-color fw-bold mb-4">
+                Admin Dashboard
+            </h1>
+
+            <section class="row mb-5 g-4">
+
+                <h2 class="lecce-section-label lecce-text-impact lecce-primary-color fw-bold fs-6">
+                    Statistics
+                </h2>
+
+                <div class="col-3">
+                    <div class="bg-white rounded-5 shadow p-4 h-100 d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="profile-initials rounded-4 d-flex align-items-center justify-content-center">
+                                <i class="bi bi-people text-white"></i>
+                            </div>
+
+                            <div class="d-flex flex-column align-items-start">
+                                <span class="fw-bold mb-0">
+                                    GUIDES
+                                </span>
+                                <span class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-2">
+                                    {{ guides | length }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-3">
+                    <div class="bg-white rounded-5 shadow p-4 h-100 d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="profile-initials rounded-4 d-flex align-items-center justify-content-center">
+                                <i class="bi bi-people text-white"></i>
+                            </div>
+
+                            <div class="d-flex flex-column align-items-start">
+                                <span class="fw-bold mb-0">
+                                    PARTICIPANTS
+                                </span>
+                                <span class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-2">
+                                    {{ participants_number }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-3">
+                    <div class="bg-white rounded-5 shadow p-4 h-100 d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="profile-initials rounded-4 d-flex align-items-center justify-content-center">
+                                <i class="bi bi-ticket-perforated text-white"></i>
+                            </div>
+
+                            <div class="d-flex flex-column align-items-start">
+                                <span class="fw-bold mb-0">
+                                    ACTIVE TOURS
+                                </span>
+                                <span class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-2">
+                                    {{ tour_number }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-3">
+                    <div class="bg-white rounded-5 shadow p-4 h-100 d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="profile-initials rounded-4 d-flex align-items-center justify-content-center">
+                                <i class="bi bi-clock text-white"></i>
+                            </div>
+
+                            <div class="d-flex flex-column align-items-start">
+                                <span class="fw-bold mb-0">
+                                    RESERVATIONS
+                                </span>
+                                <span class="lecce-text-impact lecce-secondary-color fw-bold mb-0 fs-2">
+                                    {{ reservation_number }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <section class="bg-white rounded-5 shadow-sm p-4 mb-5">
+
+                <div class="d-flex justify-content-between align-items-end mb-4">
+                    <h3 class="lecce-text-impact lecce-secondary-color fw-bold fs-3 mb-0">
+                        Reservations by language
+                    </h3>
+
+                    <div class="lecce-secondary-color d-flex flex-column align-items-end">
+                        <span class="fw-bold fs-5">{{ reservation_number }}</span>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column gap-3">
+                    {% for language in languages %}
+                    <div class="row align-items-center">
+                        <div class="col-2 fw-bold lecce-secondary-color">
+                            <span class="me-2">{{ language.name }}</span>
+                        </div>
+                        <div class="col-8">
+                            <div class="progress bg-light">
+                                <div class="progress-bar lecce-primary-background"
+                                    style="width: {{ language['reservations_number']*100 / reservation_number }}%">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2 text-end fw-bold lecce-secondary-color">
+                            {{ language["reservations_number"] }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section class="bg-white rounded-5 shadow-sm p-4 mb-5">
+
+                <div class="d-flex justify-content-between align-items-end mb-4">
+                    <h3 class="lecce-text-impact lecce-secondary-color fw-bold fs-3 mb-0">
+                        Reservations by theme
+                    </h3>
+
+                    <div class="lecce-secondary-color d-flex flex-column align-items-end">
+                        <span class="fw-bold fs-5">{{ reservation_number }}</span>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column gap-3">
+                    {% for theme in themes %}
+                    <div class="row align-items-center">
+                        <div class="col-2 fw-bold lecce-secondary-color">
+                            <span class="me-2">{{ theme.name }}</span>
+                        </div>
+                        <div class="col-8">
+                            <div class="progress bg-light">
+                                <div class="progress-bar lecce-primary-background"
+                                    style="width: {{ theme.reservations_number * 100 / reservation_number }}%"></div>
+                            </div>
+                        </div>
+                        <div class="col-2 text-end fw-bold lecce-secondary-color">
+                            {{ theme.reservations_number }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section>
+
+                <h2 class="lecce-text-impact lecce-secondary-color fw-bold fs-3 mb-4">
+                    Registered guides
+                </h2>
+
+                {% if guides | length == 0 %}
+                <p>
+                    No guides registered yet.
+                </p>
+                {% else %}
+                {% for guide in guides %}
+                <div class="bg-white rounded-5 shadow-sm overflow-hidden mb-4">
+                    <div class="row align-items-center p-4 border-bottom">
+                        <div class="col-4 d-flex align-items-center gap-3">
+                            {% if guide.profile_photo is none %}
+                            <a class="profile-initials lecce-text-impact fw-bold text-decoration-none"
+                                href="{{ url_for('profile', id=guide.id) }}">
+                                {{ guide.first_name[0] }}{{ guide.last_name[0] }}
+                            </a>
+                            {% else %}
+                            <a class="profile-initials p-1" href="{{ url_for('profile', id=guide.id) }}">
+                                <img src="{{ url_for('static', filename='images/profile_photos/' ~ guide.profile_photo) }}"
+                                    alt="Guide Profile Photo" class="img-fluid rounded-circle object-fit-cover">
+                            </a>
+                            {% endif %}
+
+                            <div>
+                                <h3 class="fw-bold lecce-secondary-color mb-0 fs-6">
+                                    {{ guide.first_name }} {{ guide.last_name }}
+                                </h3>
+                                <span class="fs-6 lecce-secondary-color">
+                                    {{ guide.email }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-8 d-flex flex-column align-items-end">
+                            <p class="mb-0 fs-6 lecce-secondary-color">
+                                <i class="bi bi-translate lecce-primary-color me-1"></i>
+                                {% for language in guide.languages %}
+                                {{ language['name'] }}{% if not loop.last %} - {% endif %}
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="lecce-default-background p-4">
+                        <div class="d-flex align-items-center mb-4 gap-4">
+                            <p class="fs-6 lecce-secondary-color fw-bold m-0">
+                                TOURS - {{ guide.tours | length }}
+                            </p>
+                            {% if guide.tours | length > 0 %}
+                            <a class="btn lecce-btn lecce-primary-background m-0" data-bs-toggle="collapse"
+                                href="#collapseFilters{{ guide.id }}">
+                                Show tours
+                            </a>
+                            {% endif %}
+                        </div>
+
+                        {% for tour in guide.tours %}
+                        <div class="bg-white rounded-5 shadow-sm p-4 mb-4 collapse" id="collapseFilters{{ guide.id }}">
+                            <a class="d-flex flex-row gap-3 text-decoration-none lecce-secondary-color" href="{{ url_for('tour', id=tour.id) }}">
+                                <div class="rounded-4 overflow-hidden">
+                                    <img class="object-fit-cover rounded-4" width="160" height="160"
+                                        src="{{ url_for('static', filename='images/tour_photos/' ~ tour.photos['photo1']) }}"
+                                        alt="{{ tour.title }}">
+                                </div>
+
+                                <div class="flex-grow-1 shadow-sm rounded-4 p-3">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <span
+                                                class="badge lecce-{{ tour.theme.name.lower() }}-background lecce-{{ tour.theme.name.lower() }}-text lecce-btn mb-2">
+                                                {{ tour.theme.name }}
+                                            </span>
+
+                                            <h4 class="lecce-secondary-color fw-bold fs-4 mb-1">
+                                                {{ tour.title }}
+                                            </h4>
+
+                                            <p class="lecce-secondary-color mb-3 text-break">
+                                                {{ tour.description }}
+                                            </p>
+                                        </div>
+
+                                        {% if tour.state == "active" %}
+                                        <span class="badge lecce-btn lecce-positive-background px-3 py-2">
+                                            Active
+                                        </span>
+                                        {% else %}
+                                        <span class="badge lecce-btn lecce-negative-background px-3 py-2">
+                                            Inactive
+                                        </span>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="row border-top border-bottom py-3 mb-4">
+                                        <div class="col-3">
+                                            <i class="bi bi-clock lecce-primary-color me-1"></i>
+                                            <span class="fs-6 fw-bold">{{ tour.duration }} min</span>
+                                        </div>
+                                        <div class="col-3">
+                                            <i class="bi bi-people lecce-primary-color me-1"></i>
+                                            <span class="fs-6 fw-bold">{{ tour.max_participants }} people</span>
+                                        </div>
+                                        <div class="col-3">
+                                            <i class="bi bi-translate lecce-primary-color me-1"></i>
+                                            <span class="fs-6 fw-bold">{{ tour.language }}</span>
+                                        </div>
+                                        <div class="col-3">
+                                            <i class="bi bi-geo-alt lecce-primary-color me-1"></i>
+                                            <span class="fs-6 fw-bold">{{ tour.stops["1"] }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <p class="fs-6 lecce-secondary-color fw-bold mb-3">
+                                            ITINERARY
+                                        </p>
+
+                                        {% for order_number, stop in tour.stops.items() %}
+                                        <div
+                                            class="d-flex align-items-center gap-3 {% if not loop.last %}border-bottom pb-3 mb-3{% endif %}">
+                                            <span
+                                                class="d-flex justify-content-center badge lecce-primary-background lecce-btn align-self-start px-3 py-2 fs-6 w-6">
+                                                {{ order_number }}
+                                            </span>
+
+                                            <span class="lecce-secondary-color fw-bold fs-5 m-0">
+                                                {{ stop }}
+                                            </span>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="row g-3 mt-3">
+
+                                        <p class="fs-6 lecce-secondary-color fw-bold mb-1">
+                                            SCHEDULE
+                                        </p>
+
+                                        <div class="col">
+                                            <div
+                                                class="{% if tour.weekly_schedule.get('monday') is not none %} lecce-primary-background {% else %} bg-white {% endif %} rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                                <div
+                                                    class="{% if tour.weekly_schedule.get('monday') is not none %} lecce-primary-text {% endif %} fw-bold mb-1 fs-6">
+                                                    MON
+                                                </div>
+
+                                                <div
+                                                    class="{% if tour.weekly_schedule.get('monday') is not none %} lecce-primary-text {% endif %} fw-bold">
+                                                    {% if tour.weekly_schedule.get('monday') is not none %}
+                                                    {{ tour.weekly_schedule.get('monday') }}
+                                                    {% else %}
+                                                    —
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div
+                                                class="{% if tour.weekly_schedule.get('tuesday') is not none %} lecce-primary-background {% else %} bg-white {% endif %} rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                                <div
+                                                    class="{% if tour.weekly_schedule.get('tuesday') is not none %} lecce-primary-text {% endif %} fw-bold mb-1 fs-6">
+                                                    TUE
+                                                </div>
+
+                                                <div
+                                                    class="{% if tour.weekly_schedule.get('tuesday') is not none %} lecce-primary-text {% endif %} fw-bold">
+                                                    {% if tour.weekly_schedule.get('tuesday') is not none %}
+                                                    {{ tour.weekly_schedule.get('tuesday') }}
+                                                    {% else %}
+                                                    —
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div
+                                                class="{% if tour.weekly_schedule.get('wednesday') is not none %} lecce-primary-background {% else %} bg-white {% endif %} rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                                <div
+                                                    class="{% if tour.weekly_schedule.get('wednesday') is not none %} lecce-primary-text {% endif %} fw-bold mb-1 fs-6">
+                                                    WED
+                                                </div>
+
+                                                <div
+                                                    class="{% if tour.weekly_schedule.get('wednesday') is not none %} lecce-primary-text {% endif %} fw-bold">
+                                                    {% if tour.weekly_schedule.get('wednesday') is not none %}
+                                                    {{ tour.weekly_schedule.get('wednesday') }}
+                                                    {% else %}
+                                                    —
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div
+                                                class="{% if tour.weekly_schedule.get('thursday') is not none %} lecce-primary-background {% else %} bg-white {% endif %} rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                                <div
+                                                    class="{% if tour.weekly_schedule.get('thursday') is not none %} lecce-primary-text {% endif %} fw-bold mb-1 fs-6">
+                                                    THU
+                                                </div>
+
+                                                <div
+                                                    class="{% if tour.weekly_schedule.get('thursday') is not none %} lecce-primary-text {% endif %} fw-bold">
+                                                    {% if tour.weekly_schedule.get('thursday') is not none %}
+                                                    {{ tour.weekly_schedule.get('thursday') }}
+                                                    {% else %}
+                                                    —
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div
+                                                class="{% if tour.weekly_schedule.get('friday') is not none %} lecce-primary-background {% else %} bg-white {% endif %} rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                                <div
+                                                    class="{% if tour.weekly_schedule.get('friday') is not none %} lecce-primary-text {% endif %} fw-bold mb-1 fs-6">
+                                                    FRI
+                                                </div>
+
+                                                <div
+                                                    class="{% if tour.weekly_schedule.get('friday') is not none %} lecce-primary-text {% endif %} fw-bold">
+                                                    {% if tour.weekly_schedule.get('friday') is not none %}
+                                                    {{ tour.weekly_schedule.get('friday') }}
+                                                    {% else %}
+                                                    —
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div
+                                                class="{% if tour.weekly_schedule.get('saturday') is not none %} lecce-primary-background {% else %} bg-white {% endif %} rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                                <div
+                                                    class="{% if tour.weekly_schedule.get('saturday') is not none %} lecce-primary-text {% endif %} fw-bold mb-1 fs-6">
+                                                    SAT
+                                                </div>
+
+                                                <div
+                                                    class="{% if tour.weekly_schedule.get('saturday') is not none %} lecce-primary-text {% endif %} fw-bold">
+                                                    {% if tour.weekly_schedule.get('saturday') is not none %}
+                                                    {{ tour.weekly_schedule.get('saturday') }}
+                                                    {% else %}
+                                                    —
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div
+                                                class="{% if tour.weekly_schedule.get('sunday') is not none %} lecce-primary-background {% else %} bg-white {% endif %} rounded-4 border p-3 d-flex flex-column align-items-center h-100">
+                                                <div
+                                                    class="{% if tour.weekly_schedule.get('sunday') is not none %} lecce-primary-text {% endif %} fw-bold mb-1 fs-6">
+                                                    SUN
+                                                </div>
+
+                                                <div
+                                                    class="{% if tour.weekly_schedule.get('sunday') is not none %} lecce-primary-text {% endif %} fw-bold">
+                                                    {% if tour.weekly_schedule.get('sunday') is not none %}
+                                                    {{ tour.weekly_schedule.get('sunday') }}
+                                                    {% else %}
+                                                    —
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </section>
+
+        </div>
+    </main>
+
+    <!--TODO: align image with navbar-->
+    <footer class="lecce-secondary-background mt-1 p-4">
+
+        <div class="d-flex flex-column align-items-center text-center">
+            <img class="lecce-logo mb-2"
+                src="{{ url_for('static', filename='images/utility_images/LecCE_logo_secondary.png') }}"
+                alt="LecCÈ Logo">
+
+            <p class="lecce-text-impact fw-semibold lh-lg mb-4">
+                Lecce c'è, And you?
+            </p>
+        </div>
+
+        <div class="d-flex flex-column flex-md-row justify-content-between gap-2 border-top border-white pt-3">
+            <span class="mb-0">
+                © 2026 LecC'È - Lecce, Puglia
+            </span>
+
+            <span class="mb-0">
+                Made with <i class="bi bi-heart-fill lecce-primary-color"></i> by Andrea Risolo
+            </span>
+        </div>
+
+    </footer>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

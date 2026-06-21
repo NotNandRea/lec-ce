@@ -1522,5 +1522,29 @@ def admin_login_post():
         flash("Wrong username or password", "negative")
         return redirect(url_for("admin_login"))
 
-    flash("Welcome Back Admin!", "positive")
-    return redirect(url_for("home"))
+    # retrieve all informations
+    participant_number = users_dao.count_users(role="participant")
+    tour_number = tours_dao.count_tours(state="active")
+    reservation_number = reservations_dao.count_reservations(state="active")
+
+    languages = languages_dao.get_languages()
+    themes = themes_dao.get_themes()
+
+    for language in languages:
+        language["reservations_number"] = reservations_dao.count_reservations_by_language_id(language["id"], state="active")
+    
+    for theme in themes:
+        theme.reservations_number = reservations_dao.count_reservations_by_theme_id(theme.id, state="active")
+
+    guides = users_dao.get_users(role="guide")
+    for guide in guides:
+        guide.languages = languages_dao.get_languages_by_user_id(guide.id)
+        guide.tours = tours_dao.get_tours_by_guide_id(guide.id)
+        for tour in guide.tours:
+            tour.theme = themes_dao.get_theme_by_id(tour.theme_id)
+            tour.photos = photos_dao.get_tour_photos(tour)
+            tour.weekly_schedule = tours_dao.get_weekly_schedule_by_tour(tour)
+            tour.stops = stops_dao.get_stops_by_tour(tour)
+            tour.language = languages_dao.get_language_by_id(tour.language_id)["name"]
+
+    return render_template("admin_dashboard.html", admin=admin, guides=guides, participants_number=participant_number, tour_number=tour_number, reservation_number=reservation_number, languages=languages, themes=themes)

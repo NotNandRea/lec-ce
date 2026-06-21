@@ -146,3 +146,48 @@ def update_reservation_state(conn, cursor, reservation_id, new_state):
         print("ERROR", str(e))
         conn.rollback()
     return success
+
+@connect_db
+def count_reservations(conn, cursor, state=None):
+
+    query="SELECT COUNT(*) as count FROM reservations"
+    parameters = ()
+
+    if state is not None:
+        query += " WHERE state=(?)"
+        parameters += (state,)
+
+    cursor.execute(query, parameters)
+    count=cursor.fetchone()["count"]
+
+    return count
+
+@connect_db
+def count_reservations_by_language_id(conn, cursor, language_id, state=None):
+
+    query="SELECT COUNT(*) as count FROM reservations, tour_occurrences, tours WHERE reservations.occurrence_id = tour_occurrences.id AND tour_occurrences.tour_id=tours.id AND tours.language_id=(?)"
+    parameters = (language_id,)
+
+    if state is not None:
+        query += " AND reservations.state=(?)"
+        parameters += (state,)
+
+    cursor.execute(query, parameters)
+    count=cursor.fetchone()["count"]
+
+    return count
+
+@connect_db
+def count_reservations_by_theme_id(conn, cursor, theme_id, state=None):
+
+    query="SELECT COUNT(*) as count FROM reservations, tour_occurrences, tours WHERE reservations.occurrence_id = tour_occurrences.id AND tour_occurrences.tour_id=tours.id AND tours.theme_id=(?)"
+    parameters = (theme_id,)
+
+    if state is not None:
+        query += " AND reservations.state=(?)"
+        parameters += (state,)
+
+    cursor.execute(query, parameters)
+    count=cursor.fetchone()["count"]
+
+    return count
