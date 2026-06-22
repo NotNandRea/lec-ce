@@ -39,14 +39,6 @@ def get_language_by_name(conn, cursor, name):
     return dict(language)
 
 @connect_db
-def count_languages(conn, cursor):
-    query="SELECT COUNT(*) AS count FROM languages"
-    cursor.execute(query)
-    count=cursor.fetchone()["count"]
-
-    return count
-
-@connect_db
 def add_language_to_user(conn, cursor, user, languages):
 
     success = False

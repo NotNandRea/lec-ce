@@ -12,9 +12,6 @@ class User(UserMixin):
         self.profile_photo = profile_photo
         self.languages = None
 
-    def print_user(self):
-        print(f"ID: {self.id}, Role: {self.role}, Email: {self.email}, First Name: {self.first_name}, Last Name: {self.last_name}, Profile Photo: {self.profile_photo}")
-        return
 
     def check_password(self,string):
         return check_password_hash(self.password, string)

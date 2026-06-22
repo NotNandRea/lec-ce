@@ -20,19 +20,6 @@ def add_reservation(conn, cursor, reservation):
     return success
 
 @connect_db
-def get_reservation_by_participant_and_occurrence(conn, cursor, participant, occurrence):
-
-    query="SELECT * FROM reservations WHERE participant_id=(?) AND occurrence_id=(?)"
-    cursor.execute(query, (participant.id, occurrence.id))
-    reservation=cursor.fetchone()
-
-    if reservation is None:
-        return None
-    reservation_obj=Reservation(reservation["id"], reservation["participant_id"], reservation["occurrence_id"], reservation["timestamp_booking"], reservation["state"])
-
-    return reservation_obj
-
-@connect_db
 def get_active_reservation_by_participant_and_occurrence(conn, cursor, participant, occurrence):
 
     query="SELECT * FROM reservations WHERE participant_id=(?) AND occurrence_id=(?) AND state='active'"
@@ -113,6 +100,15 @@ def get_active_reservations_by_occurrence_id(conn, cursor, occurrence_id):
         reservation_list.append(Reservation(reservation["id"], reservation["participant_id"], reservation["occurrence_id"], reservation["timestamp_booking"], reservation["state"]))
 
     return reservation_list
+
+@connect_db
+def count_active_passed_reservations_by_participant_id_and_tour_id(conn, cursor, participant_id, tour_id, today_date):
+
+    query="SELECT COUNT(*) as count FROM reservations, tour_occurrences WHERE reservations.occurrence_id = tour_occurrences.id AND reservations.participant_id=(?) AND tour_occurrences.tour_id=(?) AND reservations.state='active' AND tour_occurrences.date < (?)"
+    cursor.execute(query, (participant_id, tour_id, today_date.strftime("%Y-%m-%d")))
+    count=cursor.fetchone()["count"]
+
+    return count
 
 @connect_db
 def count_reservations_by_tour_id(conn, cursor, tour_id, state=None, after_date=None):

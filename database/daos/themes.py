@@ -40,11 +40,3 @@ def get_theme_by_name(conn, cursor, name):
         return Theme(theme["id"], theme["name"], theme["emoji"], theme["description"])
     else:
         return None
-
-@connect_db
-def count_themes(conn, cursor):
-    query="SELECT COUNT(*) AS count FROM tour_themes"
-    cursor.execute(query)
-    count=cursor.fetchone()["count"]
-
-    return count

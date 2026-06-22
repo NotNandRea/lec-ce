@@ -12,6 +12,7 @@ from database.models.occurrence import Occurrence
 from database.models.reservation import Reservation
 from database.models.extra_participant import Extra_Participant
 from database.models.report import Report
+from database.models.review import Review
 
 from database.daos import users as users_dao
 from database.daos import tours as tours_dao
@@ -24,6 +25,7 @@ from database.daos import reservations as reservations_dao
 from database.daos import extra_participants as extra_participants_dao
 from database.daos import reports as reports_dao
 from database.daos import admins as admins_dao
+from database.daos import reviews as reviews_dao
 
 from utilities import check_date, check_email, check_password, images, days_to_numbers, check_time, date_to_day
 from utilities.role_decorators import guide_required
@@ -327,6 +329,7 @@ def profile(id):
         
         upcoming = occurrencies
 
+
     
         #remove tour duplicates
         tours = []
@@ -481,7 +484,21 @@ def tour(id):
     has_active_reservations=reservations_dao.count_reservations_by_tour_id(tour.id, "active", today)
     has_reservations=reservations_dao.count_reservations_by_tour_id(tour.id)
 
-    return render_template("tour.html", tour=tour, theme=theme, avaiable_days=avaiable_days, today=today, has_active_reservations=has_active_reservations, has_reservations=has_reservations)
+    #reviews management
+    reviews=reviews_dao.get_reviews_by_tour_id(tour.id)
+
+    user_review=None
+    if current_user.is_authenticated and current_user.role == "participant":
+        user_review=reviews_dao.get_review_by_participant_id_and_tour_id(current_user.id, tour.id)
+
+    for review in reviews:
+        review.participant = users_dao.get_user_by_id(review.participant_id)
+
+    times_user_reserved=0
+    if current_user.is_authenticated and current_user.role == "participant":
+        times_user_reserved=reservations_dao.count_active_passed_reservations_by_participant_id_and_tour_id(current_user.id, tour.id, today)
+
+    return render_template("tour.html", tour=tour, theme=theme, avaiable_days=avaiable_days, today=today, has_active_reservations=has_active_reservations, has_reservations=has_reservations, reviews=reviews, user_review=user_review, times_user_reserved=times_user_reserved)
 
 @app.route("/tours/<user_id>")
 def user_tours(user_id):
@@ -1027,6 +1044,59 @@ def delete_tour(id):
     flash("Tour deleted successfully", "positive")
     return redirect(url_for("home"))
 
+
+@app.route("/tours/<id>/review", methods=["POST"])
+@login_required
+@participant_required
+def add_review(id):
+
+    today = date.today()
+
+    #verify if the user has a reservation for the tour
+    tour=tours_dao.get_tour_by_id(id)
+    if tour is None:
+        flash("Tour not found", "negative")
+        return redirect(url_for("home"))
+    
+    if reservations_dao.count_active_passed_reservations_by_participant_id_and_tour_id(current_user.id, tour.id, today) == 0:
+        flash("You cannot review a tour you haven't booked", "negative")
+        return redirect(url_for("home"))
+    
+    #verify if the user has already reviewed the tour
+    if reviews_dao.get_review_by_participant_id_and_tour_id(current_user.id, tour.id) is not None:
+        flash("You have already reviewed this tour", "negative")
+        return redirect(url_for("home"))
+    
+    # rating validation
+    rating=request.form.get("rating")
+    if rating in [None, ""]:
+        flash("Invalid rating", "negative")
+        return redirect(url_for("tour", id=id))
+    if not rating.isdigit():
+        flash("Invalid rating", "negative")
+        return redirect(url_for("tour", id=id))
+    rating=int(rating)
+    if rating < 1 or rating > 5:
+        flash("Rating must be between 1 and 5", "negative")
+        return redirect(url_for("tour", id=id))
+    
+    # comment validation
+    comment=request.form.get("comment")
+    if comment in [None, ""]:
+        flash("Invalid comment", "negative")
+        return redirect(url_for("tour", id=id))
+    if len(comment) < 2 or len(comment) > 200:
+        flash("Comment must be between 2 and 200 characters", "negative")
+        return redirect(url_for("tour", id=id))
+    
+    review=Review(str(uuid.uuid4()), tour.id, current_user.id, rating, comment)
+
+    if not reviews_dao.add_review(review):
+        flash("An error occurred, review not added", "negative")
+        return redirect(url_for("tour", id=id))
+    
+    flash("Review added successfully", "positive")
+    return redirect(url_for("tour", id=id))
 
 # OCCURRENCE MANAGEMENT FOR GUIDES
 
