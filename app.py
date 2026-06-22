@@ -55,8 +55,6 @@ from ics import Calendar, Event
 from zoneinfo import ZoneInfo
 
 
-#TODO: comment everything
-
 #load everythings from .env file
 load_dotenv()
 
@@ -284,6 +282,7 @@ def my_profile():
 def personal_schedule():
 
 
+    # guides and participants need different queries, but the template always receives upcoming
     if current_user.role == "guide":
         occurrences = occurrencies_dao.get_not_empty_occurrences_by_guide_id(current_user.id)
         for occurrence in occurrences:
@@ -421,6 +420,7 @@ def edit_profile_post():
             flash("At least one language must be selected for guides", "negative")
             return redirect(url_for("edit_profile"))
 
+        # guides cannot remove languages still used by their active tours
         guide_tours = tours_dao.get_tours_by_guide_id(current_user.id, state="active")
         selected_language_ids = []
         for language in guide_languages:
@@ -585,6 +585,7 @@ def tours():
                 flash("End date must be after start date", "negative")
                 return redirect(url_for("home"))
 
+            # keep only distinct weekdays, because the dao filters weekly schedules
             weekday = []
             temp_date = start_date_obj
             while temp_date <= end_date_obj:
@@ -860,6 +861,7 @@ def new_tour_post():
         return redirect(url_for("new_tour"))
     
     # schedule validation
+    # inactive days stay None, so the dao always receives all week days
     selected_days_dict = {"monday": None, "tuesday": None, "wednesday": None, "thursday": None, "friday": None, "saturday": None, "sunday": None}
     selected_days = request.form.getlist("days")
     if len(selected_days) == 0:
@@ -883,7 +885,7 @@ def new_tour_post():
         selected_days_dict[day] = time
 
 
-    # check overlap inside the tour
+    # check overlap inside the tour, also if a tour ends on the next day
     checked_days = []
 
     for day in selected_days:
@@ -1034,7 +1036,8 @@ def edit_tour_post(id):
     if tour_db.state != "active":
         flash("You cannot edit a tour that is not active", "negative")
         return redirect(url_for("home"))
-    
+
+    # tours with reservations are locked because edits would change existing bookings
     if reservations_dao.count_reservations_by_tour_id(tour_db.id) > 0:
         flash("You cannot edit a tour that had reservations", "negative")
         return redirect(url_for("home"))
@@ -1104,6 +1107,7 @@ def edit_tour_post(id):
         return redirect(url_for("edit_tour", id=id))
     
     # schedule validation
+    # inactive days stay None, so the dao always receives all week days
     selected_days_dict = {"monday": None, "tuesday": None, "wednesday": None, "thursday": None, "friday": None, "saturday": None, "sunday": None}
     selected_days = request.form.getlist("days")
     if len(selected_days) == 0:
@@ -1127,7 +1131,7 @@ def edit_tour_post(id):
         selected_days_dict[day] = time
 
 
-    # check overlap inside the tour
+    # check overlap inside the tour, also if a tour ends on the next day
     checked_days = []
 
     for day in selected_days:
@@ -1205,6 +1209,7 @@ def edit_tour_post(id):
         return redirect(url_for("edit_tour", id=id))
     
     #add photos to database
+    # empty photo fields keep old images, uploaded ones replace only that position
     old_photos = photos_dao.get_tour_photos(tour_obj)
 
     i=1
@@ -1341,6 +1346,7 @@ def occurrence_details(id):
     occurrence.tour.stops = stops_dao.get_first_stop_by_tour(occurrence.tour)
     occurrence.tour.theme = themes_dao.get_theme_by_id(occurrence.tour.theme_id)
 
+    # template groups each reservation with the registered user and extra participants
     participants = []
     participants_number = 0
 
@@ -1518,7 +1524,7 @@ def book_tour(id):
         flash("Today the tour is departed yet", "negative")
         return redirect(url_for("tour", id=id))
 
-    # verify if an occurrence already exists for the selected date and tour
+    # create the occurrence only at the first reservation for this tour and date
     occurrence_obj=occurrencies_dao.get_occurrence_by_tour_and_date(tour.id, date_obj)
     if occurrence_obj is None:
         #occurrence creation
@@ -1587,6 +1593,7 @@ def book_tour(id):
 
     participants= [first_participant, second_participant, third_participant]
 
+    # participant_number includes current_user, so only the others are checked here
     for i in range(participant_number-1):
         participant = participants[i]
         if participant.first_name in [None, ""]:
