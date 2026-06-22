@@ -1635,6 +1635,7 @@ def admin_login():
     
     return render_template("admin_login.html")
 
+#TODO: implement admin page with origin flag
 @app.route("/admin", methods=["POST"])
 def admin_login_post():
 
