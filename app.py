@@ -1635,7 +1635,6 @@ def admin_login():
     
     return render_template("admin_login.html")
 
-#TODO: implement admin page with origin flag
 @app.route("/admin", methods=["POST"])
 def admin_login_post():
 
@@ -1661,6 +1660,24 @@ def admin_login_post():
     if current_user.is_authenticated:
         logout_user()
 
+    logs_dao.add_log("Admin login successful")
+
+    return admin_dashboard(origin="admin_login", admin=admin)
+
+
+
+@app.route("/admin/dashboard")
+def admin_dashboard(origin=None, admin=None):
+
+    if origin != "admin_login":
+        flash("You must be logged in as admin to access this page", "negative")
+        return redirect(url_for("admin_login"))
+    
+    admin = admins_dao.get_admin_by_username(admin["username"])
+    if admin is None:
+        flash("You must be logged in as admin to access this page", "negative")
+        return redirect(url_for("admin_login"))
+
     # retrieve all informations
     participant_number = users_dao.count_users(role="participant")
     tour_number = tours_dao.count_tours(state="active")
@@ -1685,8 +1702,7 @@ def admin_login_post():
             tour.weekly_schedule = tours_dao.get_weekly_schedule_by_tour(tour)
             tour.stops = stops_dao.get_stops_by_tour(tour)
             tour.language = languages_dao.get_language_by_id(tour.language_id)["name"]
-
-    logs_dao.add_log("Admin login successful")
+            
 
     logs = logs_dao.get_logs()
 

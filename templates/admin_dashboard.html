@@ -139,6 +139,7 @@
 
                     </section>
 
+                    {% if reservation_number > 0 %}
                     <section class="bg-white rounded-5 shadow-sm p-4 mb-5">
 
                         <div class="d-flex flex-column flex-lg-row justify-content-lg-between gap-2 mb-4">
@@ -200,6 +201,7 @@
                             {% endfor %}
                         </div>
                     </section>
+                    {% endif %}
 
                     <section>
 
@@ -503,7 +505,6 @@
         </div>
     </main>
 
-    <!--TODO: align image with navbar-->
     <footer class="lecce-secondary-background mt-1 p-4">
 
         <div class="d-flex flex-column align-items-center text-center">
