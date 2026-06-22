@@ -55,7 +55,6 @@ from ics import Calendar, Event
 from zoneinfo import ZoneInfo
 
 
-#TODO: put every constant in constants.py
 #TODO: comment everything
 
 #load everythings from .env file
@@ -537,7 +536,7 @@ def home():
 
     photo=photos_dao.get_random_photo()
     
-    tours=tours_dao.get_tours(limit=8, state="active")
+    tours=tours_dao.get_tours_filters(limit=8, state="active")
 
     for tour in tours:
         tour.photos=photos_dao.get_first_photo(tour)
@@ -663,7 +662,7 @@ def tours():
         min_participants = None
 
 
-    tours=tours_dao.get_tours(state="active", weekday=weekday, duration_start=duration[0], duration_end=duration[1], language=language, theme=theme, max_participants=max_participants, min_participants=min_participants)
+    tours=tours_dao.get_tours_filters(state="active", weekday=weekday, duration_start=duration[0], duration_end=duration[1], language=language, theme=theme, max_participants=max_participants, min_participants=min_participants)
 
     for tour in tours:
         tour.photos=photos_dao.get_first_photo(tour)
