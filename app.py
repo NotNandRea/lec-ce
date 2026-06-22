@@ -43,6 +43,7 @@ from zoneinfo import ZoneInfo
 
 #TODO: put every constant in constants.py
 #TODO: comment everything
+#TODO: implement profile edit
 
 #load everythings from .env file
 load_dotenv()

@@ -185,3 +185,11 @@ body {
 .lecce-logs {
     max-height: 320px;
 }
+
+.lecce-bottom-navbar {
+    color: white;
+    position: fixed;
+    bottom: 20px;
+    width: 20em;
+    height: 3.5em;
+}
