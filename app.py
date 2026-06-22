@@ -128,13 +128,13 @@ def register_post():
             flash(f"Invalid profile photo, must be squareable, minimum size is {PROFILE_IMG_HEIGHT}x{PROFILE_IMG_HEIGHT}", "negative")
             return redirect(url_for("register"))
 
+        #file naming
         extension=secure_filename(profile_photo.filename).split(".")[-1].lower()
         profile_photo_filename=str(uuid.uuid4()) + "." + extension
 
         #image resizing
         profile_photo= images.to_square(profile_photo)
 
-        #file naming
         profile_photo.save("static/images/profile_photos/" + profile_photo_filename)
     else:
         profile_photo_filename=None
@@ -248,7 +248,7 @@ def register():
 
     languages=languages_dao.get_languages()
 
-    return render_template("register.html", languages=languages)
+    return render_template("register.html", languages=languages, origin="new", selected_language_names=[])
 
 @app.route("/login")
 def login():
@@ -296,6 +296,149 @@ def personal_schedule():
         upcoming = occurrencies
 
     return render_template("personal_schedule.html", upcoming=upcoming, user=current_user)
+
+@app.route("/profile/edit")
+@login_required
+def edit_profile():
+
+    languages=languages_dao.get_languages()
+    selected_language_names = []
+
+    if current_user.role == "guide":
+        user_languages=languages_dao.get_languages_by_user_id(current_user.id)
+
+        for language in user_languages:
+            selected_language_names.append(language["name"])
+
+    return render_template("register.html", user=current_user, languages=languages, selected_language_names=selected_language_names, origin="edit")
+
+@app.route("/profile/edit", methods=["POST"])
+@login_required
+def edit_profile_post():
+
+    user=request.form.to_dict()
+
+    #email validation
+    email= user.get("email")
+    if email in [None, ""]:
+        flash("Invalid email", "negative")
+        return redirect(url_for("edit_profile"))
+    if check_email.check_email(email) == False:
+        flash("Invalid email", "negative")
+        return redirect(url_for("edit_profile"))
+    user_db=users_dao.get_user_by_email(email)
+    if user_db is not None and user_db.id != current_user.id:
+        flash("Email taken from another user", "negative")
+        return redirect(url_for("edit_profile"))
+
+    # password validation
+    password= user.get("password")
+    if password not in [None, ""]:
+        if check_password.check_password(password) == False:
+            flash("Invalid password", "negative")
+            return redirect(url_for("edit_profile"))
+        password=generate_password_hash(password)
+    else:
+        password=current_user.password
+
+    # First name validation
+    first_name= user.get("first_name")
+    if first_name in [None, ""]:
+        flash("Invalid first name", "negative")
+        return redirect(url_for("edit_profile"))
+
+    # Last name validation
+    last_name= user.get("last_name")
+    if last_name in [None, ""]:
+        flash("Invalid last name", "negative")
+        return redirect(url_for("edit_profile"))
+
+    #image validation
+    profile_photo= request.files.get("profile_photo", None)
+    remove_profile_photo = user.get("remove_profile_photo")
+    if remove_profile_photo == "on":
+        profile_photo_filename=None
+    elif profile_photo:
+
+        #file type verification
+        if not images.is_image(profile_photo):
+            flash("Invalid profile photo", "negative")
+            return redirect(url_for("edit_profile"))
+        if not images.is_squareable(profile_photo):
+            flash(f"Invalid profile photo, must be squareable, minimum size is {PROFILE_IMG_HEIGHT}x{PROFILE_IMG_HEIGHT}", "negative")
+            return redirect(url_for("edit_profile"))
+
+        #file naming
+        extension=secure_filename(profile_photo.filename).split(".")[-1].lower()
+        profile_photo_filename=str(uuid.uuid4()) + "." + extension
+
+        #image resizing
+        profile_photo= images.to_square(profile_photo)
+
+        profile_photo.save("static/images/profile_photos/" + profile_photo_filename)
+    else:
+        profile_photo_filename=current_user.profile_photo
+
+    #languages validation
+    if current_user.role == "guide":
+        selected_languages = request.form.getlist("languages")
+        available_languages = languages_dao.get_languages()
+
+        available_names = []
+
+        for language in available_languages:
+            available_names.append(language["name"])
+
+        invalid_languages = []
+
+        for language in selected_languages:
+            if language not in available_names:
+                invalid_languages.append(language)
+
+        if len(invalid_languages) > 0:
+            flash("Invalid languages", "negative")
+            return redirect(url_for("edit_profile"))
+
+        guide_languages = []
+
+        for language in available_languages:
+            if language["name"] in selected_languages:
+                guide_languages.append(language)
+
+        if len(selected_languages) == 0:
+            flash("At least one language must be selected for guides", "negative")
+            return redirect(url_for("edit_profile"))
+
+        guide_tours = tours_dao.get_tours_by_guide_id(current_user.id, state="active")
+        selected_language_ids = []
+        for language in guide_languages:
+            selected_language_ids.append(str(language["id"]))
+
+        for tour in guide_tours:
+            if str(tour.language_id) not in selected_language_ids:
+                flash("You cannot remove languages used by your active tours", "negative")
+                return redirect(url_for("edit_profile"))
+    else:
+        guide_languages = None
+
+    user_obj=User(current_user.id, current_user.role, email, password, first_name, last_name, profile_photo_filename)
+
+    if not users_dao.update_user(user_obj):
+        flash("An error occurred, profile not edited", "negative")
+        return redirect(url_for("edit_profile"))
+
+    if guide_languages is not None:
+        if not languages_dao.update_languages_of_user(user_obj, guide_languages):
+            flash("An error occurred, languages not edited", "negative")
+            return redirect(url_for("edit_profile"))
+
+    if profile_photo_filename != current_user.profile_photo and current_user.profile_photo is not None:
+        if os.path.exists("static/images/profile_photos/" + current_user.profile_photo):
+            os.remove("static/images/profile_photos/" + current_user.profile_photo)
+
+    flash("Profile edited successfully", "positive")
+    logs_dao.add_log(f"Profile edited successfully by user ID {current_user.id}")
+    return redirect(url_for("my_profile"))
 
 @app.route("/profile/<id>")
 @login_required
@@ -530,7 +673,7 @@ def tour(id):
 
     tour.theme = themes_dao.get_theme_by_id(tour.theme_id)
     tour.language = languages_dao.get_language_by_id(tour.language_id)
-    tour.weekly_schedule=tours_dao.get_schedule_by_tour(tour)
+    tour.weekly_schedule=tours_dao.get_weekly_schedule_by_tour(tour)
     tour.photos=photos_dao.get_tour_photos(tour)
     tour.stops=stops_dao.get_stops_by_tour(tour)
 
@@ -855,7 +998,7 @@ def edit_tour(id):
 
     tour.language = languages_dao.get_language_by_id(tour.language_id)["name"]
     tour.theme = themes_dao.get_theme_by_id(tour.theme_id)
-    tour.weekly_schedule=tours_dao.get_schedule_by_tour(tour)
+    tour.weekly_schedule=tours_dao.get_weekly_schedule_by_tour(tour)
     tour.stops = stops_dao.get_stops_by_tour(tour)
 
     return render_template("new_tour.html", languages=languages, themes=themes, tour=tour, origin="edit")

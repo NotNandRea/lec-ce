@@ -55,6 +55,25 @@ def add_language_to_user(conn, cursor, user, languages):
     return success
 
 @connect_db
+def update_languages_of_user(conn, cursor, user, languages):
+
+    success = False
+    delete_query = "DELETE FROM guide_speaks WHERE guide_id=(?)"
+    insert_query = "INSERT INTO guide_speaks (guide_id, language_id) VALUES (?, ?)"
+
+    try:
+        cursor.execute(delete_query, (user.id,))
+        for language in languages:
+            cursor.execute(insert_query, (user.id, language["id"]))
+        conn.commit()
+        success = True
+    except Exception as e:
+        print("ERROR", str(e))
+        conn.rollback()
+
+    return success
+
+@connect_db
 def get_languages_by_user_id(conn, cursor, user_id):
     query="SELECT name FROM languages, guide_speaks WHERE languages.id = guide_speaks.language_id AND guide_speaks.guide_id = ?"
     cursor.execute(query, (user_id,))

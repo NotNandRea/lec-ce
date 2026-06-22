@@ -72,6 +72,22 @@ def add_user(conn, cursor, user):
     return success
 
 @connect_db
+def update_user(conn, cursor, user):
+
+    success = False
+    query = "UPDATE users SET email=(?), password=(?), first_name=(?), last_name=(?), profile_photo=(?) WHERE id=(?)"
+
+    try:
+        cursor.execute(query, (user.email, user.password, user.first_name, user.last_name, user.profile_photo, user.id))
+        conn.commit()
+        success = True
+    except Exception as e:
+        print("ERROR", str(e))
+        conn.rollback()
+
+    return success
+
+@connect_db
 def count_users(conn, cursor, role=None):
 
     query="SELECT COUNT(*) as count FROM users"

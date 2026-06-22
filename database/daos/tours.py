@@ -78,14 +78,19 @@ def get_tour_by_id(conn, cursor, id):
     return tour_obj
 
 @connect_db
-def get_tours_by_guide_id(conn, cursor, guide_id, limit=None):
+def get_tours_by_guide_id(conn, cursor, guide_id, limit=None, state=None):
 
     query="SELECT * FROM tours WHERE guide_id=(?)"
+    parameters = (guide_id,)
+    if state is not None:
+        query += " AND state=(?)"
+        parameters += (state,)
     if limit is not None:
         query += " LIMIT (?)"
-        cursor.execute(query, (guide_id, limit))
-    else:
-        cursor.execute(query, (guide_id,))
+        parameters += (limit,)
+    
+    cursor.execute(query, parameters)
+    
     tours=cursor.fetchall()
 
     tours_list=[]
@@ -153,19 +158,6 @@ def add_schedule_to_tour(conn, cursor, tour, schedule):
         print("ERROR", str(e))
         conn.rollback()
     return success
-
-@connect_db
-def get_schedule_by_tour(conn, cursor, tour):
-
-    query = "SELECT day, time FROM tour_week_slots WHERE tour_id=(?)"
-    cursor.execute(query, (tour.id,))
-    schedule = cursor.fetchall()
-
-    schedule_dict = {"monday": None, "tuesday": None, "wednesday": None, "thursday": None, "friday": None, "saturday": None, "sunday": None}
-    for slot in schedule:
-        schedule_dict[slot["day"]] = slot["time"]
-
-    return schedule_dict
 
 @connect_db
 def update_tour(conn, cursor, tour):

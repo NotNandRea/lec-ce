@@ -41,6 +41,15 @@
 
             <div class="col-12 col-lg-8">
 
+                {% if tour.state != 'active' %}
+                <div>
+                    <div class="alert lecce-negative-background text-white rounded-4" role="alert">
+                        <i class="bi bi-exclamation-triangle me-1"></i>
+                        This tour is currently inactive. It's informations may be outdated.
+                    </div>
+                </div>
+                {% endif %}
+
                 <section class="mb-5">
 
                     <div id="tourPhotosCarousel"
@@ -396,7 +405,11 @@
 
                         <div class="lecce-{{ tour.theme.name.lower() }}-background p-4 d-flex justify-content-center">
                             <h2 class="lecce-{{ tour.theme.name.lower() }}-text fw-bold fs-3 m-0">
-                                Book this tour
+                                {% if current_user.is_authenticated and current_user.role == 'guide' %}
+                                    This tour
+                                {% else %}
+                                    Book this tour
+                                {% endif %}
                             </h2>
                         </div>
 

@@ -75,7 +75,7 @@
     </div>
 
     {% if current_user.is_authenticated %}
-    <nav class="navbar shadow-lg fixed-bottom lecce-bottom-navbar lecce-primary-background container rounded-3 d-flex align-items-center px-2 py-1 text-decoration-none">
+    <nav class="navbar shadow-lg fixed-bottom lecce-bottom-navbar lecce-primary-background container rounded-5 d-flex align-items-center px-2 py-1 text-decoration-none">
         <div class="w-100 d-flex flex-row justify-content-around align-items-center p-0 m-0">
             <a href="{{ url_for('home') }}"
                 class="w-25 d-flex flex-column align-items-center justify-content-center text-decoration-none rounded-4 {% if request.endpoint == 'home' %}lecce-primary-color bg-white{% else %} text-white {% endif %}">
