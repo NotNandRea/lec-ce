@@ -181,3 +181,7 @@ body {
 .lecce-tour-card {
     height: 6.3rem;
 }
+
+.lecce-logs {
+    max-height: 320px;
+}

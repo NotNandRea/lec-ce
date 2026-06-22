@@ -477,6 +477,26 @@
                         {% endif %}
                     </section>
 
+                    <section class="bg-white rounded-5 shadow-sm p-4 mb-5">
+                        <h2 class="lecce-text-impact lecce-secondary-color fw-bold fs-3 mb-4">
+                            Last logs
+                        </h2>
+
+                        {% if logs | length > 0 %}
+                        <div class="overflow-auto border rounded-4 lecce-logs">
+                            {% for log in logs %}
+                            <div class="p-3 border-bottom">
+                                [{{ log.timestamp }}] {{ log.description }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p>
+                            No logs available.
+                        </p>
+                        {% endif %}
+                    </section>
+
                 </div>
             </div>
         </div>

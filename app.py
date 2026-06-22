@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, request, url_for, Response
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
-from database.models import occurrence
 from database.models.user import User
 from database.models.tour import Tour
 from database.models.theme import Theme
@@ -26,6 +25,7 @@ from database.daos import extra_participants as extra_participants_dao
 from database.daos import reports as reports_dao
 from database.daos import admins as admins_dao
 from database.daos import reviews as reviews_dao
+from database.daos import logs as logs_dao
 
 from utilities import check_date, check_email, check_password, images, days_to_numbers, check_time, date_to_day
 from utilities.role_decorators import guide_required
@@ -187,6 +187,7 @@ def register_post():
     login_user(user_obj)
     flash("Registration successful", "positive")
 
+    logs_dao.add_log(f"Registration successful by user ID {current_user.id}")
     return redirect(url_for("home"))
 
 @app.route("/login", methods=["POST"])
@@ -225,13 +226,16 @@ def login_post():
 
     login_user(user_obj)
 
+    logs_dao.add_log(f"Login successful by user ID {current_user.id}")
     return redirect(url_for("home"))
 
 @app.route("/logout")
 @login_required
 def logout():
+    user_id = current_user.id
     logout_user()
 
+    logs_dao.add_log(f"Logout by user ID {user_id}")
     return redirect(url_for("home"))
 
 
@@ -784,6 +788,7 @@ def new_tour_post():
         return redirect(url_for("new_tour"))
     
     flash("Tour created successfully", "positive")
+    logs_dao.add_log(f"Tour created successfully by user ID {current_user.id}")
     return redirect(url_for("tour", id=tour_obj.id))
 
 
@@ -1034,6 +1039,7 @@ def edit_tour_post(id):
         return redirect(url_for("edit_tour", id=id))
     
     flash("Tour edited successfully", "positive")
+    logs_dao.add_log(f"Tour edited successfully by user ID {current_user.id}")
     return redirect(url_for("tour", id=tour_obj.id))
 
 @app.route("/tours/delete/<id>", methods=["POST"])
@@ -1062,6 +1068,7 @@ def delete_tour(id):
         return redirect(url_for("tour", id=id))
     
     flash("Tour deleted successfully", "positive")
+    logs_dao.add_log(f"Tour deleted successfully by user ID {current_user.id}")
     return redirect(url_for("home"))
 
 
@@ -1116,6 +1123,7 @@ def add_review(id):
         return redirect(url_for("tour", id=id))
     
     flash("Review added successfully", "positive")
+    logs_dao.add_log(f"Review added successfully by user ID {current_user.id}")
     return redirect(url_for("tour", id=id))
 
 # OCCURRENCE MANAGEMENT FOR GUIDES
@@ -1274,6 +1282,7 @@ def submit_report(id):
         flash("An error occurred, report not created", "negative")
         return redirect(url_for("occurrence_details", id=id))
     
+    logs_dao.add_log(f"Report created by user ID {current_user.id}")
     return redirect(url_for("occurrence_details", id=id))
 
 # RESERVATIONS MANAGEMENT
@@ -1419,6 +1428,7 @@ def book_tour(id):
             return redirect(url_for("tour", id=id))
         
     flash("Tour booked successfully", "positive")
+    logs_dao.add_log(f"Tour booked successfully by user ID {current_user.id}")
     return redirect(url_for("my_profile"))
 
 @app.route("/reservations/<id>")
@@ -1504,6 +1514,7 @@ def delete_reservation(id):
         return redirect(url_for("reservation", id=id))
     
     flash("Reservation canceled successfully", "positive")
+    logs_dao.add_log(f"Reservation canceled successfully by user ID {current_user.id}")
     return redirect(url_for("my_profile"))
 
 @app.route("/reservations/<id>/calendar")
@@ -1641,4 +1652,8 @@ def admin_login_post():
             tour.stops = stops_dao.get_stops_by_tour(tour)
             tour.language = languages_dao.get_language_by_id(tour.language_id)["name"]
 
-    return render_template("admin_dashboard.html", admin=admin, guides=guides, participants_number=participant_number, tour_number=tour_number, reservation_number=reservation_number, languages=languages, themes=themes)
+    logs_dao.add_log("Admin login successful")
+
+    logs = logs_dao.get_logs()
+
+    return render_template("admin_dashboard.html", admin=admin, guides=guides, participants_number=participant_number, tour_number=tour_number, reservation_number=reservation_number, languages=languages, themes=themes, logs=logs)
