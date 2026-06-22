@@ -216,25 +216,24 @@
                         <div class="d-flex align-items-center gap-3">
                             <a href="{{ url_for('profile', id=participants_group['Registered'].id) }}"
                                 class="text-decoration-none">
-                                {% if participants_group["Registered"].profile_photo is not none %}
+                                {% if participants_group['Registered'].profile_photo is not none %}
                                 <div class="profile-initials p-1"><img
-                                        src="{{ url_for('static', filename='images/profile_photos/' ~ participants_group["
-                                        Registered"].profile_photo) }}" alt="Profile Photo"
+                                        src="{{ url_for('static', filename='images/profile_photos/' ~ participants_group['Registered'].profile_photo) }}" alt="Profile Photo"
                                         class="img-fluid rounded-circle object-fit-cover"></div>
                                 {% else %}
                                 <div class="profile-initials fw-bold p-2">{{
-                                    participants_group["Registered"].first_name[0].upper() }}{{
-                                    participants_group["Registered"].last_name[0].upper() }}</div>
+                                    participants_group['Registered'].first_name[0].upper() }}{{
+                                    participants_group['Registered'].last_name[0].upper() }}</div>
                                 {% endif %}
                             </a>
 
                             <div class="text-break">
                                 <div class="fw-bold lecce-secondary-color">
-                                    {{ participants_group["Registered"].first_name }} {{
-                                    participants_group["Registered"].last_name }}
+                                    {{ participants_group['Registered'].first_name }} {{
+                                    participants_group['Registered'].last_name }}
                                 </div>
                                 <div class="fs-6">
-                                    {{ participants_group["Registered"].email }}
+                                    {{ participants_group['Registered'].email }}
                                 </div>
                             </div>
                         </div>
@@ -245,7 +244,7 @@
 
                     </div>
 
-                    {% for extra in participants_group["Extra"] %}
+                    {% for extra in participants_group['Extra'] %}
                     <div class="d-flex flex-column flex-lg-row justify-content-lg-between align-items-center gap-3 py-3 border-bottom ms-lg-5">
 
                         <div class="d-flex align-items-center gap-3">

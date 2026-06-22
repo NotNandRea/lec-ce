@@ -31,7 +31,21 @@ from utilities import check_date, check_email, check_password, images, days_to_n
 from utilities.role_decorators import guide_required
 from utilities.role_decorators import participant_required
 
-from utilities.constants import PROFILE_IMG_HEIGHT, TOUR_PHOTO_IMG_HEIGHT, TOUR_PHOTO_IMG_WIDTH
+from utilities.constants import (
+    PROFILE_IMG_HEIGHT,
+    TOUR_PHOTO_IMG_HEIGHT,
+    TOUR_PHOTO_IMG_WIDTH,
+    TOUR_TITLE_MIN_LENGTH,
+    TOUR_TITLE_MAX_LENGTH,
+    TOUR_DESCRIPTION_MIN_LENGTH,
+    TOUR_DESCRIPTION_MAX_LENGTH,
+    TOUR_DURATION_MIN_MINUTES,
+    TOUR_DURATION_MAX_MINUTES,
+    STOP_MIN_LENGTH,
+    STOP_MAX_LENGTH,
+    REVIEW_COMMENT_MIN_LENGTH,
+    REVIEW_COMMENT_MAX_LENGTH,
+)
 
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -43,7 +57,6 @@ from zoneinfo import ZoneInfo
 
 #TODO: put every constant in constants.py
 #TODO: comment everything
-#TODO: implement profile edit
 
 #load everythings from .env file
 load_dotenv()
@@ -795,8 +808,8 @@ def new_tour_post():
     if title in [None, ""]:
         flash("Invalid title", "negative")
         return redirect(url_for("new_tour"))
-    elif len(title) < 2 or len(title) > 100:
-        flash("Title must be between 2 and 100 characters", "negative")
+    elif len(title) < TOUR_TITLE_MIN_LENGTH or len(title) > TOUR_TITLE_MAX_LENGTH:
+        flash(f"Title must be between {TOUR_TITLE_MIN_LENGTH} and {TOUR_TITLE_MAX_LENGTH} characters", "negative")
         return redirect(url_for("new_tour"))
 
     # description validation
@@ -804,8 +817,8 @@ def new_tour_post():
     if description in [None, ""]:
         flash("Invalid description", "negative")
         return redirect(url_for("new_tour"))
-    elif len(description) < 10 or len(description) > 1000:
-        flash("Description must be between 10 and 1000 characters", "negative")
+    elif len(description) < TOUR_DESCRIPTION_MIN_LENGTH or len(description) > TOUR_DESCRIPTION_MAX_LENGTH:
+        flash(f"Description must be between {TOUR_DESCRIPTION_MIN_LENGTH} and {TOUR_DESCRIPTION_MAX_LENGTH} characters", "negative")
         return redirect(url_for("new_tour"))
 
     # duration validation
@@ -813,8 +826,8 @@ def new_tour_post():
     if duration in [None, ""]:
         flash("Invalid duration", "negative")
         return redirect(url_for("new_tour"))
-    elif not duration.isdigit() or (int(duration) < 30 or int(duration) > 300):
-        flash("Duration must be between 30 and 300", "negative")
+    elif not duration.isdigit() or (int(duration) < TOUR_DURATION_MIN_MINUTES or int(duration) > TOUR_DURATION_MAX_MINUTES):
+        flash(f"Duration must be between {TOUR_DURATION_MIN_MINUTES} and {TOUR_DURATION_MAX_MINUTES}", "negative")
         return redirect(url_for("new_tour"))
     duration=int(duration)
 
@@ -910,8 +923,8 @@ def new_tour_post():
         if stop in [None, ""]:
             flash("Invalid stop", "negative")
             return redirect(url_for("new_tour"))
-        if len(stop) < 2 or len(stop) > 20:
-            flash("Stop must be between 2 and 20 characters", "negative")
+        if len(stop) < STOP_MIN_LENGTH or len(stop) > STOP_MAX_LENGTH:
+            flash(f"Stop must be between {STOP_MIN_LENGTH} and {STOP_MAX_LENGTH} characters", "negative")
             return redirect(url_for("new_tour"))
     
     photo1=request.files.get("photo1", None)
@@ -1039,8 +1052,8 @@ def edit_tour_post(id):
     if title in [None, ""]:
         flash("Invalid title", "negative")
         return redirect(url_for("edit_tour", id=id))
-    elif len(title) < 2 or len(title) > 100:
-        flash("Title must be between 2 and 100 characters", "negative")
+    elif len(title) < TOUR_TITLE_MIN_LENGTH or len(title) > TOUR_TITLE_MAX_LENGTH:
+        flash(f"Title must be between {TOUR_TITLE_MIN_LENGTH} and {TOUR_TITLE_MAX_LENGTH} characters", "negative")
         return redirect(url_for("edit_tour", id=id))
 
     # description validation
@@ -1048,8 +1061,8 @@ def edit_tour_post(id):
     if description in [None, ""]:
         flash("Invalid description", "negative")
         return redirect(url_for("edit_tour", id=id))
-    elif len(description) < 10 or len(description) > 1000:
-        flash("Description must be between 10 and 1000 characters", "negative")
+    elif len(description) < TOUR_DESCRIPTION_MIN_LENGTH or len(description) > TOUR_DESCRIPTION_MAX_LENGTH:
+        flash(f"Description must be between {TOUR_DESCRIPTION_MIN_LENGTH} and {TOUR_DESCRIPTION_MAX_LENGTH} characters", "negative")
         return redirect(url_for("edit_tour", id=id))
 
     # duration validation
@@ -1057,8 +1070,8 @@ def edit_tour_post(id):
     if duration in [None, ""]:
         flash("Invalid duration", "negative")
         return redirect(url_for("edit_tour", id=id))
-    elif not duration.isdigit() or (int(duration) < 30 or int(duration) > 300):
-        flash("Duration must be between 30 and 300", "negative")
+    elif not duration.isdigit() or (int(duration) < TOUR_DURATION_MIN_MINUTES or int(duration) > TOUR_DURATION_MAX_MINUTES):
+        flash(f"Duration must be between {TOUR_DURATION_MIN_MINUTES} and {TOUR_DURATION_MAX_MINUTES}", "negative")
         return redirect(url_for("edit_tour", id=id))
     duration=int(duration)
 
@@ -1154,8 +1167,8 @@ def edit_tour_post(id):
         if stop in [None, ""]:
             flash("Invalid stop", "negative")
             return redirect(url_for("edit_tour", id=id))
-        if len(stop) < 2 or len(stop) > 20:
-            flash("Stop must be between 2 and 20 characters", "negative")
+        if len(stop) < STOP_MIN_LENGTH or len(stop) > STOP_MAX_LENGTH:
+            flash(f"Stop must be between {STOP_MIN_LENGTH} and {STOP_MAX_LENGTH} characters", "negative")
             return redirect(url_for("edit_tour", id=id))
 
     # photos validation
@@ -1289,8 +1302,8 @@ def add_review(id):
     if comment in [None, ""]:
         flash("Invalid comment", "negative")
         return redirect(url_for("tour", id=id))
-    if len(comment) < 2 or len(comment) > 200:
-        flash("Comment must be between 2 and 200 characters", "negative")
+    if len(comment) < REVIEW_COMMENT_MIN_LENGTH or len(comment) > REVIEW_COMMENT_MAX_LENGTH:
+        flash(f"Comment must be between {REVIEW_COMMENT_MIN_LENGTH} and {REVIEW_COMMENT_MAX_LENGTH} characters", "negative")
         return redirect(url_for("tour", id=id))
     
     review=Review(str(uuid.uuid4()), tour.id, current_user.id, rating, comment)
