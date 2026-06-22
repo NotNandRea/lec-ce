@@ -17,8 +17,13 @@ def get_tours(conn, cursor, limit=None, state=None, weekday=None, duration_start
         parameters += (state,)
 
     if weekday is not None:
-        query += " AND day=(?)"
-        parameters += (weekday,)
+        query += " AND tour_week_slots.day IN ("
+        for i in range(len(weekday)):
+            query += "?"
+            if i < len(weekday) - 1:
+                query += ", "
+        query += ")"
+        parameters += tuple(weekday)
 
     if duration_start is not None:
         query += " AND duration >= (?)"

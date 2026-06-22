@@ -261,13 +261,13 @@ def login():
 
 # NON-AUTH ROUTES
 
-@login_required
 @app.route("/me")
+@login_required
 def my_profile():
     return redirect(url_for("profile", id=current_user.id))
 
-@login_required
 @app.route("/schedule")
+@login_required
 def personal_schedule():
 
 
@@ -296,8 +296,8 @@ def personal_schedule():
 
     return render_template("personal_schedule.html", upcoming=upcoming, user=current_user)
 
-@login_required
 @app.route("/profile/<id>")
+@login_required
 def profile(id):
 
     today = date.today()
@@ -373,6 +373,8 @@ def profile(id):
 @app.route("/")
 def home():
 
+    today=date.today()
+
     languages=languages_dao.get_languages()
     themes=themes_dao.get_themes()
 
@@ -387,22 +389,53 @@ def home():
         tour.stops=stops_dao.get_first_stop_by_tour(tour)
         tour.guide = users_dao.get_user_by_id(tour.guide_id)
 
-    return render_template("home.html", tours=tours, languages=languages, themes=themes, photo=photo)
+    return render_template("home.html", today=today, tours=tours, languages=languages, themes=themes, photo=photo)
 
 @app.route("/tours/list")
 def tours():
 
     today=date.today()
 
-    # weekday check and filtering
-    weekday_allowed = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-    weekday = request.args.get("weekday", "Any day")
-    if weekday not in weekday_allowed:
-        if weekday == "Any day":
-            weekday = None
-        else:
-            flash("Invalid weekday", "negative")
+    # date check and filtering
+    weekday = None
+    start_date = request.args.get("start_date")
+    date_range_check = request.args.get("date_range_check")
+    if start_date is not None:
+
+        weekday = []
+
+        if start_date == "":
+            flash("Invalid start date", "negative")
             return redirect(url_for("home"))
+
+        start_date_obj, error_string = check_date.check_date(start_date)
+        if start_date_obj is None:
+            flash("Invalid start date, " + error_string, "negative")
+            return redirect(url_for("home"))
+
+        if date_range_check is None:
+            weekday.append(date_to_day.date_to_day(start_date_obj))
+        else:
+            end_date = request.args.get("end_date")
+            if end_date in [None, ""]:
+                flash("Invalid end date", "negative")
+                return redirect(url_for("home"))
+
+            end_date_obj, error_string = check_date.check_date(end_date)
+            if end_date_obj is None:
+                flash("Invalid end date, " + error_string, "negative")
+                return redirect(url_for("home"))
+            if end_date_obj < start_date_obj:
+                flash("End date must be after start date", "negative")
+                return redirect(url_for("home"))
+
+            weekday = []
+            temp_date = start_date_obj
+            while temp_date <= end_date_obj:
+                temp_weekday = date_to_day.date_to_day(temp_date)
+                if temp_weekday not in weekday:
+                    weekday.append(temp_weekday)
+                temp_date += timedelta(days=1)
 
     # duration check and filtering
     duration_allowed = ["0 - 1:30 h", "1:30 - 3 h", "3 h +"]
