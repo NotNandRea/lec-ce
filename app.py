@@ -74,37 +74,46 @@ def register_post():
     # role validation
     role = user.get("role")
     if role in [None, ""]:
-        return "Invalid role", 400
+        flash("Invalid role", "negative")
+        return redirect(url_for("register"))
     if role not in ["participant","guide"]:
-        return "Invalid role", 400
+        flash("Invalid role", "negative")
+        return redirect(url_for("register"))
     
     #email validation
     email= user.get("email")
     if email in [None, ""]:
-        return "Invalid email", 400
+        flash("Invalid email", "negative")
+        return redirect(url_for("register"))
     if check_email.check_email(email) == False:
-        return "Invalid email", 400
+        flash("Invalid email", "negative")
+        return redirect(url_for("register"))
     if users_dao.get_user_by_email(email):
-        return "User already registered", 400
-    
+        flash("User already registered", "negative")
+        return redirect(url_for("register"))
+
     # password validation
     password= user.get("password")
     if password in [None, ""]:
-        return "Invalid password", 400
+        flash("Invalid password", "negative")
+        return redirect(url_for("register"))
     if check_password.check_password(password) == False:
-        return "Invalid password", 400
+        flash("Invalid password", "negative")
+        return redirect(url_for("register"))
     password=generate_password_hash(password)
 
     # First name validation
     first_name= user.get("first_name")
     if first_name in [None, ""]:
-        return "Invalid first name", 400
-    
+        flash("Invalid first name", "negative")
+        return redirect(url_for("register"))
+
     # Last name validation
     last_name= user.get("last_name")
     if last_name in [None, ""]:
-        return "Invalid last name", 400
-    
+        flash("Invalid last name", "negative")
+        return redirect(url_for("register"))
+
     #image validartion
     profile_photo= request.files.get("profile_photo", None)
     profile_photo_filename = None
@@ -112,9 +121,11 @@ def register_post():
 
         #file type verification
         if not images.is_image(profile_photo):
-            return "Not an image", 400
+            flash("Invalid profile photo", "negative")
+            return redirect(url_for("register"))
         if not images.is_squareable(profile_photo):
-            return f"Image is too small, not squareable, minimum size is {PROFILE_IMG_HEIGHT}x{PROFILE_IMG_HEIGHT}", 400
+            flash(f"Invalid profile photo, must be squareable, minimum size is {PROFILE_IMG_HEIGHT}x{PROFILE_IMG_HEIGHT}", "negative")
+            return redirect(url_for("register"))
 
         extension=secure_filename(profile_photo.filename).split(".")[-1].lower()
         profile_photo_filename=str(uuid.uuid4()) + "." + extension
@@ -147,7 +158,8 @@ def register_post():
                 invalid_languages.append(language)
 
         if len(invalid_languages) > 0:
-            return "Invalid languages", 400
+            flash("Invalid languages", "negative")
+            return redirect(url_for("register"))
         
         guide_languages = []
 
@@ -156,18 +168,21 @@ def register_post():
                 guide_languages.append(language)
         
         if len(selected_languages) == 0:
-            return "At least one language must be selected for guides", 400
+            flash("At least one language must be selected for guides", "negative")
+            return redirect(url_for("register"))
     else:
         guide_languages = None
 
     user_obj=User(id, role, email, password, first_name, last_name, profile_photo_filename)
 
     if not users_dao.add_user(user_obj):
-        return "An error occurred, user not created", 500
+        flash("An error occurred, user not registered", "negative")
+        return redirect(url_for("register"))
 
     if guide_languages is not None:
         if not languages_dao.add_language_to_user(user_obj, guide_languages):
-            return "An error occurred, languages not added", 500
+            flash("An error occurred, languages not added", "negative")
+            return redirect(url_for("register"))
 
     login_user(user_obj)
     flash("Registration successful", "positive")
@@ -186,22 +201,27 @@ def login_post():
     # email validation
     email= user.get("email")
     if email in [None, ""]:
-        return "Invalid email", 400
+        flash("Invalid email", "negative")
+        return redirect(url_for("login"))
     if check_email.check_email(email) == False:
-        return "Invalid email", 400
+        flash("Invalid email", "negative")
+        return redirect(url_for("login"))
     
     user_obj=users_dao.get_user_by_email(email)
 
     if user_obj is None:
-        return "Invalid email or password", 400
+        flash("Invalid email or password", "negative")
+        return redirect(url_for("login"))
     
     # password validation
     password= user.get("password")
     if password in [None, ""]:
-        return "Invalid password", 400
+        flash("Invalid password", "negative")
+        return redirect(url_for("login"))
 
     if not user_obj.check_password(password):
-        return "Invalid password", 400
+        flash("Invalid password", "negative")
+        return redirect(url_for("login"))
 
     login_user(user_obj)
 
