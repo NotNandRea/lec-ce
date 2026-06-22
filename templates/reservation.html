@@ -30,7 +30,7 @@
                                     <h2 class="fw-bold lecce-secondary-color mb-2 fs-3 text-break">
                                         You can cancel in:
                                     </h2>
-                                    <span class="fs-6">
+                                    <span class="fs-6 text-break">
                                         Cancellation limit: <span class="fw-bold">{{
                                             cancelation_limit.strftime("%d/%m/%Y - %H:%M") }}</span>
                                     </span>
@@ -114,7 +114,7 @@
 
                     <div class="row g-4 mb-4">
 
-                        <span class="lecce-text-impact fw-bold lecce-secondary-color mb-0 fs-6">
+                        <span class="lecce-text-impact fw-bold lecce-secondary-color mb-0 fs-6 text-break">
                             {{ reservation.occurrence.tour.title }}
                         </span>
 
@@ -123,7 +123,7 @@
                                 <i class="bi bi-calendar-event lecce-primary-color"></i>
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bolder">WHEN</div>
-                                    <div class="fw-semibold lecce-secondary-color">
+                                    <div class="fw-semibold lecce-secondary-color text-break">
                                         {{ reservation.occurrence.date.strftime("%d/%m/%Y") }} - {{
                                         reservation.occurrence.start_time }}
                                     </div>
@@ -136,7 +136,7 @@
                                 <i class="bi bi-clock lecce-primary-color"></i>
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Duration</div>
-                                    <div class="fw-semibold lecce-secondary-color">
+                                    <div class="fw-semibold lecce-secondary-color text-break">
                                         {{ reservation.occurrence.tour.duration }}m
                                     </div>
                                 </div>
@@ -149,7 +149,7 @@
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Meeting point
                                     </div>
-                                    <div class="fw-semibold lecce-secondary-color">
+                                    <div class="fw-semibold lecce-secondary-color text-break">
                                         {{ reservation.occurrence.tour.stops }}
                                     </div>
                                 </div>
@@ -161,7 +161,7 @@
                                 <i class="bi bi-translate lecce-primary-color"></i>
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Language</div>
-                                    <div class="fw-semibold lecce-secondary-color">
+                                    <div class="fw-semibold lecce-secondary-color text-break">
                                         {{ reservation.occurrence.tour.language }}
                                     </div>
                                 </div>
@@ -174,7 +174,7 @@
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Participants in this reservation
                                     </div>
-                                    <div class="fw-semibold lecce-secondary-color">
+                                    <div class="fw-semibold lecce-secondary-color text-break">
                                         {{ number_of_participants }} people
                                     </div>
                                 </div>
@@ -186,7 +186,7 @@
                                 <i class="bi bi-palette lecce-primary-color"></i>
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Theme</div>
-                                    <div class="fw-semibold lecce-secondary-color">
+                                    <div class="fw-semibold lecce-secondary-color text-break">
                                         {{ reservation.occurrence.tour.theme.name }}
                                     </div>
                                 </div>
@@ -209,7 +209,7 @@
                                 {% endif %}
                             </a>
 
-                            <div>
+                            <div class="text-break">
                                 <div class="fw-bold lecce-secondary-color">
                                     {{ reservation.occurrence.tour.guide.first_name }} {{
                                     reservation.occurrence.tour.guide.last_name }}
@@ -254,7 +254,7 @@
                                 {% endif %}
                             </a>
 
-                            <div>
+                            <div class="text-break">
                                 <div class="fw-bold lecce-secondary-color">
                                     {{ current_user.first_name }} {{ current_user.last_name }}
                                 </div>
@@ -278,7 +278,7 @@
                                 {{ participant.first_name[0].upper() }}{{ participant.last_name[0].upper() }}
                             </div>
 
-                            <div>
+                            <div class="text-break">
                                 <div class="fw-bold lecce-secondary-color">
                                     {{ participant.first_name }} {{ participant.last_name }}
                                 </div>

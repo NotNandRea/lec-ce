@@ -31,7 +31,7 @@
                                     <h2 class="fw-bold lecce-secondary-color mb-2 fs-3 text-break">
                                         Tour starts in:
                                     </h2>
-                                    <span class="fs-6">
+                                    <span class="fs-6 text-break">
                                         Departure: <span class="fw-bold">{{ occurrence.date }} - {{
                                             occurrence.start_time }}</span>
                                     </span>
@@ -41,7 +41,7 @@
 
                         {% if report is none %}
                         <div class="col-12 col-lg-6" id="limitNotExpired">
-                            <div id="startCountdown" class="d-flex justify-content-center justify-content-lg-end align-items-start gap-1 gap-lg-2"
+                            <div id="startCountdown" class="d-flex flex-wrap justify-content-center justify-content-lg-end align-items-start gap-1 gap-lg-2"
                                 seconds="{{ seconds_remaining }}">
 
                                 <div class="d-flex flex-column align-items-center">
@@ -113,7 +113,7 @@
 
                     <div class="row g-4 mb-4">
 
-                        <span class="lecce-text-impact fw-bold lecce-secondary-color mb-0 fs-6">
+                        <span class="lecce-text-impact fw-bold lecce-secondary-color mb-0 fs-6 text-break">
                             {{ occurrence.tour.title }}
                         </span>
 
@@ -122,7 +122,7 @@
                                 <i class="bi bi-calendar-event lecce-primary-color"></i>
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bolder">WHEN</div>
-                                    <div class="fw-semibold lecce-secondary-color">
+                                    <div class="fw-semibold lecce-secondary-color text-break">
                                         {{ occurrence.date }} - {{ occurrence.start_time }}
                                     </div>
                                 </div>
@@ -134,7 +134,7 @@
                                 <i class="bi bi-clock lecce-primary-color"></i>
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Duration</div>
-                                    <div class="fw-semibold lecce-secondary-color">
+                                    <div class="fw-semibold lecce-secondary-color text-break">
                                         {{ occurrence.tour.duration }}m
                                     </div>
                                 </div>
@@ -147,7 +147,7 @@
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Meeting point
                                     </div>
-                                    <div class="fw-semibold lecce-secondary-color">
+                                    <div class="fw-semibold lecce-secondary-color text-break">
                                         {{ occurrence.tour.stops }}
                                     </div>
                                 </div>
@@ -159,7 +159,7 @@
                                 <i class="bi bi-translate lecce-primary-color"></i>
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Language</div>
-                                    <div class="fw-semibold lecce-secondary-color">
+                                    <div class="fw-semibold lecce-secondary-color text-break">
                                         {{ occurrence.tour.language }}
                                     </div>
                                 </div>
@@ -172,7 +172,7 @@
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Participants
                                     </div>
-                                    <div class="fw-semibold lecce-secondary-color">
+                                    <div class="fw-semibold lecce-secondary-color text-break">
                                         {{ participants_number }} people
                                     </div>
                                 </div>
@@ -184,7 +184,7 @@
                                 <i class="bi bi-palette lecce-primary-color"></i>
                                 <div>
                                     <div class="mb-1 fs-6 lecce-text-impact lecce-primary-color fw-bold">Theme</div>
-                                    <div class="fw-semibold lecce-secondary-color">
+                                    <div class="fw-semibold lecce-secondary-color text-break">
                                         {{ occurrence.tour.theme.name }}
                                     </div>
                                 </div>
@@ -229,7 +229,7 @@
                                 {% endif %}
                             </a>
 
-                            <div>
+                            <div class="text-break">
                                 <div class="fw-bold lecce-secondary-color">
                                     {{ participants_group["Registered"].first_name }} {{
                                     participants_group["Registered"].last_name }}
@@ -254,7 +254,7 @@
                                 {{ extra.first_name[0].upper() }}{{ extra.last_name[0].upper() }}
                             </div>
 
-                            <div>
+                            <div class="text-break">
                                 <div class="fw-bold lecce-secondary-color">
                                     {{ extra.first_name }} {{ extra.last_name }}
                                 </div>
