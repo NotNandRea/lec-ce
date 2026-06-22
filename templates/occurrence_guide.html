@@ -197,7 +197,7 @@
 
 
             <section class="bg-white border-0 rounded-5 shadow mb-4">
-                <div class="p-4">
+                <ul class="p-4">
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h2 class="fw-bold lecce-secondary-color mb-0 fs-3">
@@ -211,7 +211,7 @@
                     </p>
                     {% else %}
                     {% for participants_group in participants %}
-                    <div class="d-flex flex-column flex-lg-row justify-content-lg-between align-items-center gap-3 py-3 border-bottom">
+                    <li class="d-flex flex-column flex-lg-row justify-content-lg-between align-items-center gap-3 py-3 border-bottom">
 
                         <div class="d-flex align-items-center gap-3">
                             <a href="{{ url_for('profile', id=participants_group['Registered'].id) }}"
@@ -242,10 +242,10 @@
                             Registered
                         </span>
 
-                    </div>
+                    </li>
 
                     {% for extra in participants_group['Extra'] %}
-                    <div class="d-flex flex-column flex-lg-row justify-content-lg-between align-items-center gap-3 py-3 border-bottom ms-lg-5">
+                    <li class="d-flex flex-column flex-lg-row justify-content-lg-between align-items-center gap-3 py-3 border-bottom ms-lg-5">
 
                         <div class="d-flex align-items-center gap-3">
                             <div class="profile-initials fw-bold p-2">
@@ -266,13 +266,13 @@
                             Extra
                         </span>
 
-                    </div>
+                    </li>
                     {% endfor %}
 
                     {% endfor %}
                     {% endif %}
 
-                </div>
+                </ul>
             </section>
 
 

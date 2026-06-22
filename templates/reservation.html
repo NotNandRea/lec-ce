@@ -231,7 +231,7 @@
 
 
             <section class="bg-white border-0 rounded-5 shadow mb-4">
-                <div class="p-4">
+                <ul class="p-4">
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h2 class="fw-bold lecce-secondary-color mb-0 fs-3">
@@ -240,7 +240,7 @@
                     </div>
 
 
-                    <div class="d-flex flex-column flex-lg-row justify-content-lg-between align-items-center gap-3 py-3 border-bottom">
+                    <li class="d-flex flex-column flex-lg-row justify-content-lg-between align-items-center gap-3 py-3 border-bottom">
 
                         <div class="d-flex align-items-center gap-3">
                             <a href="{{ url_for('my_profile') }}" class="text-decoration-none">
@@ -268,10 +268,11 @@
                             Registered
                         </span>
 
-                    </div>
+                    </li>
 
+                    {% if reservation.extra_participants|length > 0 %}
                     {% for participant in reservation.extra_participants %}
-                    <div class="d-flex flex-column flex-lg-row justify-content-lg-between align-items-center gap-3 py-3 border-bottom ms-lg-5">
+                    <li class="d-flex flex-column flex-lg-row justify-content-lg-between align-items-center gap-3 py-3 border-bottom ms-lg-5">
 
                         <div class="d-flex align-items-center gap-3">
                             <div class="profile-initials fw-bold p-2">
@@ -292,15 +293,16 @@
                             Extra
                         </span>
 
-                    </div>
+                    </li>
                     {% endfor %}
+                    {% endif %}
 
                     <div class="d-flex justify-content-center align-items-center py-3 mt-3">
                         <p class="fw-bold mb-0">
                             If you need to make changes to your reservation, cancel it and book again.
                         </p>
                     </div>
-                </div>
+                </ul>
             </section>
 
 

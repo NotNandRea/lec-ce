@@ -189,22 +189,24 @@
                         Itinerary
                     </h2>
 
-                    <div class="bg-white rounded-5 shadow p-4">
+                    <ol class="bg-white rounded-5 shadow p-4">
 
                         {% for order_number, stop in tour.stops.items() %}
-                        <div class="d-flex align-items-center gap-3 border-bottom pb-3 mb-3">
-                            <span
-                                class="d-flex justify-content-center badge lecce-{{ theme }}-background lecce-{{ theme }}-text lecce-btn align-self-start px-3 py-2 fs-6 w-6">
-                                {{ order_number }}
-                            </span>
+                        <li>
+                            <div class="d-flex align-items-center gap-3 border-bottom pb-3 mb-3">
+                                <span
+                                    class="d-flex justify-content-center badge lecce-{{ theme }}-background lecce-{{ theme }}-text lecce-btn align-self-start px-3 py-2 fs-6 w-6">
+                                    {{ order_number }}
+                                </span>
 
-                            <span class="lecce-secondary-color fw-bold fs-5 m-0">
-                                {{ stop }}
-                            </span>
-                        </div>
+                                <span class="lecce-secondary-color fw-bold fs-5 m-0">
+                                    {{ stop }}
+                                </span>
+                            </div>
+                        </li>
                         {% endfor %}
 
-                    </div>
+                    </ol>
 
                 </section>
 
@@ -733,7 +735,7 @@
 
                             {% if reviews|length > 0 %}
                             {% for review in reviews %}
-                            <div class="mb-4 d-flex gap-4 border rounded-4 p-3 align-items-start">
+                            <article class="mb-4 d-flex gap-4 border rounded-4 p-3 align-items-start">
                                 <a href="{{ url_for('profile', id=review.participant.id) }}" class="text-decoration-none">
                                     {% if review.participant.profile_photo is not none %}
                                     <div class="profile-initials p-1"><img
@@ -762,7 +764,7 @@
                                     </div>
                                     <p class="mb-0 text-break">{{ review.description }}</p>
                                 </div>
-                            </div>
+                            </article>
                             {% endfor %}
                             {% else %}
                             <p class="m-3 fw-bold">No reviews yet. Be the first to review this tour!</p>

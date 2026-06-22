@@ -5,7 +5,7 @@
             src="{{ url_for('static', filename='images/tour_photos/' ~ tour.photos) }}" alt="Tour photo">
     </a>
 
-    <div class="card-body p-4 d-flex flex-column">
+    <article class="card-body p-4 d-flex flex-column">
         <h3 class="h4 fw-bold mb-3 lecce-text-impact">{{ tour.title }}</h3>
 
         <span
@@ -60,6 +60,6 @@
 
             <a href="{{ url_for('tour', id=tour.id) }}" class="btn lecce-btn lecce-primary-background px-4 w-100">{% if current_user.role != 'guide' and tour.state == 'active' %}Book{% else %}View{% endif %}</a>
         </div>
-    </div>
+    </article>
 
 </div>

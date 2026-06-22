@@ -250,7 +250,7 @@
                                 </div>
                             </div>
 
-                            <div class="lecce-default-background p-4">
+                            <ul class="lecce-default-background p-4">
                                 <div
                                     class="d-flex justify-content-center justify-content-lg-start align-items-center mb-4 gap-3 gap-lg-4">
                                     <p class="fs-6 lecce-secondary-color fw-bold m-0">
@@ -265,7 +265,7 @@
                                 </div>
 
                                 {% for tour in guide.tours %}
-                                <div class="bg-white rounded-5 shadow-sm p-4 mb-4 collapse"
+                                <li class="bg-white rounded-5 shadow-sm p-4 mb-4 collapse"
                                     id="collapseFilters{{ guide.id }}">
                                     <a class="row g-3 text-decoration-none lecce-secondary-color"
                                         href="{{ url_for('tour', id=tour.id) }}">
@@ -323,13 +323,13 @@
                                                 </div>
                                             </div>
 
-                                            <div>
+                                            <ol>
                                                 <p class="fs-6 lecce-secondary-color fw-bold mb-3">
                                                     ITINERARY
                                                 </p>
 
                                                 {% for order_number, stop in tour.stops.items() %}
-                                                <div
+                                                <li
                                                     class="d-flex align-items-center gap-3 {% if not loop.last %}border-bottom pb-3 mb-3{% endif %}">
                                                     <span
                                                         class="d-flex justify-content-center badge lecce-primary-background lecce-btn align-self-start px-3 py-2 fs-6 w-6">
@@ -339,9 +339,9 @@
                                                     <span class="lecce-secondary-color fw-bold fs-5 m-0 text-break">
                                                         {{ stop }}
                                                     </span>
-                                                </div>
+                                                </li>
                                                 {% endfor %}
-                                            </div>
+                                            </ol>
 
                                             <div class="row g-3 mt-3">
 
@@ -472,9 +472,9 @@
 
                                         </div>
                                     </a>
-                                </div>
+                                </li>
                                 {% endfor %}
-                            </div>
+                            </ul>
                         </div>
                         {% endfor %}
                         {% endif %}

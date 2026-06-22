@@ -193,3 +193,18 @@ body {
     width: 20em;
     height: 3.5em;
 }
+
+ol {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+li {
+    list-style-type: none;
+    padding-left: 0;
+}
