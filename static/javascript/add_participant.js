@@ -5,6 +5,12 @@ const extraParticipant3 = document.getElementById('extraParticipant3');
 const peopleCount = document.getElementById('peopleCount');
 const tooManyParticipants = document.getElementById('TooManyParticipants');
 
+function setRequiredFields(participant, required) {
+    participant.querySelectorAll('input').forEach(input => {
+        input.required = required;
+    });
+}
+
 peopleCount.addEventListener('change', function () {
     const count = parseInt(this.value);
 
@@ -13,9 +19,9 @@ peopleCount.addEventListener('change', function () {
         extraParticipant2.classList.add('d-none');
         extraParticipant3.classList.add('d-none');
 
-        extraParticipant1.querySelector('input').required = false;
-        extraParticipant2.querySelector('input').required = false;
-        extraParticipant3.querySelector('input').required = false;
+        setRequiredFields(extraParticipant1, false);
+        setRequiredFields(extraParticipant2, false);
+        setRequiredFields(extraParticipant3, false);
 
         tooManyParticipants.classList.add('d-none');
     }
@@ -24,9 +30,9 @@ peopleCount.addEventListener('change', function () {
         extraParticipant2.classList.add('d-none');
         extraParticipant3.classList.add('d-none');
         
-        extraParticipant1.querySelector('input').required = true;
-        extraParticipant2.querySelector('input').required = false;
-        extraParticipant3.querySelector('input').required = false;
+        setRequiredFields(extraParticipant1, true);
+        setRequiredFields(extraParticipant2, false);
+        setRequiredFields(extraParticipant3, false);
 
         tooManyParticipants.classList.add('d-none');
     }
@@ -35,9 +41,9 @@ peopleCount.addEventListener('change', function () {
         extraParticipant2.classList.remove('d-none');
         extraParticipant3.classList.add('d-none');
         
-        extraParticipant1.querySelector('input').required = true;
-        extraParticipant2.querySelector('input').required = true;
-        extraParticipant3.querySelector('input').required = false;
+        setRequiredFields(extraParticipant1, true);
+        setRequiredFields(extraParticipant2, true);
+        setRequiredFields(extraParticipant3, false);
 
         tooManyParticipants.classList.add('d-none');
     }
@@ -46,9 +52,9 @@ peopleCount.addEventListener('change', function () {
         extraParticipant2.classList.remove('d-none');
         extraParticipant3.classList.remove('d-none');
 
-        extraParticipant1.querySelector('input').required = true;
-        extraParticipant2.querySelector('input').required = true;
-        extraParticipant3.querySelector('input').required = true;
+        setRequiredFields(extraParticipant1, true);
+        setRequiredFields(extraParticipant2, true);
+        setRequiredFields(extraParticipant3, true);
 
         tooManyParticipants.classList.add('d-none');
     }
@@ -56,6 +62,10 @@ peopleCount.addEventListener('change', function () {
         extraParticipant1.classList.add('d-none');
         extraParticipant2.classList.add('d-none');
         extraParticipant3.classList.add('d-none');
+
+        setRequiredFields(extraParticipant1, false);
+        setRequiredFields(extraParticipant2, false);
+        setRequiredFields(extraParticipant3, false);
 
         tooManyParticipants.classList.remove('d-none');
     }
