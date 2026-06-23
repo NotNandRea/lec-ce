@@ -444,9 +444,7 @@ def edit_profile_post():
             flash("An error occurred, languages not edited", "negative")
             return redirect(url_for("edit_profile"))
 
-    if profile_photo_filename != current_user.profile_photo and current_user.profile_photo is not None:
-        if os.path.exists("static/images/profile_photos/" + current_user.profile_photo):
-            os.remove("static/images/profile_photos/" + current_user.profile_photo)
+    
 
     flash("Profile edited successfully", "positive")
     logs_dao.add_log(f"Profile edited successfully by user ID {current_user.id}")
@@ -1210,7 +1208,6 @@ def edit_tour_post(id):
     
     #add photos to database
     # empty photo fields keep old images, uploaded ones replace only that position
-    old_photos = photos_dao.get_tour_photos(tour_obj)
 
     i=1
     for photo in photos:
@@ -1218,8 +1215,6 @@ def edit_tour_post(id):
             if not photos_dao.update_photo_to_tour(tour_obj, i, photo.filename):
                 flash("An error occurred, photos not added to tour", "negative")
                 return redirect(url_for("edit_tour", id=id))
-            if os.path.exists("static/images/tour_photos/" + old_photos[f"photo{i}"]):
-                os.remove("static/images/tour_photos/" + old_photos[f"photo{i}"])
         i += 1
 
     #add stops to database
