@@ -64,6 +64,11 @@ app.config["SECRET_KEY"]=os.getenv("APP-SECRET-KEY")  #loads the key from .env
 login_manager= LoginManager()
 login_manager.init_app(app)
 
+@login_manager.unauthorized_handler
+def unauthorized():
+    flash("You need to log in to access this page.", "negative")
+    return redirect(url_for("login"))
+
 
 # AUTH BUISNESS LOGIC
 
