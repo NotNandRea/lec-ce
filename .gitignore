@@ -1,7 +1,4 @@
 /database/database.db-journal
 .env
 __pycache__/
-/static/images/tour_photos/*
-/static/images/report_photos/*
-/static/images/profile_photos/*
 /.vscode/

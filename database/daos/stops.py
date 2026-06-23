@@ -1,4 +1,5 @@
 import sqlite3
+import uuid
 
 from database.models.tour import Tour
 
@@ -8,13 +9,13 @@ from utilities.db_connection import connect_db
 def add_stops_to_tour(conn, cursor, tour, stops):
 
     success = False
-    query = "INSERT INTO stops (tour_id, place_name, order_number) VALUES (?, ?, ?)"
+    query = "INSERT INTO stops (id, tour_id, place_name, order_number) VALUES (?, ?, ?, ?)"
 
     try:
         order_number = 1
 
         for stop in stops:
-            cursor.execute(query, (tour.id, stop, order_number))
+            cursor.execute(query, (str(uuid.uuid4()), tour.id, stop, order_number))
             order_number=order_number + 1
         conn.commit()
         success = True
@@ -30,14 +31,14 @@ def update_stops_of_tour(conn, cursor, tour, stops):
 
     success = False
     delete_query = "DELETE FROM stops WHERE tour_id=(?)"
-    insert_query = "INSERT INTO stops (tour_id, place_name, order_number) VALUES (?, ?, ?)"
+    insert_query = "INSERT INTO stops (id, tour_id, place_name, order_number) VALUES (?, ?, ?, ?)"
 
     try:
         cursor.execute(delete_query, (tour.id,))
         order_number = 1
 
         for stop in stops:
-            cursor.execute(insert_query, (tour.id, stop, order_number))
+            cursor.execute(insert_query, (str(uuid.uuid4()), tour.id, stop, order_number))
             order_number=order_number + 1
         conn.commit()
         success = True
