@@ -1,0 +1,7 @@
+Flask
+Flask-Login
+ics
+Pillow
+python-dotenv
+Werkzeug
+tzdata
