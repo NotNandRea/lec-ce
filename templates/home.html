@@ -31,7 +31,7 @@
                 <div class="col-12 col-lg-6 order-1 order-lg-2">
                     <div class="rounded-5 shadow overflow-hidden home-main-photo-container">
                         <img class="object-fit-cover h-100 w-100"
-                            src="{{ url_for('static', filename='images/tour_photos/' + photo) }}"
+                            src="{{ url_for('static', filename='images/tour_photos/' ~ photo) }}"
                             alt="Random tour photo">
                     </div>
                 </div>

@@ -1395,7 +1395,6 @@ def add_occurrence_to_calendar(id):
         flash("You are not authorized to view this occurrence", "negative")
         return redirect(url_for("my_profile"))
     
-    occurrence.tour = tours_dao.get_tour_by_id(occurrence.tour_id)
 
     calendar = Calendar()
     event = Event()
@@ -1431,6 +1430,10 @@ def submit_report(id):
     if occurrence.tour.guide_id != current_user.id:
         flash("You are not authorized to view this occurrence", "negative")
         return redirect(url_for("home"))
+    
+    if reports_dao.get_report_by_occurrence_id(occurrence.id) is not None:
+        flash("A report has already been submitted for this occurrence", "negative")
+        return redirect(url_for("occurrence_details", id=id))
     
     #check if the occurrence happened
     tour_datetime = datetime.combine(occurrence.date, datetime.strptime(occurrence.start_time, "%H:%M").time())
