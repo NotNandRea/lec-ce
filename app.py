@@ -233,11 +233,11 @@ def login_post():
     # password validation
     password= user.get("password")
     if password in [None, ""]:
-        flash("Invalid password", "negative")
+        flash("Invalid email or password", "negative")
         return redirect(url_for("login"))
 
     if not user_obj.check_password(password):
-        flash("Invalid password", "negative")
+        flash("Invalid email or password", "negative")
         return redirect(url_for("login"))
 
     login_user(user_obj)
